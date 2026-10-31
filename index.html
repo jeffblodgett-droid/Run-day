@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Run-Day</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
+:root{--bg:#0f172a;--card:#1e293b;--acc:#22c55e;--tx:#e2e8f0;--mu:#94a3b8}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:520px;margin:auto;padding:16px}h1{margin:8px 0 16px;font-size:28px}h1 span{color:var(--acc)}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px}h2{font-size:16px;margin:0 0 10px;color:var(--mu)}
+form{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{min-width:0;font-size:12px;color:var(--mu);display:flex;flex-direction:column;gap:4px}
+input{width:100%;min-width:0;padding:10px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:var(--tx);font-size:16px}
+.full{grid-column:1/-1}button{background:var(--acc);color:#052e16;border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px}
+#pace{font-size:14px;color:var(--acc)}ul{list-style:none;padding:0;margin:0}li{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #334155}
+li small{color:var(--mu)}.del{background:none;color:#f87171;padding:4px 8px;font-size:18px}
+.wk{display:flex;justify-content:space-between;padding:6px 0}.empty{color:var(--mu)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.stat{background:#0b1220;border-radius:10px;padding:10px}.stat b{display:block;font-size:22px}.stat small{color:var(--mu);font-size:12px}
+.btns{display:flex;gap:8px}.btns button{flex:1}.btns button:disabled{opacity:.4}#pauseB{background:#facc15}#finB{background:#f87171}
+#map{height:220px;border-radius:10px;margin-bottom:10px;background:#0b1220}#mapfb{height:220px;width:100%;border-radius:10px;margin-bottom:10px;background:#0b1220;display:none}
+#gmsg{font-size:13px;color:var(--mu);margin:0 0 10px}#gmsg.err{color:#fca5a5}.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.thumbs img{width:54px;height:54px;object-fit:cover;border-radius:6px;cursor:pointer}
+.ph{display:inline-block;background:#334155;color:var(--tx);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer;margin-right:4px}.ph input{display:none}
+li{flex-wrap:wrap}li>div:first-child{flex:1}#lb{position:fixed;inset:0;background:#000d;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999}
+#lb img{max-width:94vw;max-height:78vh;border-radius:8px}#lb div{display:flex;gap:10px}#lb button{padding:10px 18px}#lbDel{background:#f87171}#lbX{background:#e2e8f0}
+#liveph{display:none;margin-top:8px}</style></head><body><main>
+<h1>🏃 Run-<span>Day</span></h1>
+<div class="card"><h2>Live GPS run</h2><p id="gmsg">Tap Start to track a run with GPS.</p>
+<div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas>
+<div class="stats"><div class="stat"><small>Time</small><b id="gt">0:00</b></div><div class="stat"><small>Distance</small><b id="gd">0.00 mi</b></div>
+<div class="stat"><small>Current pace</small><b id="gc">—</b></div><div class="stat"><small>Avg pace</small><b id="ga">—</b></div></div>
+<div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div><div id="liveph"><label class="ph">📷 Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
+<div class="card"><h2>Log a run manually</h2><form id="f">
+<label class="full">Date<input type="date" id="d" required></label>
+<label>Distance (mi)<input type="number" id="m" step="0.01" min="0.01" required></label>
+<label>Time (mm:ss)<input id="t" placeholder="32:15" required></label>
+<div class="full" id="pace">Pace: —</div><button class="full">Save run</button></form></div>
+<div class="card"><h2>Weekly totals</h2><div id="weeks"></div></div>
+<div class="card"><h2>Runs</h2><ul id="list"></ul></div>
+</main><div id="lb"><img id="lbImg" alt="Run photo"><div><button id="lbDel">Delete photo</button><button id="lbX">Close</button></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+const K='runday.runs';let runs=JSON.parse(localStorage.getItem(K)||'[]');runs.forEach((r,i)=>{if(!r.id)r.id=Date.now()+i});
+const $=id=>document.getElementById(id);const ld=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('d').value=ld(new Date());
+const secs=s=>{const p=s.trim().split(':').map(Number);if(p.some(isNaN)||!p.length||p.length>3)return 0;return p.reduce((a,b)=>a*60+b,0)};
+const fmt=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${x}`:`${m}:${x}`};
+const pace=(sec,mi)=>mi>0&&sec>0?fmt(sec/mi)+' /mi':'—';
+const upd=()=>$('pace').textContent='Pace: '+pace(secs($('t').value),+$('m').value);$('t').oninput=$('m').oninput=upd;
+const monday=ds=>{const d=new Date(ds+'T00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return ld(d)};
+function render(){localStorage.setItem(K,JSON.stringify(runs));runs.sort((a,b)=>b.date.localeCompare(a.date));
+$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div><b>${r.mi} mi</b>${r.gps?' 📍':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">📷 Add photos<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">🗺 Map</span>`:''}</div></div><button class="del" data-i="${i}">✕</button></li>`).join(''):'<li class="empty">No runs yet — log your first!</li>';
+const w={};runs.forEach(r=>{const k=monday(r.date);w[k]=w[k]||{mi:0,sec:0,n:0};w[k].mi+=r.mi;w[k].sec+=r.sec;w[k].n++});
+$('weeks').innerHTML=Object.keys(w).sort().reverse().map(k=>`<div class="wk"><span>Week of ${k}</span><span><b>${w[k].mi.toFixed(2)} mi</b> · ${w[k].n} run${w[k].n==1?'':'s'} · ${pace(w[k].sec,w[k].mi)}</span></div>`).join('')||'<div class="empty">No data yet</div>';setTimeout(loadThumbs)}
+$('f').onsubmit=e=>{e.preventDefault();const sec=secs($('t').value),mi=+$('m').value;if(!sec||!mi)return alert('Enter a valid time and distance');runs.push({id:Date.now(),date:$('d').value,mi,sec});$('f').reset();$('d').value=ld(new Date());upd();render()};
+$('list').onclick=e=>{const ds=e.target.dataset;if(ds.i!=null&&confirm('Delete this run and its photos?')){const r=runs.splice(+ds.i,1)[0];delRunPhotos(r.id);render()}else if(ds.map)showRun(+ds.map);else if(ds.pid)openLb(+ds.pid)};
+$('list').onchange=e=>{const id=e.target.dataset.add;if(id)addPhotos(e.target.files,+id,null).then(()=>{e.target.value='';loadThumbs()})};
+if(location.hash==='#demo'&&!runs.length){runs=[{id:1,date:'2026-10-26',mi:3.1,sec:1650},{id:2,date:'2026-10-28',mi:5,sec:2790},{id:3,date:'2026-10-30',mi:2.5,sec:1320},{id:4,date:'2026-10-21',mi:4,sec:2280}]}
+render();
+// ---- Live GPS ----
+if(location.hash.startsWith('#sim')){let i=0,cb;const base=[40.015,-105.27];Object.defineProperty(navigator,'geolocation',{configurable:true,value:{watchPosition(ok){cb=ok;const t=setInterval(()=>{i++;const bad=i==5,jump=i==8;ok({coords:{latitude:base[0]+i*0.0002+(jump?0.05:0),longitude:base[1]+Math.sin(i/4)*0.0004,accuracy:bad?120:8},timestamp:1e12+i*5000})},300);return t},clearWatch(t){clearInterval(t)}}})}
+const R=3958.8,hav=(a,b)=>{const r=x=>x*Math.PI/180,dl=r(b[0]-a[0]),dn=r(b[1]-a[1]),h=Math.sin(dl/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h))};
+let G=null,map=null,line=null,wake=null,tick=null;
+const msg=(t,e)=>{$('gmsg').textContent=t;$('gmsg').className=e?'err':''};
+function initMap(){if(map||!window.L){if(!window.L){$('map').style.display='none';$('mapfb').style.display='block'}return}
+try{map=L.map('map',{zoomControl:false}).setView([40,-105],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);line=L.polyline([],{color:'#22c55e',weight:5}).addTo(map)}catch(e){map=null;$('map').style.display='none';$('mapfb').style.display='block'}}
+function drawFb(){const c=$('mapfb'),x=c.getContext('2d'),p=G.pts;x.fillStyle='#0b1220';x.fillRect(0,0,c.width,c.height);if(p.length<2)return;
+const la=p.map(q=>q[0]),lo=p.map(q=>q[1]),a=Math.min(...la),b=Math.max(...la),m=Math.min(...lo),n=Math.max(...lo),sc=Math.min((c.width-20)/((n-m)||1e-9),(c.height-20)/((b-a)||1e-9));
+x.strokeStyle='#22c55e';x.lineWidth=4;x.beginPath();p.forEach((q,i)=>{const X=10+(q[1]-m)*sc,Y=c.height-10-(q[0]-a)*sc;i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke();x.fillStyle='#94a3b8';x.fillText('Map unavailable — route sketch',10,14)}
+const elapsed=()=>G.acc+(G.since?Date.now()-G.since:0);
+function show(){const s=elapsed()/1000;$('gt').textContent=fmt(s);$('gd').textContent=G.dist.toFixed(2)+' mi';$('ga').textContent=pace(s,G.dist);
+const r=G.recent;if(r.length>1){const d=r.slice(1).reduce((t,q,i)=>t+hav(r[i],q),0),dt=(r[r.length-1][2]-r[0][2])/1000;$('gc').textContent=d>0.005?pace(dt,d):'—'}}
+async function lock(){try{if('wakeLock' in navigator){wake=await navigator.wakeLock.request('screen')}}catch(e){wake=null}}
+document.addEventListener('visibilitychange',()=>{if(G&&G.since&&document.visibilityState==='visible')lock()});
+function onPos(p){if(!G||!G.since)return;const c=p.coords,pt=[c.latitude,c.longitude,p.timestamp];
+if(c.accuracy>30){msg('Weak GPS signal (±'+Math.round(c.accuracy)+' m), waiting for a better fix…');return}
+const last=G.pts[G.pts.length-1];if(last&&!G.gap){const d=hav(last,pt),dt=Math.max((pt[2]-last[2])/1000,1);if(d/dt*3600>20){msg('Skipped a GPS jump.');return}if(d<0.002)return;G.dist+=d}
+G.gap=false;G.pts.push(pt);G.recent.push(pt);while(G.recent.length>2&&pt[2]-G.recent[0][2]>30000)G.recent.shift();
+msg('Tracking… (±'+Math.round(c.accuracy)+' m)');if(map){line.addLatLng([pt[0],pt[1]]);map.setView([pt[0],pt[1]])}else drawFb();show()}
+function onErr(e){const t={1:'Location permission was denied. Allow location for this site in your browser settings to track runs.',2:'Can’t get a GPS fix right now. Try moving outside with a clear view of the sky.',3:'GPS is taking too long to respond. Still trying…'}[e.code]||'GPS error.';msg(t,e.code!==3);if(e.code===1)stop(false)}
+function stop(save){if(!G)return;navigator.geolocation.clearWatch(G.w);clearInterval(tick);if(wake){wake.release().catch(()=>{});wake=null}
+const s=Math.round(elapsed()/1000);if(save){if(G.dist>=0.01){runs.push({id:G.id,date:ld(new Date()),mi:+G.dist.toFixed(2),sec:s,gps:true,route:G.pts.map(q=>[+q[0].toFixed(6),+q[1].toFixed(6),q[2]])});render();msg('Saved '+G.dist.toFixed(2)+' mi in '+fmt(s)+'.')}else msg('Run too short to save (under 0.01 mi).',true)}
+G=null;$('liveph').style.display='none';$('startB').disabled=false;$('pauseB').disabled=$('finB').disabled=true;$('pauseB').textContent='Pause'}
+$('startB').onclick=()=>{if(!('geolocation' in navigator)){msg('This device or browser has no GPS/location support.',true);return}
+if(!window.isSecureContext&&location.hash!=='#sim'){msg('GPS needs a secure page (https:// or localhost).',true);return}
+initMap();if(line)line.setLatLngs([]);G={id:Date.now(),pts:[],recent:[],dist:0,acc:0,since:Date.now()};msg('Getting GPS fix…');
+G.w=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000});lock();tick=setInterval(show,1000);
+clearPins();$('liveThumbs').innerHTML='';$('liveph').style.display='block';$('startB').disabled=true;$('pauseB').disabled=$('finB').disabled=false;show()};
+$('pauseB').onclick=()=>{if(!G)return;if(G.since){G.acc+=Date.now()-G.since;G.since=0;G.gap=true;$('pauseB').textContent='Resume';msg('Paused.')}else{G.since=Date.now();G.recent=[];$('pauseB').textContent='Pause';msg('Tracking…');lock()}show()};
+$('finB').onclick=()=>stop(true);
+if(location.hash==='#simtest'){localStorage.clear();runs=[];render();setTimeout(()=>__test.start(),100);setTimeout(()=>__test.pause(),2500);setTimeout(()=>__test.pause(),3500);setTimeout(()=>{const g=G;document.title=JSON.stringify({pts:g.pts.length,dist:g.dist.toFixed(3),t:Math.round(elapsed()/1000),map:!!map});__test.finish();document.title+=' SAVED:'+JSON.stringify(runs.map(r=>[r.mi,r.sec,r.gps,r.route.length]))+' '+$('weeks').innerText},6000)}
+
+// ---- Photos (IndexedDB) ----
+let dbp=null;const db=()=>dbp||(dbp=new Promise((ok,no)=>{const q=indexedDB.open('runday',1);q.onupgradeneeded=()=>{const st=q.result.createObjectStore('photos',{keyPath:'id',autoIncrement:true});st.createIndex('run','runId')};q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)}));
+const tx=async(mode,fn)=>{const d=await db();return new Promise((ok,no)=>{const t=d.transaction('photos',mode),r=fn(t.objectStore('photos'));t.oncomplete=()=>ok(r&&r.result);t.onerror=()=>no(t.error)})};
+const photosFor=id=>tx('readonly',st=>st.index('run').getAll(id));
+const delRunPhotos=async id=>{for(const p of await photosFor(id))await tx('readwrite',st=>st.delete(p.id))};
+function exifGps(buf){try{const v=new DataView(buf);if(v.getUint16(0)!==0xFFD8)return null;let o=2;while(o<v.byteLength-4){const m=v.getUint16(o),len=v.getUint16(o+2);
+if(m===0xFFE1&&v.getUint32(o+4)===0x45786966){const t=o+10,le=v.getUint16(t)===0x4949,u16=x=>v.getUint16(x,le),u32=x=>v.getUint32(x,le);
+const ifd=(off,tag)=>{const n=u16(t+off);for(let i=0;i<n;i++){const e=t+off+2+i*12;if(u16(e)===tag)return e}return 0};
+const ge=ifd(u32(t+4),0x8825);if(!ge)return null;const g=u32(ge+8),rat=e=>{const a=t+u32(e+8),r=k=>u32(a+k*8)/u32(a+k*8+4);return r(0)+r(1)/60+r(2)/3600},
+ent=tag=>{const n=u16(t+g);for(let i=0;i<n;i++){const e=t+g+2+i*12;if(u16(e)===tag)return e}return 0};
+const la=ent(2),lo=ent(4),lr=ent(1),lor=ent(3);if(!la||!lo)return null;let lat=rat(la),lng=rat(lo);if(lr&&v.getUint8(lr+8)===83)lat=-lat;if(lor&&v.getUint8(lor+8)===87)lng=-lng;return isFinite(lat)&&isFinite(lng)&&(lat||lng)?[lat,lng]:null}
+if((m&0xFF00)!==0xFF00)break;o+=2+len}}catch(e){}return null}
+async function shrink(file){const url=URL.createObjectURL(file);try{const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
+const k=Math.min(1,1280/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*k);c.height=Math.round(img.naturalHeight*k);
+c.getContext('2d').drawImage(img,0,0,c.width,c.height);return await new Promise(ok=>c.toBlob(ok,'image/jpeg',0.82))}finally{URL.revokeObjectURL(url)}}
+async function addPhotos(files,runId,livePos){let n=0;for(const f of files){try{const gps=exifGps(await f.slice(0,262144).arrayBuffer())||livePos,blob=await shrink(f);
+await tx('readwrite',st=>st.add({runId,blob,lat:gps?gps[0]:null,lng:gps?gps[1]:null,t:Date.now()}));n++}catch(e){alert('Could not add '+f.name)}}return n}
+const urls=[];async function loadThumbs(){urls.splice(0).forEach(URL.revokeObjectURL);for(const el of document.querySelectorAll('.thumbs[data-run]')){const ps=await photosFor(+el.dataset.run).catch(()=>[]);
+el.innerHTML=ps.map(p=>{const u=URL.createObjectURL(p.blob);urls.push(u);return `<img src="${u}" data-pid="${p.id}" alt="photo">`}).join('')}}
+let lbId=null;async function openLb(id){const p=await tx('readonly',st=>st.get(id));if(!p)return;lbId=id;$('lbImg').src=URL.createObjectURL(p.blob);$('lb').style.display='flex'}
+$('lbX').onclick=()=>{$('lb').style.display='none';URL.revokeObjectURL($('lbImg').src)};
+$('lbDel').onclick=async()=>{if(!confirm('Delete this photo?'))return;await tx('readwrite',st=>st.delete(lbId));$('lbX').click();loadThumbs();if(G)liveThumbs()};
+let pins=[];const clearPins=()=>{pins.forEach(m=>m.remove());pins=[]};
+const pin=(p)=>{if(map&&p.lat!=null){const u=URL.createObjectURL(p.blob);pins.push(L.marker([p.lat,p.lng]).addTo(map).bindPopup(`<img src="${u}" style="width:140px;border-radius:6px">`))}};
+async function liveThumbs(){const ps=await photosFor(G.id);$('liveThumbs').innerHTML=ps.map(p=>`<img src="${URL.createObjectURL(p.blob)}" data-pid="${p.id}">`).join('');clearPins();ps.forEach(pin)}
+$('liveThumbs').onclick=e=>{if(e.target.dataset.pid)openLb(+e.target.dataset.pid)};
+$('livePhIn').onchange=async e=>{if(!G)return;const l=G.pts[G.pts.length-1];await addPhotos(e.target.files,G.id,l?[l[0],l[1]]:null);e.target.value='';liveThumbs()};
+async function showRun(id){if(G)return;const r=runs.find(x=>x.id===id);if(!r)return;initMap();const ps=await photosFor(id);clearPins();
+if(map){line.setLatLngs(r.route.map(q=>[q[0],q[1]]));ps.forEach(pin);if(r.route.length)map.fitBounds(line.getBounds(),{padding:[20,20]})}else{G={pts:r.route};drawFb();G=null}
+msg('Showing run from '+r.date+' ('+r.mi+' mi, '+ps.filter(p=>p.lat!=null).length+' photo pins).');$('map').scrollIntoView({behavior:'smooth'})}
+window.__test={photosFor,pins:()=>pins,start:()=>$('startB').click(),pause:()=>$('pauseB').click(),finish:()=>$('finB').click(),state:()=>G};
+</script></body></html>
