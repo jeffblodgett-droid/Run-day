@@ -1,12 +1,19 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Run-Day</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f07010">
+<meta name="apple-mobile-web-app-title" content="Run-Day">
+<script>try{var t=JSON.parse(localStorage.getItem('runday.theme')||'null');if(t&&typeof t.h1==='number'){document.documentElement.style.setProperty('--bg','hsl('+t.h1+' 58% 14%)');document.documentElement.style.setProperty('--card','hsl('+t.h1+' 42% 20%)');}}catch(e){}</script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
-:root{--bg:#0f172a;--card:#1e293b;--acc:#22c55e;--tx:#e2e8f0;--mu:#94a3b8}
+:root{--bg:#241445;--card:#321c58;--acc:#f07010;--purple:#9b50e0;--tx:#f8f1ff;--mu:#d9ccea;--ink:#2a1208}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx)}
 main{max-width:520px;margin:auto;padding:16px}h1{margin:8px 0 16px;font-size:28px}h1 span{color:var(--acc)}
 .card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px}h2{font-size:16px;margin:0 0 10px;color:var(--mu)}
 form{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{min-width:0;font-size:12px;color:var(--mu);display:flex;flex-direction:column;gap:4px}
 input{width:100%;min-width:0;padding:10px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:var(--tx);font-size:16px}
-.full{grid-column:1/-1}button{background:var(--acc);color:#052e16;border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px}
+.full{grid-column:1/-1}button{background:var(--acc);color:var(--ink);border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px}
 #pace{font-size:14px;color:var(--acc)}ul{list-style:none;padding:0;margin:0}li{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #334155}
 li small{color:var(--mu)}.del{background:none;color:#f87171;padding:4px 8px;font-size:18px}
 .wk{display:flex;justify-content:space-between;padding:6px 0}.empty{color:var(--mu)}
@@ -29,14 +36,14 @@ button.ghost{background:#334155;color:var(--tx);padding:8px 12px;font-size:14px;
 #achHint{margin:-4px 0 8px}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 button.tab{background:#334155;color:var(--tx);padding:7px 10px;font-size:13px;border-radius:999px;width:auto}
-button.tab.on{background:var(--acc);color:#052e16}
+button.tab.on{background:var(--acc);color:var(--ink)}
 #achFilter{margin-bottom:10px}
 #achGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-height:460px;overflow:auto;padding:2px}
 .badge{background:#0b1220;border-radius:12px;padding:4px 4px 6px;text-align:center;min-width:0}
 button.badgeMain{background:transparent;color:var(--tx);padding:2px;font-size:10px;font-weight:700;line-height:1.15;width:100%;border-radius:10px}
 button.badgeMain small{display:block;color:var(--mu);font-size:10px;font-weight:600;margin-top:2px}
 button.badgeMain.on{outline:2px solid var(--acc)}
-button.miniShare{background:var(--acc);color:#052e16;padding:3px 6px;font-size:10px;border-radius:999px;margin-top:4px}
+button.miniShare{background:var(--acc);color:var(--ink);padding:3px 6px;font-size:10px;border-radius:999px;margin-top:4px}
 .badge svg{width:52px;height:52px;display:block;margin:0 auto}
 .badge.locked{opacity:.78}
 #achDetail{margin-top:12px;background:#0b1220;border-radius:12px;padding:12px;text-align:center}
@@ -54,27 +61,76 @@ button.miniShare{background:var(--acc);color:#052e16;padding:3px 6px;font-size:1
 #shareNote{font-size:12px;color:var(--mu)}
 #celeMedal svg{width:96px;height:96px}
 @media(max-width:380px){#achGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+h1.brand{text-align:center;margin:4px 0 12px}
+.logo{width:min(240px,78%);height:auto;display:block;margin:0 auto;background:#fff;border-radius:28px}
+.profileCard{position:relative;overflow:hidden}
+.scene{border-radius:12px;margin:0 0 10px}
+.scene svg{width:100%;height:88px;display:block;border-radius:12px}
+.scene.empty{display:none}
+.profileRow{display:flex;align-items:center;gap:10px}
+.avatar{width:72px;height:72px;border-radius:50%;background:#3a2158;flex:none;overflow:hidden;box-shadow:0 0 0 3px #fff6}
+.avatar svg,.shopArt svg{width:72px;height:72px;display:block}
+.profileText{flex:1;min-width:0}
+.nameplate{display:inline-block;max-width:100%;padding:4px 10px;border-radius:14px}
+#hello{color:#f8f1ff}
+.credits{margin:4px 0 0;font-weight:800;color:var(--acc);font-size:14px}
+.picks{display:flex;gap:6px;margin:0 0 10px}
+button.pick{background:#241433;color:var(--tx);padding:4px;border-radius:12px;border:2px solid transparent;width:auto}
+button.pick.on{border-color:var(--acc);background:#4a2870}
+button.pick svg,.micon svg,.micon-map svg{width:34px;height:34px;display:block}
+.micon{display:inline-flex;vertical-align:middle;margin-right:4px}
+.micon svg{width:22px;height:22px}
+.emo{background:transparent !important;border:0 !important}
+.micon-map svg{width:40px;height:40px;filter:drop-shadow(0 1px 1px #000)}
+.frame-loop{box-shadow:0 0 0 3px #f07010;background:#2a1408}
+.frame-glow{box-shadow:0 0 0 3px #b06bff,0 0 14px #b06bff;background:#2a1840}
+.frame-stars{border:3px dashed #f6e27a;background:#2a1840}
+.frame-rainbow{border:3px solid transparent;background:linear-gradient(#2a1408,#2a1408) padding-box,linear-gradient(90deg,#f07010,#f6e27a,#9b50e0) border-box}
+.frame-zap{border:3px solid #f07010;background:#2a1408;box-shadow:4px 4px 0 #9b50e0}
+.frame-hearts{box-shadow:0 0 0 3px #e2558a;background:#3a1428}
+.frame-dots{border:3px dotted #f07010;background:#2a1408;box-shadow:0 0 0 6px #9b50e088}
+.frame-double{box-shadow:0 0 0 3px #f07010,0 0 0 6px #9b50e0;background:#241433}
+.frame-ticket{border:3px solid #f6e27a;border-radius:4px 16px;background:#2a1840}
+.frame-crown{box-shadow:0 0 0 3px #f6b13a;background:#2a1840;border-top:6px solid #f07010}
+#shopGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:520px;overflow:auto}
+.shopItem{background:#140c22;border-radius:12px;padding:8px;text-align:center}
+.shopItem h3{margin:6px 0 2px;font-size:14px;color:var(--tx)}
+.shopItem p{margin:0 0 6px;color:var(--mu);font-size:12px}
+.shopArt{min-height:64px;display:grid;place-items:center}
+.shopArt .nameplate span{font-weight:800}
+.price{color:var(--acc) !important;font-weight:800}
+.shopItem button{width:100%;padding:8px;font-size:14px}
+.swatches{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+button.swatch{width:28px;height:28px;border-radius:50%;padding:0;border:2px solid #fff6}
+#gradBox{display:grid;gap:8px;margin-top:8px}
+#hue1,#hue2{padding:0;height:28px;background:transparent;border:0}
+.hint{font-size:12px;color:var(--mu);margin:0 0 8px}
+button:disabled{opacity:.45}
+@media(max-width:380px){#shopGrid{grid-template-columns:1fr}}
 </style></head><body><main>
-<h1>🏃 Run-<span>Day</span></h1>
-<div class="who"><p id="hello">Hey, athlete!</p><button type="button" id="nameBtn" class="ghost">Set name</button></div>
+<h1 class="brand"><img src="logo.png" alt="Run-Day" class="logo" width="280" height="280"></h1>
+<div class="card profileCard" id="profileCard"><div id="scene" class="scene empty"></div><div class="profileRow"><div id="avatarBox" class="avatar" aria-hidden="true"></div><div class="profileText"><div id="frameBox" class="nameplate"><p id="hello">Hey, athlete!</p></div><p id="creditLine" class="credits">0 credits</p></div><button type="button" id="nameBtn" class="ghost">Set name</button></div></div>
 <form id="nameForm" hidden><label class="full">Your name<input id="nameIn" maxlength="20" autocomplete="nickname" placeholder="Your name" aria-label="Username"></label><button type="submit">Save name</button><button type="button" id="nameCancel" class="ghost">Cancel</button><p id="nameErr" class="full" hidden></p></form>
 <div class="card"><h2>Live GPS run</h2><p id="gmsg">Tap Start to track a run with GPS.</p>
-<div class="mrow"><select id="mode" aria-label="Activity"></select></div><p id="det"></p><div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas>
+<div class="mrow"><select id="mode" aria-label="Activity"></select></div><div id="modePicks" class="picks"></div><p id="det"></p><div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas>
 <div class="stats"><div class="stat"><small>Time</small><b id="gt">0:00</b></div><div class="stat"><small>Distance</small><b id="gd">0.00 mi</b></div>
 <div class="stat"><small>Current pace</small><b id="gc">—</b></div><div class="stat"><small>Avg pace</small><b id="ga">—</b></div></div>
 <div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div><div id="liveph"><label class="ph">📷 Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
 <div class="card"><h2>Log a run manually</h2><form id="f">
-<label class="full">Activity<select id="mm"></select></label><label class="full">Date<input type="date" id="d" required></label>
+<label class="full">Activity<select id="mm"></select></label><div id="logPicks" class="picks full"></div><label class="full">Date<input type="date" id="d" required></label>
 <label>Distance (mi)<input type="number" id="m" step="0.01" min="0.01" required></label>
 <label>Time (mm:ss)<input id="t" placeholder="32:15" required></label>
 <div class="full" id="pace">Pace: —</div><button class="full">Save run</button></form></div>
 <div class="card" id="achCard"><h2>Achievements</h2><p class="empty" id="achHint">Badges unlock from activities saved on this phone. They stay here even if you delete a run.</p><p id="achProg" class="achprog">0/100</p><div id="achTabs" class="tabs" role="tablist"></div><select id="achFilter" aria-label="Filter achievements"></select><div id="achGrid"></div><div id="achDetail" hidden><div id="achDetailMedal"></div><h3 id="achDetailName"></h3><p id="achDetailRule"></p><p id="achDetailState"></p><button type="button" id="achShare" class="ghost" hidden>Share badge</button></div></div>
+<div class="card" id="shopCard"><h2>Shop</h2><p class="hint">Spend pretend credits. Nothing here costs real money.</p><div id="shopTabs" class="tabs"></div><div id="shopGrid"></div></div>
+<div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
 <div class="card"><h2>Totals by activity</h2><div id="modes"></div></div><div class="card"><h2>Weekly totals</h2><div id="weeks"></div></div>
 <div class="card"><h2>Runs</h2><ul id="list"></ul></div>
 </main><div id="cele" hidden role="dialog" aria-modal="true" aria-label="Badge unlocked"><div class="panel"><p id="celeKicker">Badge unlocked!</p><div id="celeMedal"></div><h3 id="celeTitle"></h3><p id="celeText"></p><div class="shareRow"><button type="button" id="celeShare" hidden>Share</button><button type="button" id="celeNext">Awesome!</button></div></div></div><div id="shareBox" hidden role="dialog" aria-modal="true" aria-label="Share card"><div class="panel"><img id="shareImg" alt="Share card"><p id="shareCaption"></p><div class="shareRow"><button type="button" id="shareGo">Share</button><button type="button" id="shareSave" class="ghost">Save image</button><button type="button" id="shareClose" class="ghost">Close</button></div><p id="shareNote"></p></div></div><div id="lb"><img id="lbImg" alt="Run photo"><div><button id="lbDel">Delete photo</button><button id="lbX">Close</button></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 const K='runday.runs';let runs=JSON.parse(localStorage.getItem(K)||'[]');runs.forEach((r,i)=>{if(!r.id)r.id=Date.now()+i});
 const MODES={run:['Running','🏃'],walk:['Walking','🚶'],bike:['Biking','🚴'],ski:['Skiing','⛷️'],onewheel:['One-wheeling','🛞']};runs.forEach(r=>{if(!MODES[r.act])r.act='run'});
-const opts=Object.entries(MODES).map(([k,v])=>`<option value="${k}">${v[1]} ${v[0]}</option>`).join('');
+const opts=Object.entries(MODES).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
 const $=id=>document.getElementById(id);const ld=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('d').value=ld(new Date());$('mode').innerHTML=$('mm').innerHTML=opts;$('mode').value=localStorage.getItem('runday.mode')||'run';$('mode').onchange=()=>{localStorage.setItem('runday.mode',$('mode').value);if(G){G.act=$('mode').value;G.userSet=true;setEmo()}};
 const secs=s=>{const p=s.trim().split(':').map(Number);if(p.some(isNaN)||!p.length||p.length>3)return 0;return p.reduce((a,b)=>a*60+b,0)};
 const fmt=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${x}`:`${m}:${x}`};
@@ -82,9 +138,9 @@ const pace=(sec,mi)=>mi>0&&sec>0?fmt(sec/mi)+' /mi':'—';
 const upd=()=>$('pace').textContent='Pace: '+pace(secs($('t').value),+$('m').value);$('t').oninput=$('m').oninput=upd;
 const monday=ds=>{const d=new Date(ds+'T00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return ld(d)};
 function render(){localStorage.setItem(K,JSON.stringify(runs));runs.sort((a,b)=>b.date.localeCompare(a.date));
-$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div>${MODES[r.act][1]} <b>${r.mi} mi</b>${r.gps?' 📍':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)} · <select class="actsel" data-act="${r.id}" aria-label="Change activity">${opts.replace(`value="${r.act}"`,`value="${r.act}" selected`)}</select>${r.det&&r.det!==r.act?' (detected '+MODES[r.det][1]+')':''}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">📷 Add photos<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">🗺 Map</span>`:''}<span class="ph" data-share="${r.id}">↗ Share</span></div></div><button class="del" data-i="${i}">✕</button></li>`).join(''):'<li class="empty">No runs yet — log your first!</li>';
+$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div><span class="micon">${modeSVG(r.act)}</span> <b>${r.mi} mi</b>${r.gps?' 📍':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)} · <select class="actsel" data-act="${r.id}" aria-label="Change activity">${opts.replace(`value="${r.act}"`,`value="${r.act}" selected`)}</select>${r.det&&r.det!==r.act?' (detected '+MODES[r.det][0]+')':''}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">📷 Add photos<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">🗺 Map</span>`:''}<span class="ph" data-share="${r.id}">↗ Share</span></div></div><button class="del" data-i="${i}">✕</button></li>`).join(''):'<li class="empty">No runs yet — log your first!</li>';
 const md={};runs.forEach(r=>{const o=md[r.act]=md[r.act]||{mi:0,sec:0,n:0};o.mi+=r.mi;o.sec+=r.sec;o.n++});
-$('modes').innerHTML=Object.keys(MODES).filter(k=>md[k]).map(k=>`<div class="wk"><span>${MODES[k][1]} ${MODES[k][0]}</span><span><b>${md[k].mi.toFixed(2)} mi</b> · ${md[k].n} time${md[k].n==1?'':'s'} · ${fmt(md[k].sec)} <span class="ph" data-sharemode="${k}">↗ Share</span></span></div>`).join('')||'<div class="empty">No data yet</div>';
+$('modes').innerHTML=Object.keys(MODES).filter(k=>md[k]).map(k=>`<div class="wk"><span><span class="micon">${modeSVG(k)}</span> ${MODES[k][0]}</span><span><b>${md[k].mi.toFixed(2)} mi</b> · ${md[k].n} time${md[k].n==1?'':'s'} · ${fmt(md[k].sec)} <span class="ph" data-sharemode="${k}">↗ Share</span></span></div>`).join('')||'<div class="empty">No data yet</div>';
 const w={};runs.forEach(r=>{const k=monday(r.date);w[k]=w[k]||{mi:0,sec:0,n:0};w[k].mi+=r.mi;w[k].sec+=r.sec;w[k].n++});
 $('weeks').innerHTML=Object.keys(w).sort().reverse().map(k=>`<div class="wk"><span>Week of ${k}</span><span><b>${w[k].mi.toFixed(2)} mi</b> · ${w[k].n} activit${w[k].n==1?'y':'ies'} · ${pace(w[k].sec,w[k].mi)} <span class="ph" data-shareweek="${k}">↗ Share</span></span></div>`).join('')||'<div class="empty">No data yet</div>';setTimeout(loadThumbs)}
 $('f').onsubmit=e=>{e.preventDefault();const sec=secs($('t').value),mi=+$('m').value;if(!sec||!mi)return alert('Enter a valid time and distance');runs.push({id:Date.now(),date:$('d').value,mi,sec,act:$('mm').value,at:Date.now()});$('f').reset();$('d').value=ld(new Date());upd();render()};
@@ -98,16 +154,16 @@ const R=3958.8,hav=(a,b)=>{const r=x=>x*Math.PI/180,dl=r(b[0]-a[0]),dn=r(b[1]-a[
 let emo=null;let G=null,map=null,line=null,wake=null,tick=null;
 const msg=(t,e)=>{$('gmsg').textContent=t;$('gmsg').className=e?'err':''};
 function initMap(){if(map||!window.L){if(!window.L){$('map').style.display='none';$('mapfb').style.display='block'}return}
-try{map=L.map('map',{zoomControl:false}).setView([40,-105],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);line=L.polyline([],{color:'#22c55e',weight:5}).addTo(map);map.on('zoomstart',()=>{})}catch(e){map=null;$('map').style.display='none';$('mapfb').style.display='block'}}
+try{map=L.map('map',{zoomControl:false}).setView([40,-105],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);line=L.polyline([],{color:'#f07010',weight:5}).addTo(map);map.on('zoomstart',()=>{})}catch(e){map=null;$('map').style.display='none';$('mapfb').style.display='block'}}
 function drawFb(){const c=$('mapfb'),x=c.getContext('2d'),p=G.pts;x.fillStyle='#0b1220';x.fillRect(0,0,c.width,c.height);if(p.length<2)return;
 const la=p.map(q=>q[0]),lo=p.map(q=>q[1]),a=Math.min(...la),b=Math.max(...la),m=Math.min(...lo),n=Math.max(...lo),sc=Math.min((c.width-20)/((n-m)||1e-9),(c.height-20)/((b-a)||1e-9));
-x.strokeStyle='#22c55e';x.lineWidth=4;x.beginPath();p.forEach((q,i)=>{const X=10+(q[1]-m)*sc,Y=c.height-10-(q[0]-a)*sc;i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke();if(G.act){const q=p[p.length-1];x.font='24px sans-serif';x.fillText(MODES[G.act][1],10+(q[1]-m)*sc-12,c.height-10-(q[0]-a)*sc+8)}x.font='10px sans-serif';x.fillStyle='#94a3b8';x.fillText('Map unavailable — route sketch',10,14)}
+x.strokeStyle='#f07010';x.lineWidth=4;x.beginPath();p.forEach((q,i)=>{const X=10+(q[1]-m)*sc,Y=c.height-10-(q[0]-a)*sc;i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke();if(G.act){const q=p[p.length-1];drawModeMark(x,G.act,10+(q[1]-m)*sc,c.height-10-(q[0]-a)*sc)}x.font='10px sans-serif';x.fillStyle='#94a3b8';x.fillText('Map unavailable — route sketch',10,14)}
 function detect(p){const sp=[];let down=0,up=0,hasAlt=0;for(let i=1;i<p.length;i++){const dt=(p[i][2]-p[i-1][2])/1000;if(dt<=0)continue;sp.push(hav(p[i-1],p[i])/dt*3600);if(p[i][3]!=null&&p[i-1][3]!=null){hasAlt=1;const da=p[i][3]-p[i-1][3];da<0?down-=da:up+=da}}
 if(sp.length<3)return null;const s=[...sp].sort((a,b)=>a-b),q=f=>s[Math.min(s.length-1,Math.floor(f*s.length))],med=q(.5),p90=q(.9),mean=sp.reduce((a,b)=>a+b,0)/sp.length,cv=Math.sqrt(sp.reduce((a,b)=>a+(b-mean)**2,0)/sp.length)/(mean||1),slow=sp.filter(v=>v<3).length/sp.length;
 if(hasAlt&&down>60&&down>3*up&&p90>12)return 'ski';if(p90>14&&cv>0.6&&slow>0.15)return 'ski';
 if(med<4.5)return 'walk';if(med<8.5)return 'run';if(cv<0.25&&p90<21)return 'onewheel';if(med<10.5)return 'run';return 'bike'}
-function setEmo(){if(!G||!G.pts.length)return;const l=G.pts[G.pts.length-1];if(map){const ic=L.divIcon({className:'emo',html:MODES[G.act][1],iconSize:[32,32],iconAnchor:[16,16]});if(!emo)emo=L.marker([l[0],l[1]],{icon:ic,zIndexOffset:1000}).addTo(map);else{emo.setLatLng([l[0],l[1]]);emo.setIcon(ic)}}else drawFb()}
-function showDet(){const d=detect(G.pts);G.det=d;const e=$('det');if(!d){e.style.display='none';return}e.style.display='block';e.innerHTML=d===G.act?`Looks like ${MODES[d][1]} ${MODES[d][0]} ✓`:`Looks like ${MODES[d][1]} ${MODES[d][0]}. <button id="useDet">Switch</button>`;const b=$('useDet');if(b)b.onclick=()=>{$('mode').value=d;$('mode').onchange()};if(!G.userSet&&G.pts.length>=8&&d!==G.act&&!G.autoDone){G.autoDone=true}}
+function setEmo(){if(!G||!G.pts.length)return;const l=G.pts[G.pts.length-1];if(map){const ic=L.divIcon({className:'emo',html:'<span class="micon-map">'+modeSVG(G.act)+'</span>',iconSize:[40,40],iconAnchor:[20,20]});if(!emo)emo=L.marker([l[0],l[1]],{icon:ic,zIndexOffset:1000}).addTo(map);else{emo.setLatLng([l[0],l[1]]);emo.setIcon(ic)}}else drawFb()}
+function showDet(){const d=detect(G.pts);G.det=d;const e=$('det');if(!d){e.style.display='none';return}e.style.display='block';e.innerHTML=d===G.act?`Looks like ${modeSVG(d)} ${MODES[d][0]} ✓`:`Looks like ${modeSVG(d)} ${MODES[d][0]}. <button id="useDet">Switch</button>`;const b=$('useDet');if(b)b.onclick=()=>{$('mode').value=d;$('mode').onchange()};if(!G.userSet&&G.pts.length>=8&&d!==G.act&&!G.autoDone){G.autoDone=true}}
 const elapsed=()=>G.acc+(G.since?Date.now()-G.since:0);
 function show(){const s=elapsed()/1000;$('gt').textContent=fmt(s);$('gd').textContent=G.dist.toFixed(2)+' mi';$('ga').textContent=pace(s,G.dist);
 const r=G.recent;if(r.length>1){const d=r.slice(1).reduce((t,q,i)=>t+hav(r[i],q),0),dt=(r[r.length-1][2]-r[0][2])/1000;$('gc').textContent=d>0.005?pace(dt,d):'—'}}
@@ -487,11 +543,11 @@ function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<'
 function achById(id) { return Ach.ACH.find(a => a.id === id); }
 function paintBadges() {
   const have = loadBadges() || {};
-  const modes = [['run', '🏃 Run'], ['walk', '🚶 Walk'], ['bike', '🚴 Bike'], ['ski', '⛷️ Ski'], ['onewheel', '🛞 Wheel'], ['combo', '✨ Combos']];
+  const modes = [['run', 'Run'], ['walk', 'Walk'], ['bike', 'Bike'], ['ski', 'Ski'], ['onewheel', 'Wheel'], ['combo', 'Combos']];
   $('achTabs').innerHTML = modes.map(([k, label]) => {
     const all = Ach.ACH.filter(a => a.mode === k);
     const n = all.filter(a => have[a.id]).length;
-    return `<button type="button" class="tab${k === achTab ? ' on' : ''}" data-tab="${k}" role="tab" aria-selected="${k === achTab}">${label} ${n}/${all.length}</button>`;
+    return `<button type="button" class="tab${k === achTab ? ' on' : ''}" data-tab="${k}" role="tab" aria-selected="${k === achTab}"><span class="micon">${k === 'combo' ? comboMark() : modeSVG(k)}</span> ${label} ${n}/${all.length}</button>`;
   }).join('');
   const cur = Ach.ACH.filter(a => a.mode === achTab);
   const cats = ['All', ...new Set(cur.map(a => a.category))];
@@ -599,7 +655,7 @@ function makeCard(opts) {
   x.fillRect(0, 0, 720, 960);
   roundRect(x, 36, 36, 648, 888, 32, '#1e293b');
   x.textAlign = 'center';
-  x.fillStyle = '#22c55e';
+  x.fillStyle = '#f07010';
   x.font = '700 40px system-ui, sans-serif';
   x.fillText('Run-Day', 360, 110);
   x.fillStyle = '#94a3b8';
@@ -768,7 +824,7 @@ $('celeNext').onclick = () => {
 };
 $('celeShare').onclick = () => { const id = $('celeShare').dataset.sharea; if (id) shareAch(id); };
 function celeFor(a) {
-  return { kicker: 'Badge unlocked!', title: a.name, text: a.rule, medalHTML: Ach.medalSVG(a, true), shareId: a.id, nextLabel: 'Awesome!' };
+  return { kicker: 'Badge unlocked!', title: a.name, text: a.rule + ' +' + creditFor(a) + ' credits.', medalHTML: Ach.medalSVG(a, true), shareId: a.id, nextLabel: 'Awesome!' };
 }
 let achBusy = false, achAgain = false;
 async function checkAchievementsAsync() {
@@ -785,13 +841,14 @@ async function checkAchievementsAsync() {
       if (Ach.met(a, runs, photos)) { have[a.id] = Date.now(); if (!fresh) newly.push(a); }
     });
     saveBadges(have);
+    const earned = grantCredits(have);
     paintBadges();
     if (fresh) {
       const n = Object.keys(have).length;
-      if (n) pushCele([{ kicker: 'Badges ready!', title: n + ' badge' + (n === 1 ? '' : 's') + ' unlocked', text: 'These came from activities already saved on this phone. New ones pop up when you earn them.', medalHTML: Ach.medalSVG(Ach.ACH.find(a => have[a.id]) || Ach.ACH[0], true), nextLabel: 'Show me' }]);
+      if (n) pushCele([{ kicker: 'Badges ready!', title: n + ' badge' + (n === 1 ? '' : 's') + ' unlocked', text: 'These came from activities already saved on this phone. New ones pop up when you earn them.' + (earned ? ' You got ' + earned.toLocaleString() + ' credits for the shop.' : ''), medalHTML: Ach.medalSVG(Ach.ACH.find(a => have[a.id]) || Ach.ACH[0], true), nextLabel: 'Show me' }]);
     } else if (newly.length === 1) pushCele([celeFor(newly[0])]);
     else if (newly.length > 1 && newly.length <= 3) pushCele(newly.map(celeFor));
-    else if (newly.length > 3) pushCele([{ kicker: 'Badge party!', title: newly.length + ' new badges', text: newly.slice(0, 6).map(a => a.emoji + ' ' + a.name).join(' · ') + (newly.length > 6 ? ' · +' + (newly.length - 6) + ' more' : ''), medalHTML: Ach.medalSVG(newly[0], true), shareId: newly[0].id, nextLabel: 'Awesome!' }]);
+    else if (newly.length > 3) pushCele([{ kicker: 'Badge party!', title: newly.length + ' new badges', text: newly.slice(0, 6).map(a => a.emoji + ' ' + a.name).join(' · ') + (newly.length > 6 ? ' · +' + (newly.length - 6) + ' more' : '') + (earned ? ' You earned ' + earned.toLocaleString() + ' credits.' : ''), medalHTML: Ach.medalSVG(newly[0], true), shareId: newly[0].id, nextLabel: 'Awesome!' }]);
   } catch (e) {}
   achBusy = false;
   if (achAgain) { achAgain = false; checkAchievementsAsync(); }
@@ -818,5 +875,280 @@ window.__ach = {
   shareAch,
   lastShare: () => lastShare ? { caption: lastShare.caption, lines: lastShare.lines.slice(), title: lastShare.title, hasRoute: lastShare.hasRoute } : null
 };
+
+
+function modeSVG(mode) {
+  const common = 'viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"';
+  const art = {
+    run: `<svg ${common}><ellipse cx="33" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><path d="M14 44c6-2 10-8 14-8 3 6 8 8 14 6" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M22 36c6-10 8-16 18-16 2 6-2 10-6 12" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M30 34c2 8 1 14 6 20" fill="none" stroke="#9b50e0" stroke-width="5" stroke-linecap="round"/><path d="M24 40c-4 6-10 8-14 6" fill="none" stroke="#9b50e0" stroke-width="5" stroke-linecap="round"/><circle cx="46" cy="16" r="7" fill="#ffc7a3"/><path d="M43 15h3M47 15h2" stroke="#3a2418" stroke-width="1.2" stroke-linecap="round"/><path d="M44 19c1.2 1 2.4 1 3.4 0" fill="none" stroke="#c45a4a" stroke-width="1.2" stroke-linecap="round"/></svg>`,
+    walk: `<svg ${common}><ellipse cx="32" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><path d="M28 30c-2 8-8 12-12 18" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><path d="M30 32c4 8 2 16 8 22" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M30 28c8 2 12 8 10 14" fill="#9b50e0"/><circle cx="34" cy="16" r="7" fill="#ffc7a3"/><path d="M24 24c6 2 10 2 16-1" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M31 15h3M37 15h2" stroke="#3a2418" stroke-width="1.2" stroke-linecap="round"/><path d="M32 19c1.4 1 2.6 1 3.6 0" fill="none" stroke="#c45a4a" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="50" r="3" fill="#f07010"/><circle cx="40" cy="54" r="3" fill="#6d4ad4"/></svg>`,
+    bike: `<svg ${common}><ellipse cx="32" cy="58" rx="18" ry="3" fill="#000" opacity=".2"/><circle cx="18" cy="46" r="9" fill="none" stroke="#3a2418" stroke-width="3"/><circle cx="48" cy="46" r="9" fill="none" stroke="#3a2418" stroke-width="3"/><circle cx="18" cy="46" r="2" fill="#f07010"/><circle cx="48" cy="46" r="2" fill="#f07010"/><path d="M18 46 L30 28 L44 46 L30 40 Z" fill="none" stroke="#9b50e0" stroke-width="3" stroke-linejoin="round"/><path d="M30 28 L34 18 H42" fill="none" stroke="#3a2418" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="14" r="5.5" fill="#ffc7a3"/><path d="M28 30c6 1 8 4 8 8" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M34 13h2" stroke="#3a2418" stroke-width="1"/></svg>`,
+    ski: `<svg ${common}><ellipse cx="34" cy="58" rx="16" ry="3" fill="#000" opacity=".18"/><path d="M8 54c16 4 28-2 48-8" fill="none" stroke="#f07010" stroke-width="3" stroke-linecap="round"/><path d="M12 50c14 3 24-1 40-6" fill="none" stroke="#9b50e0" stroke-width="3" stroke-linecap="round"/><path d="M30 40c2-10 6-16 8-22" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><path d="M28 28 L18 18" fill="none" stroke="#c4b4d8" stroke-width="2" stroke-linecap="round"/><path d="M36 26 L50 16" fill="none" stroke="#c4b4d8" stroke-width="2" stroke-linecap="round"/><circle cx="40" cy="14" r="6" fill="#ffc7a3"/><path d="M24 44c8-6 14-4 22 2" fill="#f3e8ff" opacity=".9"/><circle cx="14" cy="18" r="1.4" fill="#fff"/><circle cx="52" cy="24" r="1.2" fill="#fff"/><circle cx="20" cy="28" r="1" fill="#fff"/></svg>`,
+    onewheel: `<svg ${common}><ellipse cx="32" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><circle cx="34" cy="48" r="10" fill="#2a1208"/><circle cx="34" cy="48" r="6" fill="#f07010"/><circle cx="34" cy="48" r="2" fill="#fff3"/><path d="M22 44h24c2 0 3-2 2-4l-6-4H26l-4 4c-1 2 0 4 0 4z" fill="#9b50e0"/><path d="M32 36c1-8 3-12 4-18" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><circle cx="38" cy="14" r="6" fill="#ffc7a3"/><path d="M26 24c6 2 10 1 14-2" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M36 13h2" stroke="#3a2418" stroke-width="1"/></svg>`
+  };
+  return art[mode] || art.run;
+}
+function comboMark() {
+  return '<svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><path d="M32 6l6 16h16l-13 10 5 16-14-10-14 10 5-16L10 22h16z" fill="#f07010"/><path d="M32 16l3 8h8l-6 5 2 8-7-5-7 5 2-8-6-5h8z" fill="#9b50e0"/></svg>';
+}
+function creditFor(a) {
+  const base = { bronze: 10, silver: 25, gold: 50, diamond: 100, legend: 200 }[a.tier] || 10;
+  return a.mode === 'combo' ? Math.round(base * 1.5) : base;
+}
+function loadCredits() {
+  const n = parseInt(localStorage.getItem('runday.credits') || '0', 10);
+  return isFinite(n) && n > 0 ? n : 0;
+}
+function paintCredits() {
+  const n = loadCredits();
+  const label = n.toLocaleString() + ' credit' + (n === 1 ? '' : 's');
+  const el = $('creditLine');
+  if (el) el.textContent = label;
+}
+function grantCredits(have) {
+  let paid = {};
+  try { paid = JSON.parse(localStorage.getItem('runday.paid') || '{}') || {}; } catch (e) { paid = {}; }
+  if (!paid || typeof paid !== 'object' || Array.isArray(paid)) paid = {};
+  let add = 0;
+  Object.keys(have || {}).forEach(id => {
+    if (paid[id]) return;
+    const a = achById(id);
+    if (!a) return;
+    const n = creditFor(a);
+    paid[id] = n;
+    add += n;
+  });
+  const bal = loadCredits() + add;
+  if (add || localStorage.getItem('runday.paid') == null) {
+    localStorage.setItem('runday.credits', String(bal));
+    localStorage.setItem('runday.paid', JSON.stringify(paid));
+  }
+  paintCredits();
+  if (typeof paintShop === 'function' && document.getElementById('shopGrid')) paintShop();
+  return add;
+}
+var modeImgs = {};
+function prepModeImgs() {
+  Object.keys(MODES).forEach(k => {
+    const img = new Image();
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(modeSVG(k));
+    modeImgs[k] = img;
+  });
+}
+function drawModeMark(ctx, act, x, y) {
+  const img = modeImgs && modeImgs[act];
+  if (img && img.complete && img.naturalWidth) { ctx.drawImage(img, x - 14, y - 14, 28, 28); return; }
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.beginPath();
+  ctx.fillStyle = '#f07010';
+  ctx.arc(0, 0, 12, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#9b50e0';
+  ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = '700 11px system-ui,sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText({ run: 'R', walk: 'W', bike: 'B', ski: 'S', onewheel: '1' }[act] || '•', 0, 1);
+  ctx.restore();
+}
+function placeholderAvatar() {
+  return '<svg viewBox="0 0 80 80" width="72" height="72" aria-hidden="true"><circle cx="40" cy="40" r="40" fill="#3a2158"/><circle cx="40" cy="34" r="14" fill="#ffc7a3"/><path d="M18 66c4-12 12-18 22-18s18 6 22 18" fill="#9b50e0"/><path d="M34 33h3M44 33h3" stroke="#3a2418" stroke-width="1.6" stroke-linecap="round"/><path d="M35 40c2 2 8 2 10 0" fill="none" stroke="#c45a4a" stroke-width="1.6" stroke-linecap="round"/></svg>';
+}
+const SHOP = [
+  { id: 'fox', cat: 'Profile picture', slot: 'avatar', name: 'Sunny Fox', price: 40, desc: 'A bright orange fox with a purple ear tuft.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#ffd7b0"/><path d="M16 28 L28 18 L30 36 Z" fill="#f07010"/><path d="M64 28 L52 18 L50 36 Z" fill="#f07010"/><path d="M22 26 L28 20 L29 32 Z" fill="#9b50e0"/><circle cx="40" cy="46" r="18" fill="#f07010"/><ellipse cx="40" cy="52" rx="8" ry="6" fill="#fff3e6"/><circle cx="33" cy="44" r="3" fill="#2a1208"/><circle cx="47" cy="44" r="3" fill="#2a1208"/><circle cx="34" cy="43" r="1" fill="#fff"/><path d="M36 54c2 2 6 2 8 0" fill="none" stroke="#9b50e0" stroke-width="1.6" stroke-linecap="round"/></svg>' },
+  { id: 'panda', cat: 'Profile picture', slot: 'avatar', name: 'Panda Pal', price: 60, desc: 'A round panda with leafy-green eyes.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#f4f1ea"/><circle cx="22" cy="28" r="8" fill="#2a1208"/><circle cx="58" cy="28" r="8" fill="#2a1208"/><circle cx="40" cy="44" r="20" fill="#fff"/><ellipse cx="30" cy="42" rx="7" ry="8" fill="#2a1208"/><ellipse cx="50" cy="42" rx="7" ry="8" fill="#2a1208"/><circle cx="31" cy="42" r="2.4" fill="#fff"/><circle cx="51" cy="42" r="2.4" fill="#fff"/><ellipse cx="40" cy="52" rx="4" ry="3" fill="#2a1208"/><path d="M34 58c3 3 9 3 12 0" fill="none" stroke="#f07010" stroke-width="1.8" stroke-linecap="round"/></svg>' },
+  { id: 'robo', cat: 'Profile picture', slot: 'avatar', name: 'Robo Buddy', price: 80, desc: 'A friendly robot with an orange antenna.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#2a1848"/><rect x="22" y="24" width="36" height="32" rx="8" fill="#d7e4f5"/><rect x="28" y="32" width="10" height="8" rx="2" fill="#9b50e0"/><rect x="42" y="32" width="10" height="8" rx="2" fill="#9b50e0"/><path d="M32 48h16" stroke="#f07010" stroke-width="2" stroke-linecap="round"/><path d="M40 24 V12" stroke="#f07010" stroke-width="3" stroke-linecap="round"/><circle cx="40" cy="10" r="4" fill="#f07010"/><rect x="18" y="34" width="6" height="10" rx="2" fill="#9b50e0"/><rect x="56" y="34" width="6" height="10" rx="2" fill="#9b50e0"/></svg>' },
+  { id: 'astro', cat: 'Profile picture', slot: 'avatar', name: 'Space Kid', price: 100, desc: 'A smiling astronaut in a round helmet.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#241445"/><circle cx="40" cy="40" r="24" fill="#c9d4e8"/><circle cx="40" cy="40" r="16" fill="#ffd7b0"/><path d="M32 38h3M45 38h3" stroke="#2a1208" stroke-width="1.6" stroke-linecap="round"/><path d="M34 46c3 3 9 3 12 0" fill="none" stroke="#c45a4a" stroke-width="1.6" stroke-linecap="round"/><path d="M18 58c6-8 14-10 22-10s16 2 22 10" fill="#f07010"/><circle cx="58" cy="26" r="5" fill="#9b50e0"/></svg>' },
+  { id: 'dragon', cat: 'Profile picture', slot: 'avatar', name: 'Little Dragon', price: 140, desc: 'A purple dragon with a tiny orange flame.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#efe4ff"/><path d="M24 26c2-10 10-8 10 0" fill="#9b50e0"/><path d="M46 26c0-8 8-10 10 0" fill="#f07010"/><circle cx="40" cy="46" r="18" fill="#9b50e0"/><ellipse cx="40" cy="52" rx="8" ry="6" fill="#d7b8ff"/><circle cx="33" cy="44" r="3" fill="#2a1208"/><circle cx="47" cy="44" r="3" fill="#2a1208"/><path d="M36 56c2 4 6 4 8 0" fill="#f07010"/><path d="M54 58c6 2 10-2 8-6-4 1-6 2-8 6z" fill="#f07010"/></svg>' },
+  { id: 'cat', cat: 'Profile picture', slot: 'avatar', name: 'Night Cat', price: 180, desc: 'A purple cat with moonlit eyes.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#1c1233"/><path d="M18 36 L28 14 L34 36 Z" fill="#6d4ad4"/><path d="M62 36 L52 14 L46 36 Z" fill="#6d4ad4"/><circle cx="40" cy="46" r="18" fill="#9b50e0"/><circle cx="32" cy="44" r="3.2" fill="#f6e27a"/><circle cx="48" cy="44" r="3.2" fill="#f6e27a"/><path d="M40 48 v6" stroke="#2a1208" stroke-width="1.4"/><path d="M28 50h8M44 50h8" stroke="#2a1208" stroke-width="1.2"/><path d="M34 58c3 3 9 3 12 0" fill="none" stroke="#f07010" stroke-width="1.6" stroke-linecap="round"/></svg>' },
+  { id: 'dino', cat: 'Profile picture', slot: 'avatar', name: 'Dino Sprout', price: 220, desc: 'A green dino with orange spikes.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#e7f6d8"/><path d="M28 22l4 8 4-8 4 8 4-8 4 8 4-8v10H28z" fill="#f07010"/><ellipse cx="40" cy="48" rx="20" ry="16" fill="#67b15a"/><circle cx="32" cy="46" r="3" fill="#2a1208"/><circle cx="48" cy="46" r="3" fill="#2a1208"/><ellipse cx="40" cy="54" rx="7" ry="4" fill="#d7f0c4"/><path d="M34 56c3 2 9 2 12 0" fill="none" stroke="#2a1208" stroke-width="1.4" stroke-linecap="round"/></svg>' },
+  { id: 'owl', cat: 'Profile picture', slot: 'avatar', name: 'Owl Scout', price: 280, desc: 'A wide-eyed owl in a purple hood.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#2a1848"/><ellipse cx="40" cy="46" rx="22" ry="20" fill="#c9b7e8"/><path d="M18 40c8-16 36-16 44 0" fill="#9b50e0"/><circle cx="30" cy="46" r="8" fill="#fff"/><circle cx="50" cy="46" r="8" fill="#fff"/><circle cx="30" cy="46" r="3.5" fill="#f07010"/><circle cx="50" cy="46" r="3.5" fill="#f07010"/><path d="M36 56 L40 62 L44 56" fill="#f07010"/></svg>' },
+  { id: 'unicorn', cat: 'Profile picture', slot: 'avatar', name: 'Unicorn Spark', price: 360, desc: 'A white unicorn with an orange horn.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#fde7f3"/><path d="M36 28 L40 8 L44 28 Z" fill="#f07010"/><ellipse cx="22" cy="48" rx="8" ry="6" fill="#9b50e0"/><ellipse cx="58" cy="48" rx="8" ry="6" fill="#f07010"/><circle cx="40" cy="46" r="18" fill="#fff"/><circle cx="33" cy="44" r="3" fill="#6d4ad4"/><circle cx="47" cy="44" r="3" fill="#6d4ad4"/><path d="M34 54c3 3 9 3 12 0" fill="none" stroke="#f07010" stroke-width="1.6" stroke-linecap="round"/><path d="M22 34c6 2 8 2 12-2" fill="none" stroke="#9b50e0" stroke-width="3" stroke-linecap="round"/></svg>' },
+  { id: 'tiger', cat: 'Profile picture', slot: 'avatar', name: 'Tiger Zoom', price: 480, desc: 'An orange tiger ready to race.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#fff1e0"/><circle cx="40" cy="46" r="20" fill="#f07010"/><path d="M26 36l4 6M34 32l2 8M46 32l-2 8M54 36l-4 6" stroke="#2a1208" stroke-width="1.6" stroke-linecap="round"/><circle cx="32" cy="44" r="3" fill="#2a1208"/><circle cx="48" cy="44" r="3" fill="#2a1208"/><ellipse cx="40" cy="52" rx="6" ry="4" fill="#fff"/><path d="M38 52h4" stroke="#2a1208" stroke-width="1.2"/><path d="M18 50c6 2 8 6 6 10M62 50c-6 2-8 6-6 10" fill="#f07010" stroke="#2a1208" stroke-width="1"/><path d="M34 58c3 3 9 3 12 0" fill="none" stroke="#9b50e0" stroke-width="1.6" stroke-linecap="round"/></svg>' },
+  { id: 'loop', cat: 'Name frame', slot: 'frame', frame: 'frame-loop', name: 'Orange Loop', price: 30, desc: 'A solid orange line around your name.', art: '' },
+  { id: 'glow', cat: 'Name frame', slot: 'frame', frame: 'frame-glow', name: 'Purple Glow', price: 50, desc: 'A soft purple glow around your name.', art: '' },
+  { id: 'stars', cat: 'Name frame', slot: 'frame', frame: 'frame-stars', name: 'Star Border', price: 70, desc: 'Little stars sitting on the corners.', art: '' },
+  { id: 'rainbow', cat: 'Name frame', slot: 'frame', frame: 'frame-rainbow', name: 'Rainbow Ring', price: 90, desc: 'A rainbow outline that goes orange to purple.', art: '' },
+  { id: 'zap', cat: 'Name frame', slot: 'frame', frame: 'frame-zap', name: 'Lightning Lasso', price: 120, desc: 'A zig-zag orange border.', art: '' },
+  { id: 'hearts', cat: 'Name frame', slot: 'frame', frame: 'frame-hearts', name: 'Heart Outline', price: 160, desc: 'A pink-purple heart border.', art: '' },
+  { id: 'dots', cat: 'Name frame', slot: 'frame', frame: 'frame-dots', name: 'Dot Parade', price: 200, desc: 'A dotted orange and purple border.', art: '' },
+  { id: 'double', cat: 'Name frame', slot: 'frame', frame: 'frame-double', name: 'Double Stripe', price: 260, desc: 'Two stripes, one orange and one purple.', art: '' },
+  { id: 'ticket', cat: 'Name frame', slot: 'frame', frame: 'frame-ticket', name: 'Ticket Frame', price: 320, desc: 'A ticket-stub shape around your name.', art: '' },
+  { id: 'crown', cat: 'Name frame', slot: 'frame', frame: 'frame-crown', name: 'Crown Rim', price: 420, desc: 'A gold crown sitting on the frame.', art: '' },
+  { id: 'halloween', cat: 'Seasonal decoration', slot: 'deco', name: 'Pumpkin Patch', price: 50, desc: 'Halloween pumpkins and a bat.', art: '<svg viewBox="0 0 320 88"><rect width="320" height="88" rx="12" fill="#2a1848"/><circle cx="46" cy="22" r="8" fill="#f6e27a"/><ellipse cx="110" cy="58" rx="26" ry="22" fill="#f07010"/><path d="M110 36 v10" stroke="#2f7d32" stroke-width="3"/><path d="M100 52h6l-3 7zM116 52h6l-3 7z" fill="#2a1208"/><path d="M104 66c4 4 12 4 16 0" fill="none" stroke="#2a1208" stroke-width="2"/><ellipse cx="190" cy="60" rx="22" ry="18" fill="#e25b12"/><path d="M182 54h5l-2 6zM196 54h5l-2 6z" fill="#2a1208"/><path d="M250 28c10 2 16 0 20-6-8 8-12 8-20 6z" fill="#1a1030"/><circle cx="286" cy="62" r="12" fill="#67b15a"/></svg>' },
+  { id: 'christmas', cat: 'Seasonal decoration', slot: 'deco', name: 'Tree Lights', price: 70, desc: 'A Christmas tree with orange and purple lights.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#163024"/><path d="M160 8 L196 58 H124 Z" fill="#1f7a45"/><rect x="152" y="58" width="16" height="8" fill="#6b3e1e"/><circle cx="150" cy="28" r="3" fill="#f07010"/><circle cx="168" cy="40" r="3" fill="#9b50e0"/><circle cx="156" cy="50" r="3" fill="#f6e27a"/><circle cx="40" cy="20" r="2" fill="#fff"/><circle cx="280" cy="16" r="2" fill="#fff"/></svg>' },
+  { id: 'winter', cat: 'Seasonal decoration', slot: 'deco', name: 'Snow Day', price: 90, desc: 'Winter snowflakes on a cold blue band.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#d7ecff"/><g fill="#7eb6e8" stroke="#fff" stroke-width="1"><path d="M40 36 v-14 M40 36 v14 M40 36 h-14 M40 36 h14 M40 36 l-10-10 M40 36 l10 10 M40 36 l10-10 M40 36 l-10 10"/></g><g fill="none" stroke="#9b50e0" stroke-width="2"><path d="M120 24 v20 M110 34 h20 M114 28 l12 12 M126 28 l-12 12"/></g><circle cx="200" cy="22" r="3" fill="#fff"/><circle cx="240" cy="48" r="4" fill="#fff"/><circle cx="280" cy="28" r="2.5" fill="#fff"/><path d="M160 58c20-8 40-8 70 0" fill="none" stroke="#f07010" stroke-width="3"/></svg>' },
+  { id: 'spring', cat: 'Seasonal decoration', slot: 'deco', name: 'Flower Burst', price: 120, desc: 'Spring flowers in orange and purple.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#e9f8df"/><g><circle cx="50" cy="36" r="6" fill="#f07010"/><circle cx="40" cy="28" r="5" fill="#ffb088"/><circle cx="60" cy="28" r="5" fill="#ffb088"/><circle cx="40" cy="46" r="5" fill="#9b50e0"/><circle cx="60" cy="46" r="5" fill="#9b50e0"/></g><g><circle cx="140" cy="40" r="6" fill="#f6e27a"/><circle cx="130" cy="32" r="5" fill="#f07010"/><circle cx="150" cy="32" r="5" fill="#f07010"/><circle cx="130" cy="48" r="5" fill="#67b15a"/><circle cx="150" cy="48" r="5" fill="#67b15a"/></g><path d="M200 60c8-18 16-18 16 0" stroke="#2f7d32" stroke-width="3" fill="none"/><circle cx="250" cy="30" r="8" fill="#9b50e0"/><circle cx="250" cy="30" r="3" fill="#fff"/></svg>' },
+  { id: 'summer', cat: 'Seasonal decoration', slot: 'deco', name: 'Sunshine Splash', price: 160, desc: 'A summer sun and a little wave.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#fff4d6"/><circle cx="64" cy="36" r="16" fill="#f07010"/><g stroke="#f6b13a" stroke-width="3" stroke-linecap="round"><path d="M64 8v8M64 56v8M36 36h-8M100 36h8M44 16l6 6M84 50l6 6M44 56l6-6M84 22l6-6"/></g><path d="M140 48c16-16 28-16 44 0s28 16 44 0 28-16 44 0 v16 H140z" fill="#3aa0d8"/></svg>' },
+  { id: 'valentine', cat: 'Seasonal decoration', slot: 'deco', name: 'Heart Confetti', price: 200, desc: 'Valentine hearts in pink, orange, and purple.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#ffe4ef"/><path d="M50 40c0-8 12-10 12 0 0-10 12-8 12 0 0 10-12 18-12 18S50 50 50 40z" fill="#e2558a"/><path d="M140 36c0-6 8-8 8 0 0-8 8-6 8 0 0 8-8 14-8 14s-8-6-8-14z" fill="#f07010"/><path d="M230 42c0-7 10-9 10 0 0-9 10-7 10 0 0 9-10 16-10 16s-10-7-10-16z" fill="#9b50e0"/></svg>' },
+  { id: 'thanks', cat: 'Seasonal decoration', slot: 'deco', name: 'Leaf Pile', price: 250, desc: 'Thanksgiving leaves in fall colors.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#f8e2c0"/><path d="M40 50c10-20 20-20 20 0-8-6-16-6-20 0z" fill="#e25b12"/><path d="M90 54c12-18 22-14 16 4-10-2-16-2-16-4z" fill="#f07010"/><path d="M150 48c8-22 24-16 14 6-8-4-14-4-14-6z" fill="#9b50e0"/><path d="M210 52c10-16 22-12 14 6-8 0-14-2-14-6z" fill="#c45a18"/><path d="M260 46c6-18 20-14 12 8-6-2-12-4-12-8z" fill="#f6b13a"/></svg>' },
+  { id: 'july4', cat: 'Seasonal decoration', slot: 'deco', name: 'Firework Night', price: 320, desc: 'July 4th fireworks in the night sky.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#1b1440"/><g stroke="#f07010" stroke-width="2"><path d="M60 30 l8-14 M60 30 l14 0 M60 30 l8 12 M60 30 l-8 12 M60 30 l-14 0 M60 30 l-8-12"/></g><g stroke="#9b50e0" stroke-width="2"><path d="M160 26 l6-10 M160 26 l12 2 M160 26 l6 10 M160 26 l-8 8 M160 26 l-12-2 M160 26 l-4-10"/></g><g stroke="#f6e27a" stroke-width="2"><path d="M250 34 l10-8 M250 34 h12 M250 34 l8 10 M250 34 l-10 6 M250 34 h-12 M250 34 l-6-10"/></g><circle cx="30" cy="14" r="1.2" fill="#fff"/><circle cx="200" cy="12" r="1.2" fill="#fff"/><circle cx="300" cy="18" r="1.2" fill="#fff"/></svg>' },
+  { id: 'newyear', cat: 'Seasonal decoration', slot: 'deco', name: 'Midnight Spark', price: 400, desc: 'New Year sparkles and a countdown star.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#241445"/><path d="M48 36l4 10 10 2-8 6 3 10-9-6-9 6 3-10-8-6 10-2z" fill="#f6e27a"/><path d="M140 20l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#f07010"/><path d="M230 40l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#9b50e0"/><text x="270" y="44" fill="#fff" font-size="18" font-family="system-ui">12</text></svg>' },
+  { id: 'birthday', cat: 'Seasonal decoration', slot: 'deco', name: 'Balloon Bunch', price: 500, desc: 'Birthday balloons in orange and purple.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#fff6ea"/><ellipse cx="70" cy="28" rx="16" ry="20" fill="#f07010"/><ellipse cx="110" cy="24" rx="16" ry="20" fill="#9b50e0"/><ellipse cx="150" cy="30" rx="16" ry="20" fill="#f6b13a"/><path d="M70 48c0 8-8 10-4 16M110 44c2 10 10 10 6 18M150 50c-2 8 6 12 2 16" fill="none" stroke="#6d4ad4" stroke-width="1.4"/><rect x="210" y="40" width="70" height="16" rx="3" fill="#fff"/><path d="M210 40 h70 v6 H210z" fill="#f07010"/><path d="M210 46 h70 v5 H210z" fill="#9b50e0"/></svg>' }
+];
+let shopTab = 'Profile picture';
+function loadShop() {
+  try {
+    const o = JSON.parse(localStorage.getItem('runday.shop') || '{}');
+    if (!o || typeof o !== 'object') throw new Error('bad');
+    o.owned = o.owned && typeof o.owned === 'object' ? o.owned : {};
+    return o;
+  } catch (e) { return { owned: {} }; }
+}
+function saveShop(o) { localStorage.setItem('runday.shop', JSON.stringify(o)); }
+function shopItem(id) { return SHOP.find(s => s.id === id); }
+function paintProfile() {
+  const shop = loadShop();
+  const av = shop.avatar ? shopItem(shop.avatar) : null;
+  $('avatarBox').innerHTML = av ? av.art : placeholderAvatar();
+  const frame = shop.frame ? shopItem(shop.frame) : null;
+  $('frameBox').className = 'nameplate' + (frame ? ' ' + frame.frame : '');
+  const deco = shop.deco ? shopItem(shop.deco) : null;
+  $('scene').innerHTML = deco ? deco.art : '';
+  $('scene').classList.toggle('empty', !deco);
+}
+function paintPicks() {
+  const live = $('mode').value;
+  const manual = $('mm').value;
+  const html = which => Object.keys(MODES).map(k => `<button type="button" class="pick${which === k ? ' on' : ''}" data-pick="${k}" data-which="${which === live && which === manual ? 'both' : ''}" aria-label="${MODES[k][0]}" aria-pressed="${which === k}">${modeSVG(k)}</button>`).join('');
+  if ($('modePicks')) $('modePicks').innerHTML = html(live);
+  if ($('logPicks')) $('logPicks').innerHTML = html(manual);
+}
+function paintShop() {
+  const shop = loadShop();
+  const bal = loadCredits();
+  const tabs = ['Profile picture', 'Name frame', 'Seasonal decoration'];
+  $('shopTabs').innerHTML = tabs.map(t => `<button type="button" class="tab${shopTab === t ? ' on' : ''}" data-shop="${t}">${t === 'Profile picture' ? 'Pictures' : t === 'Name frame' ? 'Frames' : 'Seasons'}</button>`).join('');
+  const items = SHOP.filter(s => s.cat === shopTab);
+  $('shopGrid').innerHTML = items.map(s => {
+    const owned = !!shop.owned[s.id];
+    const equipped = shop[s.slot] === s.id;
+    let btn = '';
+    if (!owned) btn = `<button type="button" data-buy="${s.id}" ${bal < s.price ? 'disabled' : ''}>${bal < s.price ? 'Need ' + s.price : 'Buy ' + s.price}</button>`;
+    else if (equipped) btn = `<button type="button" class="ghost" data-off="${s.id}">Take off</button>`;
+    else btn = `<button type="button" data-on="${s.id}">Wear</button>`;
+    const preview = s.slot === 'frame' ? `<div class="nameplate ${s.frame}"><span>Leo</span></div>` : s.art;
+    return `<article class="shopItem"><div class="shopArt">${preview}</div><h3>${esc(s.name)}</h3><p>${esc(s.desc)}</p><p class="price">${s.price} credits</p>${btn}</article>`;
+  }).join('');
+  paintCredits();
+}
+function buyItem(id) {
+  const item = shopItem(id);
+  if (!item) return 'missing';
+  const shop = loadShop();
+  if (shop.owned[id]) return 'owned';
+  const bal = loadCredits();
+  if (bal < item.price) return 'short';
+  localStorage.setItem('runday.credits', String(bal - item.price));
+  shop.owned[id] = true;
+  shop[item.slot] = id;
+  saveShop(shop);
+  paintShop();
+  paintProfile();
+  return 'ok';
+}
+function equipItem(id) {
+  const item = shopItem(id);
+  const shop = loadShop();
+  if (!item || !shop.owned[id]) return;
+  shop[item.slot] = id;
+  saveShop(shop);
+  paintShop();
+  paintProfile();
+}
+function unequipItem(id) {
+  const item = shopItem(id);
+  const shop = loadShop();
+  if (!item) return;
+  if (shop[item.slot] === id) shop[item.slot] = '';
+  saveShop(shop);
+  paintShop();
+  paintProfile();
+}
+$('shopTabs').onclick = e => {
+  const t = e.target.closest('[data-shop]');
+  if (!t) return;
+  shopTab = t.dataset.shop;
+  paintShop();
+};
+$('shopGrid').onclick = e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.buy) buyItem(b.dataset.buy);
+  else if (b.dataset.on) equipItem(b.dataset.on);
+  else if (b.dataset.off) unequipItem(b.dataset.off);
+};
+$('modePicks').onclick = e => {
+  const b = e.target.closest('[data-pick]');
+  if (!b) return;
+  $('mode').value = b.dataset.pick;
+  $('mode').onchange();
+};
+$('logPicks').onclick = e => {
+  const b = e.target.closest('[data-pick]');
+  if (!b) return;
+  $('mm').value = b.dataset.pick;
+  paintPicks();
+};
+const DEFAULT_THEME = { h1: 272, h2: 24, gradient: true, dir: 'to bottom right' };
+function loadTheme() {
+  try {
+    const t = JSON.parse(localStorage.getItem('runday.theme') || 'null');
+    if (!t || typeof t.h1 !== 'number') return { ...DEFAULT_THEME };
+    return { h1: clampHue(t.h1), h2: clampHue(t.h2 == null ? 24 : t.h2), gradient: !!t.gradient, dir: t.dir || 'to bottom right' };
+  } catch (e) { return { ...DEFAULT_THEME }; }
+}
+function clampHue(n) { n = Math.round(+n || 0); if (n < 0) n = 0; if (n > 360) n = 360; return n; }
+function applyTheme(t) {
+  const h1 = clampHue(t.h1), h2 = clampHue(t.h2);
+  const bg = `hsl(${h1} 58% 14%)`;
+  const card = `hsl(${h1} 42% 20%)`;
+  document.documentElement.style.setProperty('--bg', bg);
+  document.documentElement.style.setProperty('--card', card);
+  document.body.style.background = t.gradient ? `linear-gradient(${t.dir}, hsl(${h1} 62% 24%), hsl(${h2} 70% 12%))` : bg;
+  document.documentElement.style.setProperty('--tx', '#f8f1ff');
+  document.documentElement.style.setProperty('--mu', '#d9ccea');
+}
+function saveTheme(t) { localStorage.setItem('runday.theme', JSON.stringify(t)); applyTheme(t); }
+function syncThemeControls() {
+  const t = loadTheme();
+  $('hue1').value = t.h1;
+  $('hue2').value = t.h2;
+  $('gradOn').checked = t.gradient;
+  $('gradDir').value = t.dir;
+  $('gradBox').hidden = !t.gradient;
+  applyTheme(t);
+}
+const SWATCHES = [0, 24, 45, 80, 140, 190, 220, 272, 310, 340];
+$('swatches').innerHTML = SWATCHES.map(h => `<button type="button" class="swatch" data-hue="${h}" style="background:hsl(${h} 70% 48%)" aria-label="Color ${h}"></button>`).join('');
+$('swatches').onclick = e => {
+  const b = e.target.closest('[data-hue]');
+  if (!b) return;
+  const t = loadTheme();
+  t.h1 = +b.dataset.hue;
+  $('hue1').value = t.h1;
+  saveTheme(t);
+};
+function themeFromControls() {
+  return { h1: clampHue($('hue1').value), h2: clampHue($('hue2').value), gradient: $('gradOn').checked, dir: $('gradDir').value };
+}
+$('hue1').oninput = () => saveTheme(themeFromControls());
+$('hue2').oninput = () => saveTheme(themeFromControls());
+$('gradOn').onchange = () => { $('gradBox').hidden = !$('gradOn').checked; saveTheme(themeFromControls()); };
+$('gradDir').onchange = () => saveTheme(themeFromControls());
+syncThemeControls();
+prepModeImgs();
+paintPicks();
+paintProfile();
+paintShop();
+const paintNameCore = paintName;
+paintName = function () { paintNameCore(); paintProfile(); };
+const modeChange = $('mode').onchange;
+$('mode').onchange = function () { if (modeChange) modeChange.call(this); paintPicks(); };
+$('f').addEventListener('reset', () => setTimeout(paintPicks, 0));
+window.__v5 = { creditFor, credits: loadCredits, buy: buyItem, equip: equipItem, unequip: unequipItem, shop: loadShop, SHOP, setTheme: saveTheme, theme: loadTheme, modeSVG };
 
 </script></body></html>
