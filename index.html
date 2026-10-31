@@ -17,69 +17,79 @@ li small{color:var(--mu)}.del{background:none;color:#f87171;padding:4px 8px;font
 .ph{display:inline-block;background:#334155;color:var(--tx);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer;margin-right:4px}.ph input{display:none}
 li{flex-wrap:wrap}li>div:first-child{flex:1}#lb{position:fixed;inset:0;background:#000d;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999}
 #lb img{max-width:94vw;max-height:78vh;border-radius:8px}#lb div{display:flex;gap:10px}#lb button{padding:10px 18px}#lbDel{background:#f87171}#lbX{background:#e2e8f0}
-#liveph{display:none;margin-top:8px}</style></head><body><main>
+#liveph{display:none;margin-top:8px}select{padding:10px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:var(--tx);font-size:16px;width:100%}.mrow{display:flex;gap:8px;align-items:center;margin-bottom:10px}.mrow select{flex:1}#det{font-size:14px;margin:0 0 10px;color:#fde68a;display:none}#det button{padding:4px 10px;font-size:13px;margin-left:6px}.emo{font-size:28px;line-height:32px;text-align:center;filter:drop-shadow(0 0 2px #000)}.actsel{width:auto;padding:4px;font-size:13px}</style></head><body><main>
 <h1>🏃 Run-<span>Day</span></h1>
 <div class="card"><h2>Live GPS run</h2><p id="gmsg">Tap Start to track a run with GPS.</p>
-<div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas>
+<div class="mrow"><select id="mode" aria-label="Activity"></select></div><p id="det"></p><div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas>
 <div class="stats"><div class="stat"><small>Time</small><b id="gt">0:00</b></div><div class="stat"><small>Distance</small><b id="gd">0.00 mi</b></div>
 <div class="stat"><small>Current pace</small><b id="gc">—</b></div><div class="stat"><small>Avg pace</small><b id="ga">—</b></div></div>
 <div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div><div id="liveph"><label class="ph">📷 Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
 <div class="card"><h2>Log a run manually</h2><form id="f">
-<label class="full">Date<input type="date" id="d" required></label>
+<label class="full">Activity<select id="mm"></select></label><label class="full">Date<input type="date" id="d" required></label>
 <label>Distance (mi)<input type="number" id="m" step="0.01" min="0.01" required></label>
 <label>Time (mm:ss)<input id="t" placeholder="32:15" required></label>
 <div class="full" id="pace">Pace: —</div><button class="full">Save run</button></form></div>
-<div class="card"><h2>Weekly totals</h2><div id="weeks"></div></div>
+<div class="card"><h2>Totals by activity</h2><div id="modes"></div></div><div class="card"><h2>Weekly totals</h2><div id="weeks"></div></div>
 <div class="card"><h2>Runs</h2><ul id="list"></ul></div>
 </main><div id="lb"><img id="lbImg" alt="Run photo"><div><button id="lbDel">Delete photo</button><button id="lbX">Close</button></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 const K='runday.runs';let runs=JSON.parse(localStorage.getItem(K)||'[]');runs.forEach((r,i)=>{if(!r.id)r.id=Date.now()+i});
-const $=id=>document.getElementById(id);const ld=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('d').value=ld(new Date());
+const MODES={run:['Running','🏃'],walk:['Walking','🚶'],bike:['Biking','🚴'],ski:['Skiing','⛷️'],onewheel:['One-wheeling','🛞']};runs.forEach(r=>{if(!MODES[r.act])r.act='run'});
+const opts=Object.entries(MODES).map(([k,v])=>`<option value="${k}">${v[1]} ${v[0]}</option>`).join('');
+const $=id=>document.getElementById(id);const ld=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('d').value=ld(new Date());$('mode').innerHTML=$('mm').innerHTML=opts;$('mode').value=localStorage.getItem('runday.mode')||'run';$('mode').onchange=()=>{localStorage.setItem('runday.mode',$('mode').value);if(G){G.act=$('mode').value;G.userSet=true;setEmo()}};
 const secs=s=>{const p=s.trim().split(':').map(Number);if(p.some(isNaN)||!p.length||p.length>3)return 0;return p.reduce((a,b)=>a*60+b,0)};
 const fmt=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${x}`:`${m}:${x}`};
 const pace=(sec,mi)=>mi>0&&sec>0?fmt(sec/mi)+' /mi':'—';
 const upd=()=>$('pace').textContent='Pace: '+pace(secs($('t').value),+$('m').value);$('t').oninput=$('m').oninput=upd;
 const monday=ds=>{const d=new Date(ds+'T00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return ld(d)};
 function render(){localStorage.setItem(K,JSON.stringify(runs));runs.sort((a,b)=>b.date.localeCompare(a.date));
-$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div><b>${r.mi} mi</b>${r.gps?' 📍':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">📷 Add photos<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">🗺 Map</span>`:''}</div></div><button class="del" data-i="${i}">✕</button></li>`).join(''):'<li class="empty">No runs yet — log your first!</li>';
+$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div>${MODES[r.act][1]} <b>${r.mi} mi</b>${r.gps?' 📍':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)} · <select class="actsel" data-act="${r.id}" aria-label="Change activity">${opts.replace(`value="${r.act}"`,`value="${r.act}" selected`)}</select>${r.det&&r.det!==r.act?' (detected '+MODES[r.det][1]+')':''}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">📷 Add photos<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">🗺 Map</span>`:''}</div></div><button class="del" data-i="${i}">✕</button></li>`).join(''):'<li class="empty">No runs yet — log your first!</li>';
+const md={};runs.forEach(r=>{const o=md[r.act]=md[r.act]||{mi:0,sec:0,n:0};o.mi+=r.mi;o.sec+=r.sec;o.n++});
+$('modes').innerHTML=Object.keys(MODES).filter(k=>md[k]).map(k=>`<div class="wk"><span>${MODES[k][1]} ${MODES[k][0]}</span><span><b>${md[k].mi.toFixed(2)} mi</b> · ${md[k].n} time${md[k].n==1?'':'s'} · ${fmt(md[k].sec)}</span></div>`).join('')||'<div class="empty">No data yet</div>';
 const w={};runs.forEach(r=>{const k=monday(r.date);w[k]=w[k]||{mi:0,sec:0,n:0};w[k].mi+=r.mi;w[k].sec+=r.sec;w[k].n++});
-$('weeks').innerHTML=Object.keys(w).sort().reverse().map(k=>`<div class="wk"><span>Week of ${k}</span><span><b>${w[k].mi.toFixed(2)} mi</b> · ${w[k].n} run${w[k].n==1?'':'s'} · ${pace(w[k].sec,w[k].mi)}</span></div>`).join('')||'<div class="empty">No data yet</div>';setTimeout(loadThumbs)}
-$('f').onsubmit=e=>{e.preventDefault();const sec=secs($('t').value),mi=+$('m').value;if(!sec||!mi)return alert('Enter a valid time and distance');runs.push({id:Date.now(),date:$('d').value,mi,sec});$('f').reset();$('d').value=ld(new Date());upd();render()};
+$('weeks').innerHTML=Object.keys(w).sort().reverse().map(k=>`<div class="wk"><span>Week of ${k}</span><span><b>${w[k].mi.toFixed(2)} mi</b> · ${w[k].n} activit${w[k].n==1?'y':'ies'} · ${pace(w[k].sec,w[k].mi)}</span></div>`).join('')||'<div class="empty">No data yet</div>';setTimeout(loadThumbs)}
+$('f').onsubmit=e=>{e.preventDefault();const sec=secs($('t').value),mi=+$('m').value;if(!sec||!mi)return alert('Enter a valid time and distance');runs.push({id:Date.now(),date:$('d').value,mi,sec,act:$('mm').value});$('f').reset();$('d').value=ld(new Date());upd();render()};
 $('list').onclick=e=>{const ds=e.target.dataset;if(ds.i!=null&&confirm('Delete this run and its photos?')){const r=runs.splice(+ds.i,1)[0];delRunPhotos(r.id);render()}else if(ds.map)showRun(+ds.map);else if(ds.pid)openLb(+ds.pid)};
-$('list').onchange=e=>{const id=e.target.dataset.add;if(id)addPhotos(e.target.files,+id,null).then(()=>{e.target.value='';loadThumbs()})};
-if(location.hash==='#demo'&&!runs.length){runs=[{id:1,date:'2026-10-26',mi:3.1,sec:1650},{id:2,date:'2026-10-28',mi:5,sec:2790},{id:3,date:'2026-10-30',mi:2.5,sec:1320},{id:4,date:'2026-10-21',mi:4,sec:2280}]}
+$('list').onchange=e=>{const a=e.target.dataset.act;if(a){const r=runs.find(x=>x.id==a);if(r){r.act=e.target.value;render()}return}const id=e.target.dataset.add;if(id)addPhotos(e.target.files,+id,null).then(()=>{e.target.value='';loadThumbs()})};
+if(location.hash==='#demo'&&!runs.length){runs=[{id:1,date:'2026-10-26',mi:3.1,sec:1650,act:'run'},{id:2,date:'2026-10-28',mi:12,sec:2790,act:'bike'},{id:3,date:'2026-10-30',mi:2.5,sec:2700,act:'walk'},{id:4,date:'2026-10-21',mi:4,sec:2280,act:'run'},{id:5,date:'2026-10-29',mi:6,sec:1800,act:'onewheel'}]}
 render();
 // ---- Live GPS ----
-if(location.hash.startsWith('#sim')){let i=0,cb;const base=[40.015,-105.27];Object.defineProperty(navigator,'geolocation',{configurable:true,value:{watchPosition(ok){cb=ok;const t=setInterval(()=>{i++;const bad=i==5,jump=i==8;ok({coords:{latitude:base[0]+i*0.0002+(jump?0.05:0),longitude:base[1]+Math.sin(i/4)*0.0004,accuracy:bad?120:8},timestamp:1e12+i*5000})},300);return t},clearWatch(t){clearInterval(t)}}})}
+if(location.hash.startsWith('#sim')){const sp={walk:0.35,bike:1.8,onewheel:1.4,ski:2.2}[location.hash.split('-')[1]]||1,ski=location.hash.endsWith('-ski');let i=0,cb;const base=[40.015,-105.27];Object.defineProperty(navigator,'geolocation',{configurable:true,value:{watchPosition(ok){cb=ok;const t=setInterval(()=>{i++;const bad=i==5,jump=i==8;ok({coords:{latitude:base[0]+0.0002*sp*(ski?i-(i%10>6?(i%10-6)*0.9:0):i+(sp==1.8?Math.sin(i*1.7)*0.5:0))+(jump?0.05:0),longitude:base[1]+Math.sin(i/4)*0.0004*sp,accuracy:bad?120:8,altitude:ski?3000-i*8:1600+Math.sin(i/6)*3},timestamp:1e12+i*5000})},300);return t},clearWatch(t){clearInterval(t)}}})}
 const R=3958.8,hav=(a,b)=>{const r=x=>x*Math.PI/180,dl=r(b[0]-a[0]),dn=r(b[1]-a[1]),h=Math.sin(dl/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h))};
-let G=null,map=null,line=null,wake=null,tick=null;
+let emo=null;let G=null,map=null,line=null,wake=null,tick=null;
 const msg=(t,e)=>{$('gmsg').textContent=t;$('gmsg').className=e?'err':''};
 function initMap(){if(map||!window.L){if(!window.L){$('map').style.display='none';$('mapfb').style.display='block'}return}
-try{map=L.map('map',{zoomControl:false}).setView([40,-105],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);line=L.polyline([],{color:'#22c55e',weight:5}).addTo(map)}catch(e){map=null;$('map').style.display='none';$('mapfb').style.display='block'}}
+try{map=L.map('map',{zoomControl:false}).setView([40,-105],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);line=L.polyline([],{color:'#22c55e',weight:5}).addTo(map);map.on('zoomstart',()=>{})}catch(e){map=null;$('map').style.display='none';$('mapfb').style.display='block'}}
 function drawFb(){const c=$('mapfb'),x=c.getContext('2d'),p=G.pts;x.fillStyle='#0b1220';x.fillRect(0,0,c.width,c.height);if(p.length<2)return;
 const la=p.map(q=>q[0]),lo=p.map(q=>q[1]),a=Math.min(...la),b=Math.max(...la),m=Math.min(...lo),n=Math.max(...lo),sc=Math.min((c.width-20)/((n-m)||1e-9),(c.height-20)/((b-a)||1e-9));
-x.strokeStyle='#22c55e';x.lineWidth=4;x.beginPath();p.forEach((q,i)=>{const X=10+(q[1]-m)*sc,Y=c.height-10-(q[0]-a)*sc;i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke();x.fillStyle='#94a3b8';x.fillText('Map unavailable — route sketch',10,14)}
+x.strokeStyle='#22c55e';x.lineWidth=4;x.beginPath();p.forEach((q,i)=>{const X=10+(q[1]-m)*sc,Y=c.height-10-(q[0]-a)*sc;i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke();if(G.act){const q=p[p.length-1];x.font='24px sans-serif';x.fillText(MODES[G.act][1],10+(q[1]-m)*sc-12,c.height-10-(q[0]-a)*sc+8)}x.font='10px sans-serif';x.fillStyle='#94a3b8';x.fillText('Map unavailable — route sketch',10,14)}
+function detect(p){const sp=[];let down=0,up=0,hasAlt=0;for(let i=1;i<p.length;i++){const dt=(p[i][2]-p[i-1][2])/1000;if(dt<=0)continue;sp.push(hav(p[i-1],p[i])/dt*3600);if(p[i][3]!=null&&p[i-1][3]!=null){hasAlt=1;const da=p[i][3]-p[i-1][3];da<0?down-=da:up+=da}}
+if(sp.length<3)return null;const s=[...sp].sort((a,b)=>a-b),q=f=>s[Math.min(s.length-1,Math.floor(f*s.length))],med=q(.5),p90=q(.9),mean=sp.reduce((a,b)=>a+b,0)/sp.length,cv=Math.sqrt(sp.reduce((a,b)=>a+(b-mean)**2,0)/sp.length)/(mean||1),slow=sp.filter(v=>v<3).length/sp.length;
+if(hasAlt&&down>60&&down>3*up&&p90>12)return 'ski';if(p90>14&&cv>0.6&&slow>0.15)return 'ski';
+if(med<4.5)return 'walk';if(med<8.5)return 'run';if(cv<0.25&&p90<21)return 'onewheel';if(med<10.5)return 'run';return 'bike'}
+function setEmo(){if(!G||!G.pts.length)return;const l=G.pts[G.pts.length-1];if(map){const ic=L.divIcon({className:'emo',html:MODES[G.act][1],iconSize:[32,32],iconAnchor:[16,16]});if(!emo)emo=L.marker([l[0],l[1]],{icon:ic,zIndexOffset:1000}).addTo(map);else{emo.setLatLng([l[0],l[1]]);emo.setIcon(ic)}}else drawFb()}
+function showDet(){const d=detect(G.pts);G.det=d;const e=$('det');if(!d){e.style.display='none';return}e.style.display='block';e.innerHTML=d===G.act?`Looks like ${MODES[d][1]} ${MODES[d][0]} ✓`:`Looks like ${MODES[d][1]} ${MODES[d][0]}. <button id="useDet">Switch</button>`;const b=$('useDet');if(b)b.onclick=()=>{$('mode').value=d;$('mode').onchange()};if(!G.userSet&&G.pts.length>=8&&d!==G.act&&!G.autoDone){G.autoDone=true}}
 const elapsed=()=>G.acc+(G.since?Date.now()-G.since:0);
 function show(){const s=elapsed()/1000;$('gt').textContent=fmt(s);$('gd').textContent=G.dist.toFixed(2)+' mi';$('ga').textContent=pace(s,G.dist);
 const r=G.recent;if(r.length>1){const d=r.slice(1).reduce((t,q,i)=>t+hav(r[i],q),0),dt=(r[r.length-1][2]-r[0][2])/1000;$('gc').textContent=d>0.005?pace(dt,d):'—'}}
 async function lock(){try{if('wakeLock' in navigator){wake=await navigator.wakeLock.request('screen')}}catch(e){wake=null}}
 document.addEventListener('visibilitychange',()=>{if(G&&G.since&&document.visibilityState==='visible')lock()});
-function onPos(p){if(!G||!G.since)return;const c=p.coords,pt=[c.latitude,c.longitude,p.timestamp];
+function onPos(p){if(!G||!G.since)return;const c=p.coords,pt=[c.latitude,c.longitude,p.timestamp,c.altitude==null?null:Math.round(c.altitude)];
 if(c.accuracy>30){msg('Weak GPS signal (±'+Math.round(c.accuracy)+' m), waiting for a better fix…');return}
-const last=G.pts[G.pts.length-1];if(last&&!G.gap){const d=hav(last,pt),dt=Math.max((pt[2]-last[2])/1000,1);if(d/dt*3600>20){msg('Skipped a GPS jump.');return}if(d<0.002)return;G.dist+=d}
+const last=G.pts[G.pts.length-1];if(last&&!G.gap){const d=hav(last,pt),dt=Math.max((pt[2]-last[2])/1000,1);if(d/dt*3600>((G.act==='run'||G.act==='walk')&&(!G.det||G.det==='run'||G.det==='walk')&&G.pts.length>6?20:60)){msg('Skipped a GPS jump.');return}if(d<0.002)return;G.dist+=d}
 G.gap=false;G.pts.push(pt);G.recent.push(pt);while(G.recent.length>2&&pt[2]-G.recent[0][2]>30000)G.recent.shift();
-msg('Tracking… (±'+Math.round(c.accuracy)+' m)');if(map){line.addLatLng([pt[0],pt[1]]);map.setView([pt[0],pt[1]])}else drawFb();show()}
-function onErr(e){const t={1:'Location permission was denied. Allow location for this site in your browser settings to track runs.',2:'Can’t get a GPS fix right now. Try moving outside with a clear view of the sky.',3:'GPS is taking too long to respond. Still trying…'}[e.code]||'GPS error.';msg(t,e.code!==3);if(e.code===1)stop(false)}
+msg('Tracking… (±'+Math.round(c.accuracy)+' m)');if(map){line.addLatLng([pt[0],pt[1]]);map.setView([pt[0],pt[1]])}else drawFb();setEmo();if(G.pts.length%3==0)showDet();show()}
+function onErr(e){const t={1:'Location is blocked for this site. On iPhone: Settings > Privacy & Security > Location Services > Safari Websites > While Using the App, and Settings > Apps > Safari > Location > Ask. Then fully close Safari, reopen Run-Day and tap Start.',2:'Can’t get a GPS fix right now. Try moving outside with a clear view of the sky.',3:'GPS is taking too long to respond. Still trying…'}[e.code]||'GPS error.';msg(t,e.code!==3);if(e.code===1)stop(false)}
 function stop(save){if(!G)return;navigator.geolocation.clearWatch(G.w);clearInterval(tick);if(wake){wake.release().catch(()=>{});wake=null}
-const s=Math.round(elapsed()/1000);if(save){if(G.dist>=0.01){runs.push({id:G.id,date:ld(new Date()),mi:+G.dist.toFixed(2),sec:s,gps:true,route:G.pts.map(q=>[+q[0].toFixed(6),+q[1].toFixed(6),q[2]])});render();msg('Saved '+G.dist.toFixed(2)+' mi in '+fmt(s)+'.')}else msg('Run too short to save (under 0.01 mi).',true)}
-G=null;$('liveph').style.display='none';$('startB').disabled=false;$('pauseB').disabled=$('finB').disabled=true;$('pauseB').textContent='Pause'}
+const s=Math.round(elapsed()/1000);if(save){const det=detect(G.pts);if(G.dist>=0.01){runs.push({id:G.id,date:ld(new Date()),mi:+G.dist.toFixed(2),sec:s,gps:true,act:G.act,det:det||undefined,route:G.pts.map(q=>[+q[0].toFixed(6),+q[1].toFixed(6),q[2],q[3]])});render();msg('Saved '+MODES[G.act][1]+' '+G.dist.toFixed(2)+' mi in '+fmt(s)+'.'+(det&&det!==G.act?' Detected '+MODES[det][0]+' — change it in the list if that’s right.':''))}else msg('Run too short to save (under 0.01 mi).',true)}
+if(emo){emo.remove();emo=null}$('det').style.display='none';G=null;$('liveph').style.display='none';$('startB').disabled=false;$('pauseB').disabled=$('finB').disabled=true;$('pauseB').textContent='Pause'}
 $('startB').onclick=()=>{if(!('geolocation' in navigator)){msg('This device or browser has no GPS/location support.',true);return}
 if(!window.isSecureContext&&location.hash!=='#sim'){msg('GPS needs a secure page (https:// or localhost).',true);return}
-initMap();if(line)line.setLatLngs([]);G={id:Date.now(),pts:[],recent:[],dist:0,acc:0,since:Date.now()};msg('Getting GPS fix…');
+initMap();if(line)line.setLatLngs([]);G={id:Date.now(),pts:[],recent:[],dist:0,acc:0,since:Date.now(),act:$('mode').value};msg('Getting GPS fix…');
 G.w=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000});lock();tick=setInterval(show,1000);
 clearPins();$('liveThumbs').innerHTML='';$('liveph').style.display='block';$('startB').disabled=true;$('pauseB').disabled=$('finB').disabled=false;show()};
 $('pauseB').onclick=()=>{if(!G)return;if(G.since){G.acc+=Date.now()-G.since;G.since=0;G.gap=true;$('pauseB').textContent='Resume';msg('Paused.')}else{G.since=Date.now();G.recent=[];$('pauseB').textContent='Pause';msg('Tracking…');lock()}show()};
 $('finB').onclick=()=>stop(true);
-if(location.hash==='#simtest'){localStorage.clear();runs=[];render();setTimeout(()=>__test.start(),100);setTimeout(()=>__test.pause(),2500);setTimeout(()=>__test.pause(),3500);setTimeout(()=>{const g=G;document.title=JSON.stringify({pts:g.pts.length,dist:g.dist.toFixed(3),t:Math.round(elapsed()/1000),map:!!map});__test.finish();document.title+=' SAVED:'+JSON.stringify(runs.map(r=>[r.mi,r.sec,r.gps,r.route.length]))+' '+$('weeks').innerText},6000)}
+if(location.hash==='#simtest'){localStorage.clear();runs=[];render();setTimeout(()=>__test.start(),100);setTimeout(()=>__test.pause(),2500);setTimeout(()=>__test.pause(),3500);setTimeout(()=>{const g=G;document.title=JSON.stringify({pts:g.pts.length,dist:g.dist.toFixed(3),t:Math.round(elapsed()/1000),map:!!map,act:g.act,det:detect(g.pts),emo:!!emo});__test.finish();document.title+=' SAVED:'+JSON.stringify(runs.map(r=>[r.mi,r.sec,r.gps,r.route.length,r.act]))+' '+$('weeks').innerText},6000)}
 
 // ---- Photos (IndexedDB) ----
 let dbp=null;const db=()=>dbp||(dbp=new Promise((ok,no)=>{const q=indexedDB.open('runday',1);q.onupgradeneeded=()=>{const st=q.result.createObjectStore('photos',{keyPath:'id',autoIncrement:true});st.createIndex('run','runId')};q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)}));
@@ -109,7 +119,7 @@ async function liveThumbs(){const ps=await photosFor(G.id);$('liveThumbs').inner
 $('liveThumbs').onclick=e=>{if(e.target.dataset.pid)openLb(+e.target.dataset.pid)};
 $('livePhIn').onchange=async e=>{if(!G)return;const l=G.pts[G.pts.length-1];await addPhotos(e.target.files,G.id,l?[l[0],l[1]]:null);e.target.value='';liveThumbs()};
 async function showRun(id){if(G)return;const r=runs.find(x=>x.id===id);if(!r)return;initMap();const ps=await photosFor(id);clearPins();
-if(map){line.setLatLngs(r.route.map(q=>[q[0],q[1]]));ps.forEach(pin);if(r.route.length)map.fitBounds(line.getBounds(),{padding:[20,20]})}else{G={pts:r.route};drawFb();G=null}
-msg('Showing run from '+r.date+' ('+r.mi+' mi, '+ps.filter(p=>p.lat!=null).length+' photo pins).');$('map').scrollIntoView({behavior:'smooth'})}
-window.__test={photosFor,pins:()=>pins,start:()=>$('startB').click(),pause:()=>$('pauseB').click(),finish:()=>$('finB').click(),state:()=>G};
+if(emo){emo.remove();emo=null}if(map){line.setLatLngs(r.route.map(q=>[q[0],q[1]]));ps.forEach(pin);if(r.route.length)map.fitBounds(line.getBounds(),{padding:[20,20]})}else{G={pts:r.route,act:r.act};drawFb();G=null}
+msg('Showing '+MODES[r.act][0]+' from '+r.date+' ('+r.mi+' mi, '+ps.filter(p=>p.lat!=null).length+' photo pins).');$('map').scrollIntoView({behavior:'smooth'})}
+window.__test={photosFor,pins:()=>pins,start:()=>$('startB').click(),pause:()=>$('pauseB').click(),finish:()=>$('finB').click(),state:()=>G,detect,emo:()=>emo};
 </script></body></html>
