@@ -1,6 +1,8 @@
 # Run-Day — Notes
 
 ## Changelog
+- **v9 (2026-11-01)**: Coach, opened from Home, builds a run plan on this phone. Intensity and length chips, or a short note such as "easy 2 miles with hills", set the warm-up, main set, and cool-down. Pace targets use saved runs when they exist. Start this run shows the plan on the record screen. Chat history and saved plans stay in localStorage. No AI API, no account, and no payment. About shows Run-Day V9.
+
 - **v8 (2026-11-01)**: Home gains a weekly recap (Monday–Sunday miles, best day, and this week versus personal bests) and a Music section. Search and saved song names open `https://open.spotify.com/search/…`. A pasted `open.spotify.com` link opens directly. Start music on the record card uses the saved link, otherwise the first saved song. No Spotify account, API key, or payment. About shows Run-Day V8.
 
 - **v7 (2026-11-01)**: Visual redesign. Default surfaces are near-black (or off-white with the light toggle) with orange `#f07010` used sparingly. System sans type, quieter cards, line icons in the tab bar and activity controls, a creator-style profile header, and tighter copy. The background hue picker remains in Settings and only applies after it is changed. Saved activities, credits, shop items, and badges are unchanged. About shows Run-Day V7.
