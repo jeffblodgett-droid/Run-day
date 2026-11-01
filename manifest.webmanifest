@@ -1,12 +1,12 @@
 {
   "name": "Run-Day",
   "short_name": "Run-Day",
-  "description": "Log runs, walks, bikes, skis, and one-wheel rides.",
+  "description": "Record runs, walks, rides, and the month's miles. Stored on this phone.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#241445",
-  "theme_color": "#f07010",
+  "background_color": "#0e0e10",
+  "theme_color": "#0e0e10",
   "icons": [
     { "src": "favicon-32.png", "sizes": "32x32", "type": "image/png" },
     { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
