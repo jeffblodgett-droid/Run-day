@@ -3,9 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#f07010">
+<meta name="theme-color" content="#0e0e10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Run-Day">
-<script>try{var app=localStorage.getItem('runday.appearance')==='light'?'light':'dark';document.documentElement.dataset.theme=app;var t=JSON.parse(localStorage.getItem('runday.theme')||'null');var legacy=t&&t.h1===272&&t.h2===24&&t.gradient&&!t.custom;if(t&&t.custom&&!legacy){var L=app==='light'?96:8;document.documentElement.style.setProperty('--bg','hsl('+t.h1+' 18% '+L+'%)');document.documentElement.style.setProperty('--card','hsl('+t.h1+' 14% '+(L+4)+'%)');}}catch(e){}</script>
+<script>try{var app=localStorage.getItem('runday.appearance')==='light'?'light':'dark';document.documentElement.dataset.theme=app;var themeMeta=document.querySelector('meta[name="theme-color"]');if(themeMeta)themeMeta.setAttribute('content',app==='light'?'#f5f5f6':'#0e0e10');var t=JSON.parse(localStorage.getItem('runday.theme')||'null');var legacy=t&&t.h1===272&&t.h2===24&&t.gradient&&!t.custom;if(t&&t.custom&&!legacy){var L=app==='light'?96:8;document.documentElement.style.setProperty('--bg','hsl('+t.h1+' 18% '+L+'%)');document.documentElement.style.setProperty('--card','hsl('+t.h1+' 14% '+(L+4)+'%)');}}catch(e){}</script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
 :root{--bg:#0e0e10;--card:#17171a;--sink:#121214;--line:#2a2a2e;--acc:#f07010;--tx:#f4f4f5;--mu:#a1a1aa;--ink:#1a120c;--shadow:0 1px 2px rgba(0,0,0,.28),0 10px 28px rgba(0,0,0,.22)}
 html[data-theme="light"]{--bg:#f5f5f6;--card:#fff;--sink:#efeff1;--line:#e4e4e7;--tx:#18181b;--mu:#71717a;--shadow:0 1px 2px rgba(0,0,0,.04),0 10px 28px rgba(0,0,0,.06)}
@@ -199,6 +202,9 @@ main a{color:var(--mu);text-decoration:none}
 .planActs button{width:auto;padding:8px 12px;font-size:14px}
 #planGuide{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px}
 button,input,textarea{scroll-margin-bottom:96px}
+.weather{margin:0 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--sink)}
+.weather p{margin:0 0 8px}
+#weatherBtn{width:auto;padding:8px 12px;font-size:14px}
 .tag{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--mu);border:1px solid var(--line);border-radius:999px;padding:1px 6px}
 li{border-bottom:1px solid var(--line)}
 </style></head><body><main>
@@ -207,6 +213,7 @@ li{border-bottom:1px solid var(--line)}
 <div class="mrow"><select id="mode" aria-label="Activity"></select></div><div id="modePicks" class="picks"></div><p id="det"></p>
 <div class="stats"><div class="stat"><small>Time</small><b id="gt">0:00</b></div><div class="stat"><small>Distance</small><b id="gd">0.00 mi</b></div>
 <div class="stat"><small>Current pace</small><b id="gc">—</b></div><div class="stat"><small>Avg pace</small><b id="ga">—</b></div></div>
+<div id="weather" class="weather"><p id="weatherBody" class="hint">Check the air before you start.</p><button type="button" id="weatherBtn" class="ghost">Check weather</button></div>
 <div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div>
 <button type="button" id="startMusic" class="ghost">Start music</button>
 <div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas><div id="liveph"><label class="ph">Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
@@ -214,6 +221,7 @@ li{border-bottom:1px solid var(--line)}
 <div class="card"><h2>Today</h2><p id="streakLine"></p><p id="challengeLine"></p><p id="ghostNote" class="hint"></p></div>
 <div class="card" id="prCard"><h2>Streak &amp; personal bests</h2><div id="streak"></div><div id="prs"></div></div>
 <div class="card" id="weekCard"><h2>This week</h2><div id="weekRecap"></div></div>
+<div class="card" id="monthCard"><h2>This month</h2><p id="monthTitle"></p><div id="monthBar"></div><p id="monthMeta" class="hint"></p></div>
 <div class="card" id="musicCard"><h2>Music</h2><p class="hint">Opens in the Spotify app.</p><form id="musicSearch" class="musicRow"><input id="musicQ" placeholder="Song or artist" aria-label="Search Spotify" maxlength="80"><button type="submit">Search</button></form><ul id="playlist"></ul><form id="musicAdd" class="musicRow"><input id="songName" maxlength="80" placeholder="Add a song name" aria-label="Song name"><button type="submit" class="ghost">Save</button></form><form id="musicLink" class="musicRow"><input id="spotLink" placeholder="open.spotify.com link" aria-label="Spotify link"><button type="submit" class="ghost">Open</button></form></div>
 <div class="card"><h2>Family Quest</h2><p id="questLine"></p><div id="questBar"></div><p class="hint">Pair in Settings. The code is mileage totals only.</p></div>
 <div class="card"><h2>Island</h2><div id="world"></div></div><div class="card"><h2>Add manually</h2><form id="f">
@@ -237,6 +245,7 @@ li{border-bottom:1px solid var(--line)}
 <div class="card"><h2>Island</h2><div id="worldProfile"></div></div>
 <div class="card" id="recapCard"><h2>Recap</h2><div id="recap"></div></div>
 <div class="card" id="sportStats"><h2>Sport stats</h2><div id="sportBody"></div></div>
+<div class="card" id="monthHistory"><h2>Monthly challenges</h2><div id="monthList"></div></div>
 <div class="card" id="achCard"><h2>Achievements</h2><p class="empty" id="achHint">Earned from activities saved on this phone. Deleting an activity does not remove a badge.</p><p id="achProg" class="achprog">0/100</p><div id="achTabs" class="tabs" role="tablist"></div><select id="achFilter" aria-label="Filter achievements"></select><div id="achGrid"></div><div id="achDetail" hidden><div id="achDetailMedal"></div><h3 id="achDetailName"></h3><p id="achDetailRule"></p><p id="achDetailState"></p><button type="button" id="achShare" class="ghost" hidden>Share badge</button></div></div>
 <div class="card"><h2>Weekly totals</h2><div id="weeks"></div></div>
 <div class="card"><h2>Runs</h2><ul id="list"></ul></div>
@@ -245,13 +254,15 @@ li{border-bottom:1px solid var(--line)}
 <form id="nameForm" hidden><label class="full">Your name<input id="nameIn" maxlength="20" autocomplete="nickname" placeholder="Your name" aria-label="Username"></label><button type="submit">Save name</button><button type="button" id="nameCancel" class="ghost">Cancel</button><p id="nameErr" class="full" hidden></p></form>
 
 <div class="card"><h2>Voice</h2><p class="hint">Spoken updates never say where you are.</p><select id="voiceMode" aria-label="Voice"><option value="off">Off</option><option value="short">Short</option><option value="chatty">Chatty</option></select></div>
-<div class="card"><h2>Privacy</h2><p class="shield" id="shield">Your location never leaves this phone</p><label class="check"><input id="blurHome" type="checkbox"> Blur the start of routes on this phone</label><button type="button" id="openPrivacy">Privacy page</button></div>
+<div class="card"><h2>Privacy</h2><p class="shield" id="shield">Routes stay on this phone</p><label class="check"><input id="blurHome" type="checkbox"> Blur the start of routes on this phone</label><button type="button" id="openPrivacy">Privacy page</button></div>
 <div class="card"><h2>Family pairing</h2><p class="hint">Copy a code to another phone in your family. It has this month's mile totals only. No map, no places, no strangers.</p><button type="button" id="copyQuest">Copy code</button><textarea id="questOut" readonly aria-label="Your family code"></textarea><textarea id="questIn" placeholder="Paste a family code" aria-label="Paste a family code"></textarea><button type="button" id="applyQuest">Add miles</button><p id="questMsg" class="hint"></p></div>
-<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V10</p><p class="hint">Version V10. Stored on this phone. No account.</p></div><div class="card"><h2>Appearance</h2><div class="seg" id="appearance"><button type="button" data-app="dark">Dark</button><button type="button" data-app="light">Light</button></div></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
+<div class="card"><h2>Home Screen</h2><p class="hint">On iPhone: Share, then Add to Home Screen. After one visit, Run-Day opens offline.</p></div>
+<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V11</p><p class="hint">Version V11. Stored on this phone. No account.</p></div><div class="card"><h2>Appearance</h2><div class="seg" id="appearance"><button type="button" data-app="dark">Dark</button><button type="button" data-app="light">Light</button></div></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
 </section>
 <section id="page-privacy" class="page" hidden><div class="card"><h2>Privacy</h2>
-<p class="shield">Your location never leaves this phone.</p>
+<p class="shield">Routes stay on this phone.</p>
 <p>Run-Day does not have accounts, friends lists, or strangers. GPS is used only to measure your activity on this phone.</p>
+<p>Check weather sends a location to Open-Meteo only when you tap it. The forecast is not saved as a route or a place.</p>
 <p>Share cards show distance, time, pace, your name, and badges. They do not show a map or a starting place.</p>
 <p>Family codes copy mile totals for the month. They do not copy routes or places.</p>
 <p>Photos stay in this browser. Clearing site data removes them.</p>
@@ -365,6 +376,7 @@ const MODE_COLOR = {
   onewheel: ['#FACC15', 'one-wheel yellow'],
   moto: ['#F43F5E', 'motorcycle red'],
   escooter: ['#2DD4BF', 'scooter teal'],
+  month: ['#F07010', 'challenge orange'],
   combo: ['#F472B6', 'combo pink']
 };
 function medalDefs() {
@@ -674,7 +686,7 @@ function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<'
 function achById(id) { return Ach.ACH.find(a => a.id === id); }
 function paintBadges() {
   const have = loadBadges() || {};
-  const modes = [['run', 'Run'], ['walk', 'Walk'], ['bike', 'Bike'], ['ski', 'Ski'], ['onewheel', 'Wheel'], ['moto', 'Moto'], ['escooter', 'Scoot'], ['combo', 'Combos']];
+  const modes = [['run', 'Run'], ['walk', 'Walk'], ['bike', 'Bike'], ['ski', 'Ski'], ['onewheel', 'Wheel'], ['moto', 'Moto'], ['escooter', 'Scoot'], ['month', 'Months'], ['combo', 'Combos']];
   $('achTabs').innerHTML = modes.map(([k, label]) => {
     const all = Ach.ACH.filter(a => a.mode === k);
     const n = all.filter(a => have[a.id]).length;
@@ -792,7 +804,7 @@ function makeCard(opts) {
   x.fillStyle = '#94a3b8';
   x.font = '24px system-ui, sans-serif';
   x.fillText(username() || 'Run-Day', 360, 152);
-  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V10', 360, 236);
+  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V11', 360, 236);
   if (opts.medal) drawMedal(x, opts.medal, 360, 420, 96);
   else {
     x.font = '96px "Noto Color Emoji", sans-serif';
@@ -1018,7 +1030,8 @@ function modeSVG(mode) {
     ski: `<svg ${s}><circle cx="15" cy="5" r="1.5"/><path d="M13.6 7.4 11.4 12.6l3.2 2"/><path d="M8.5 10.2 15 12.2"/><path d="M4 19c5 1 9-.6 16-3.2"/><path d="M6 16.6c4.6.6 8-.5 13-2.2"/></svg>`,
     onewheel: `<svg ${s}><circle cx="12" cy="17.2" r="2.6"/><path d="M8.8 14.2h6.4l-.8-2H9.6z"/><path d="M12 12.2V8"/><circle cx="12" cy="6" r="1.5"/></svg>`,
     moto: `<svg ${s}><circle cx="5.6" cy="17.2" r="2.5"/><circle cx="18.2" cy="17.2" r="2.5"/><path d="M5.6 17.2h2.4l2-5.2h3.6l1.6 2.2 3 2.8"/><path d="M10.2 12h4.4"/><path d="M13.2 12 15.4 7.4h3.4"/><path d="M12.4 9.4h2.8"/></svg>`,
-    escooter: `<svg ${s}><circle cx="5.2" cy="18.2" r="1.7"/><circle cx="15.2" cy="18.2" r="1.7"/><path d="M5.2 18.2h10"/><path d="M13.2 18.2 16.4 5.6"/><path d="M13.6 5.6h5"/><path d="M16.4 9.2h2.4"/></svg>`
+    escooter: `<svg ${s}><circle cx="5.2" cy="18.2" r="1.7"/><circle cx="15.2" cy="18.2" r="1.7"/><path d="M5.2 18.2h10"/><path d="M13.2 18.2 16.4 5.6"/><path d="M13.6 5.6h5"/><path d="M16.4 9.2h2.4"/></svg>`,
+    month: `<svg ${s}><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3.5v4M16 3.5v4"/></svg>`
   };
   return art[mode] || art.run;
 }
@@ -1240,6 +1253,8 @@ function appearance() { return localStorage.getItem('runday.appearance') === 'li
 function applyTheme(t) {
   const mode = appearance();
   document.documentElement.dataset.theme = mode;
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute('content', mode === 'light' ? '#f5f5f6' : '#0e0e10');
   if (t && t.custom) {
     const h1 = clampHue(t.h1), h2 = clampHue(t.h2);
     const light = mode === 'light';
@@ -1310,7 +1325,7 @@ $('f').addEventListener('reset', () => setTimeout(paintPicks, 0));
 window.__v5 = { creditFor, credits: loadCredits, buy: buyItem, equip: equipItem, unequip: unequipItem, shop: loadShop, SHOP, setTheme: saveTheme, theme: loadTheme, modeSVG };
 
 
-const V6 = 'V10';
+const V6 = 'V11';
 function seasonActive(name, when) {
   const d = when || new Date();
   const m = d.getMonth(), day = d.getDate();
@@ -1790,7 +1805,7 @@ function paintHome() {
   paintStories();
   if ($('recap')) $('recap').innerHTML = recapHTML();
   const shield = $('shield');
-  if (shield) shield.textContent = 'Your location never leaves this phone';
+  if (shield) shield.textContent = 'Routes stay on this phone';
 }
 function showPage(name) {
   ['home', 'shop', 'profile', 'settings', 'privacy', 'coach'].forEach(p => {
@@ -2209,5 +2224,202 @@ onRoute();
 paintHome();
 paintShop();
 window.__v6 = { V6, exportQuestCode, importQuestCode, familyMiles, seasonActive, streakCount, todayChallenge, skiSummary, onewheelSummary, bestRoute, worldSVG, storyUnlocked, STORIES, voiceMode, pageFromHash, questReady, routeBits };
+
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+function monthGoal(ym) {
+  const p = String(ym || '').split('-').map(Number);
+  const year = p[0], month = p[1];
+  if (!year || month < 1 || month > 12) return null;
+  const n = year * 12 + (month - 1);
+  const miles = 20 + (n % 4) * 5;
+  const kinds = 2 + (n % 3);
+  return { ym: year + '-' + String(month).padStart(2, '0'), year, month, miles, kinds, title: MONTH_NAMES[month - 1] + ': ' + miles + ' miles' };
+}
+function monthStats(ym, rs) {
+  const list = (rs || runs).filter(r => String(r.date || '').slice(0, 7) === ym);
+  const miles = list.reduce((s, r) => s + (+r.mi || 0), 0);
+  const kinds = new Set(list.filter(r => (+r.mi || 0) > 0 && r.act).map(r => r.act));
+  return { miles, kinds: kinds.size, n: list.length };
+}
+function monthGoalMet(c, rs) {
+  if (!c || !c.ym) return false;
+  const s = monthStats(c.ym, rs);
+  return s.miles + 1e-6 >= c.miles && s.kinds >= c.kinds;
+}
+function monthBadge(ym) {
+  const g = monthGoal(ym);
+  if (!g) return null;
+  const tier = g.miles >= 35 ? 'gold' : g.miles >= 30 ? 'silver' : 'bronze';
+  const ring = { bronze: ['Bronze', '#E0A060', '#8C5A2B'], silver: ['Silver', '#E8EEF2', '#8A96A3'], gold: ['Gold', '#FFE56B', '#C4841D'] }[tier];
+  const name = MONTH_NAMES[g.month - 1] + ' ' + g.year;
+  return {
+    id: 'month-' + g.ym,
+    mode: 'month',
+    modeLabel: 'Month',
+    name,
+    emoji: '📅',
+    rule: 'Log ' + g.miles + ' miles in ' + name + ' across at least ' + g.kinds + ' activities.',
+    category: 'Month',
+    tier,
+    check: { type: 'monthGoal', ym: g.ym, miles: g.miles, kinds: g.kinds },
+    tierLabel: ring[0],
+    colors: ring[0] + ' ring (' + ring[1] + '–' + ring[2] + '), challenge orange center (#F07010)',
+    share: '{username} unlocked ' + name + ' on Run-Day.',
+    icon: '📅'
+  };
+}
+function installMonthBadges() {
+  const yms = [];
+  for (let y = 2026; y <= 2028; y++) for (let m = 1; m <= 12; m++) yms.push(y + '-' + String(m).padStart(2, '0'));
+  runs.forEach(r => {
+    const ym = String(r.date || '').slice(0, 7);
+    if (/^\d{4}-\d{2}$/.test(ym) && yms.indexOf(ym) < 0) yms.push(ym);
+  });
+  yms.forEach(ym => {
+    const b = monthBadge(ym);
+    if (b && !Ach.ACH.some(a => a.id === b.id)) Ach.ACH.push(b);
+  });
+}
+installMonthBadges();
+const metBeforeMonth = Ach.met;
+Ach.met = function (a, rs, photos) {
+  if (a.check && a.check.type === 'monthGoal') return monthGoalMet(a.check, rs);
+  return metBeforeMonth(a, rs, photos);
+};
+if (window.__ach) window.__ach.met = Ach.met;
+function monthRows() {
+  const now = new Date();
+  const current = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  const set = new Set([current]);
+  runs.forEach(r => {
+    const ym = String(r.date || '').slice(0, 7);
+    if (/^\d{4}-\d{2}$/.test(ym)) set.add(ym);
+  });
+  return [...set].filter(ym => monthGoal(ym)).sort().reverse();
+}
+function paintMonth() {
+  const now = new Date();
+  const current = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  const g = monthGoal(current);
+  const s = monthStats(current);
+  if ($('monthTitle') && g) $('monthTitle').textContent = g.title;
+  if ($('monthBar') && g) {
+    const pct = Math.max(0, Math.min(100, s.miles / g.miles * 100));
+    $('monthBar').innerHTML = `<div class="bar"><span style="width:${pct}%"></span></div>`;
+  }
+  if ($('monthMeta') && g) {
+    const done = monthGoalMet(g);
+    $('monthMeta').textContent = s.miles.toFixed(1) + ' / ' + g.miles + ' mi · ' + s.kinds + ' of ' + g.kinds + ' activities' + (done ? ' · done' : '');
+  }
+  if ($('monthList')) {
+    const rows = monthRows();
+    $('monthList').innerHTML = rows.length ? rows.map(ym => {
+      const goal = monthGoal(ym);
+      const st = monthStats(ym);
+      const done = monthGoalMet(goal);
+      const past = ym < current;
+      return `<div class="wk"><span>${esc(goal.title)}</span><span>${st.miles.toFixed(1)} / ${goal.miles} mi · ${st.kinds}/${goal.kinds} activities · ${done ? 'Done' : past ? 'Missed' : 'In progress'}</span></div>`;
+    }).join('') : '<div class="empty">No months yet.</div>';
+  }
+}
+const paintHomeV11 = paintHome;
+paintHome = function () { paintHomeV11(); paintMonth(); };
+paintMonth();
+
+function wearTip(w) {
+  const t = w.feels != null ? w.feels : w.temp;
+  const wet = (w.precip || 0) >= 0.01 || (w.code >= 51 && w.code <= 67) || (w.code >= 80 && w.code <= 82) || w.code >= 95;
+  const snow = w.code >= 71 && w.code <= 77;
+  let tip = 'Light clothes.';
+  if (snow || t < 32) tip = 'A warm layer and gloves.';
+  else if (wet) tip = 'A rain shell.';
+  else if (t < 50) tip = 'A jacket.';
+  else if (t < 65) tip = 'A light layer.';
+  if ((w.wind || 0) >= 15) tip += ' Wind is up, so a shell helps.';
+  return tip;
+}
+function loadWeatherCache() {
+  try { return JSON.parse(localStorage.getItem('runday.weather') || 'null'); } catch (e) { return null; }
+}
+function paintWeather(w) {
+  const body = $('weatherBody');
+  if (!body) return;
+  if (!w || w.temp == null) {
+    body.textContent = (w && w.error) || 'Check the air before you start.';
+    return;
+  }
+  body.innerHTML = `<b>${Math.round(w.temp)}°F</b>, feels ${Math.round(w.feels)}°F<br>Wind ${Math.round(w.wind)} mph · precip ${(+w.precip || 0).toFixed(2)} in<br>${esc(w.tip || '')}`;
+}
+function weatherFresh(w) {
+  return w && w.temp != null && w.at && Date.now() - w.at < 30 * 60 * 1000;
+}
+const cachedWeather = loadWeatherCache();
+if (weatherFresh(cachedWeather)) paintWeather(cachedWeather);
+function oncePosition() {
+  return new Promise((ok, no) => {
+    const geo = navigator.geolocation;
+    if (!geo) { no(new Error('no-geo')); return; }
+    const opts = { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 };
+    if (geo.getCurrentPosition) geo.getCurrentPosition(ok, no, opts);
+    else {
+      const id = geo.watchPosition(pos => { if (geo.clearWatch) geo.clearWatch(id); ok(pos); }, err => { if (geo.clearWatch) geo.clearWatch(id); no(err); }, opts);
+    }
+  });
+}
+async function checkWeather() {
+  const btn = $('weatherBtn');
+  if (btn) btn.disabled = true;
+  try {
+    const cached = loadWeatherCache();
+    if (weatherFresh(cached)) { paintWeather(cached); return; }
+    if (!navigator.geolocation) {
+      paintWeather({ error: 'This browser has no location, so weather stays blank. You can still record.' });
+      return;
+    }
+    paintWeather({ error: 'Checking weather…' });
+    let pos;
+    try { pos = await oncePosition(); }
+    catch (err) {
+      const denied = err && err.code === 1;
+      paintWeather({ error: denied ? 'Location is off for weather. You can still record.' : 'Weather needs a location fix. You can still record.' });
+      return;
+    }
+    const lat = Math.round(pos.coords.latitude * 100) / 100;
+    const lon = Math.round(pos.coords.longitude * 100) / 100;
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&forecast_days=1';
+    let data;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('bad');
+      data = await res.json();
+    } catch (e) {
+      paintWeather({ error: 'Weather did not load. You can still record.' });
+      return;
+    }
+    const cur = data && data.current;
+    if (!cur || cur.temperature_2m == null) {
+      paintWeather({ error: 'Weather did not load. You can still record.' });
+      return;
+    }
+    const w = {
+      at: Date.now(),
+      temp: cur.temperature_2m,
+      feels: cur.apparent_temperature,
+      wind: cur.wind_speed_10m,
+      precip: cur.precipitation,
+      code: cur.weather_code
+    };
+    w.tip = wearTip(w);
+    localStorage.setItem('runday.weather', JSON.stringify(w));
+    paintWeather(w);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+if ($('weatherBtn')) $('weatherBtn').onclick = () => { checkWeather(); };
+if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+window.__v11 = { monthGoal, monthStats, monthGoalMet, monthBadge, installMonthBadges, paintMonth, checkWeather, wearTip, V6 };
 
 </script></body></html>
