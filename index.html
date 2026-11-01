@@ -188,18 +188,29 @@ main a{color:var(--mu);text-decoration:none}
 .musicRow button{width:auto;padding:10px 14px}
 #playlist button{width:auto;padding:6px 10px;font-size:14px}
 #startMusic{width:100%;margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chips button{width:auto;padding:8px 12px;background:var(--sink);color:var(--tx);border:1px solid var(--line);font-size:14px}
+.chips button.on{border-color:var(--acc);color:var(--acc)}
+.chat{display:flex;flex-direction:column;gap:8px;margin:12px 0;max-height:460px;overflow:auto}
+.bubble{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--sink);max-width:100%}
+.bubble.me{align-self:flex-end;background:transparent}
+.bubble h3{margin:10px 0 4px;font-size:14px;font-weight:650}
+.planActs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.planActs button{width:auto;padding:8px 12px;font-size:14px}
+#planGuide{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px}
 button,input,textarea{scroll-margin-bottom:96px}
 .tag{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--mu);border:1px solid var(--line);border-radius:999px;padding:1px 6px}
 li{border-bottom:1px solid var(--line)}
 </style></head><body><main>
 <h1 class="brand"><img src="logo.png" alt="Run-Day" class="logo" width="280" height="280"></h1>
-<section id="page-home" class="page"><div class="card dash"><h2>Record</h2><p id="gmsg">Record distance and time with GPS.</p>
+<section id="page-home" class="page"><div class="card dash"><h2>Record</h2><p id="gmsg">Record distance and time with GPS.</p><div id="planGuide" hidden></div>
 <div class="mrow"><select id="mode" aria-label="Activity"></select></div><div id="modePicks" class="picks"></div><p id="det"></p>
 <div class="stats"><div class="stat"><small>Time</small><b id="gt">0:00</b></div><div class="stat"><small>Distance</small><b id="gd">0.00 mi</b></div>
 <div class="stat"><small>Current pace</small><b id="gc">—</b></div><div class="stat"><small>Avg pace</small><b id="ga">—</b></div></div>
 <div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div>
 <button type="button" id="startMusic" class="ghost">Start music</button>
 <div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas><div id="liveph"><label class="ph">Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
+<div class="card"><h2>Coach</h2><p class="hint">A run plan from your note and saved paces. Built on this phone.</p><a href="#coach">Open coach</a></div>
 <div class="card"><h2>Today</h2><p id="streakLine"></p><p id="challengeLine"></p><p id="ghostNote" class="hint"></p></div>
 <div class="card" id="prCard"><h2>Streak &amp; personal bests</h2><div id="streak"></div><div id="prs"></div></div>
 <div class="card" id="weekCard"><h2>This week</h2><div id="weekRecap"></div></div>
@@ -211,6 +222,13 @@ li{border-bottom:1px solid var(--line)}
 <label>Time (mm:ss)<input id="t" placeholder="32:15" required></label>
 <div class="full" id="pace">Pace: —</div><button class="full">Save</button></form></div>
 <div class="card"><h2>Totals by activity</h2><div id="modes"></div></div></section>
+<section id="page-coach" class="page" hidden><div class="card"><p class="hint"><a href="#home">Home</a></p><h2>Coach</h2><p class="hint">Plans stay on this phone. No account.</p>
+<div class="chips" id="coachIntensity"><button type="button" data-int="light">Light</button><button type="button" data-int="normal">Normal</button><button type="button" data-int="heavy">Heavy</button></div>
+<div class="chips" id="coachLength"><button type="button" data-len="1" data-unit="mi">1 mi</button><button type="button" data-len="2" data-unit="mi">2 mi</button><button type="button" data-len="3" data-unit="mi">3 mi</button><button type="button" data-len="5" data-unit="mi">5 mi</button><button type="button" data-len="15" data-unit="min">15 min</button><button type="button" data-len="30" data-unit="min">30 min</button><button type="button" data-len="45" data-unit="min">45 min</button></div>
+<div class="musicRow"><input id="coachCustom" type="number" min="0.25" step="0.25" placeholder="Custom" aria-label="Custom length"><select id="coachUnit" aria-label="Custom unit"><option value="mi">mi</option><option value="min">min</option></select></div>
+<div id="coachLog" class="chat"></div>
+<form id="coachForm" class="musicRow"><input id="coachMsg" maxlength="200" placeholder="easy 2 miles with hills" aria-label="Message to coach"><button type="submit">Send</button></form>
+<button type="button" id="coachClear" class="ghost">Clear chat</button></div></section>
 <section id="page-shop" class="page" hidden><div class="card" id="shopCard"><h2>Shop</h2><p class="hint">Credits stay in this app. Nothing here is a real purchase.</p><div id="shopTabs" class="tabs"></div><div id="shopGrid"></div></div>
 </section>
 <section id="page-profile" class="page" hidden><div class="card profileCard" id="profileCard"><div id="scene" class="scene empty"></div><div class="profileRow"><div id="avatarBox" class="avatar" aria-hidden="true"></div><div class="profileText"><div id="frameBox" class="nameplate"><p id="hello">Your name</p></div><p id="creditLine" class="credits">0 credits</p></div><a href="#settings" class="ghost" style="text-decoration:none;display:inline-block">Settings</a></div><div class="statrow" id="profileStats"></div></div>
@@ -229,7 +247,7 @@ li{border-bottom:1px solid var(--line)}
 <div class="card"><h2>Voice</h2><p class="hint">Spoken updates never say where you are.</p><select id="voiceMode" aria-label="Voice"><option value="off">Off</option><option value="short">Short</option><option value="chatty">Chatty</option></select></div>
 <div class="card"><h2>Privacy</h2><p class="shield" id="shield">Your location never leaves this phone</p><label class="check"><input id="blurHome" type="checkbox"> Blur the start of routes on this phone</label><button type="button" id="openPrivacy">Privacy page</button></div>
 <div class="card"><h2>Family pairing</h2><p class="hint">Copy a code to another phone in your family. It has this month's mile totals only. No map, no places, no strangers.</p><button type="button" id="copyQuest">Copy code</button><textarea id="questOut" readonly aria-label="Your family code"></textarea><textarea id="questIn" placeholder="Paste a family code" aria-label="Paste a family code"></textarea><button type="button" id="applyQuest">Add miles</button><p id="questMsg" class="hint"></p></div>
-<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V8</p><p class="hint">Version V8. Stored on this phone. No account.</p></div><div class="card"><h2>Appearance</h2><div class="seg" id="appearance"><button type="button" data-app="dark">Dark</button><button type="button" data-app="light">Light</button></div></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
+<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V9</p><p class="hint">Version V9. Stored on this phone. No account.</p></div><div class="card"><h2>Appearance</h2><div class="seg" id="appearance"><button type="button" data-app="dark">Dark</button><button type="button" data-app="light">Light</button></div></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
 </section>
 <section id="page-privacy" class="page" hidden><div class="card"><h2>Privacy</h2>
 <p class="shield">Your location never leaves this phone.</p>
@@ -772,7 +790,7 @@ function makeCard(opts) {
   x.fillStyle = '#94a3b8';
   x.font = '24px system-ui, sans-serif';
   x.fillText(username() || 'Run-Day', 360, 152);
-  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V8', 360, 236);
+  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V9', 360, 236);
   if (opts.medal) drawMedal(x, opts.medal, 360, 420, 96);
   else {
     x.font = '96px "Noto Color Emoji", sans-serif';
@@ -1288,7 +1306,7 @@ $('f').addEventListener('reset', () => setTimeout(paintPicks, 0));
 window.__v5 = { creditFor, credits: loadCredits, buy: buyItem, equip: equipItem, unequip: unequipItem, shop: loadShop, SHOP, setTheme: saveTheme, theme: loadTheme, modeSVG };
 
 
-const V6 = 'V8';
+const V6 = 'V9';
 function seasonActive(name, when) {
   const d = when || new Date();
   const m = d.getMonth(), day = d.getDate();
@@ -1755,7 +1773,7 @@ function paintHome() {
   if (shield) shield.textContent = 'Your location never leaves this phone';
 }
 function showPage(name) {
-  ['home', 'shop', 'profile', 'settings', 'privacy'].forEach(p => {
+  ['home', 'shop', 'profile', 'settings', 'privacy', 'coach'].forEach(p => {
     const el = document.getElementById('page-' + p);
     if (el) el.hidden = p !== name;
   });
@@ -1769,6 +1787,7 @@ function pageFromHash() {
   if (h === '#profile') return 'profile';
   if (h === '#settings') return 'settings';
   if (h === '#privacy') return 'privacy';
+  if (h === '#coach') return 'coach';
   return 'home';
 }
 function onRoute() { showPage(pageFromHash()); }
@@ -1915,7 +1934,196 @@ if ($('applyQuest')) $('applyQuest').onclick = () => {
   try { $('questMsg').textContent = importQuestCode($('questIn').value); }
   catch (e) { $('questMsg').textContent = 'That code could not be read.'; }
 };
+function coachPace() {
+  const list = runs.filter(r => r.act === 'run' && r.mi >= 0.25 && r.sec > 0);
+  if (!list.length) return null;
+  const recent = list.slice().sort((a, b) => String(b.date).localeCompare(String(a.date)) || (b.id || 0) - (a.id || 0))[0];
+  const best = list.reduce((a, b) => (b.sec / b.mi) < (a.sec / a.mi) ? b : a);
+  return { recent: recent.sec / recent.mi, best: best.sec / best.mi };
+}
+function parseCoachNote(text) {
+  const t = String(text || '').toLowerCase();
+  let intensity = null, kind = 'steady';
+  if (/\b(easy|light|recovery|jog)\b/.test(t)) intensity = 'light';
+  if (/\b(normal|steady|moderate)\b/.test(t)) intensity = intensity || 'normal';
+  if (/\b(hard|heavy|tempo|fast|race|push)\b/.test(t)) intensity = 'heavy';
+  if (/\b(intervals?|fartlek|repeats?)\b/.test(t)) kind = 'intervals';
+  if (/\bhills?\b/.test(t)) kind = kind === 'intervals' ? 'intervals' : 'hills';
+  let miles = null, minutes = null;
+  const km = t.match(/(\d+(?:\.\d+)?)\s*(?:km|kilometers?)\b/);
+  const mi = t.match(/(\d+(?:\.\d+)?)\s*(?:mi|miles?)\b/);
+  const mn = t.match(/(\d+(?:\.\d+)?)\s*(?:min|mins|minutes?)\b/);
+  if (km) miles = Math.round(+km[1] * 0.621371 * 100) / 100;
+  if (mi) miles = +mi[1];
+  if (mn) minutes = +mn[1];
+  return { intensity, kind, miles, minutes };
+}
+function coachSelection() {
+  const intensity = document.querySelector('#coachIntensity button.on');
+  const length = document.querySelector('#coachLength button.on');
+  const custom = parseFloat($('coachCustom') && $('coachCustom').value);
+  const unit = $('coachUnit') ? $('coachUnit').value : 'mi';
+  const sel = { intensity: intensity ? intensity.dataset.int : null, miles: null, minutes: null };
+  if (isFinite(custom) && custom > 0) {
+    if (unit === 'min') sel.minutes = custom; else sel.miles = custom;
+  } else if (length) {
+    if (length.dataset.unit === 'min') sel.minutes = +length.dataset.len;
+    else sel.miles = +length.dataset.len;
+  }
+  return sel;
+}
+function effortPace(intensity, paceCtx) {
+  if (!paceCtx) {
+    return intensity === 'light' ? 'easy effort' : intensity === 'heavy' ? 'comfortably hard' : 'steady effort';
+  }
+  const base = intensity === 'heavy' ? paceCtx.best : paceCtx.recent;
+  const add = intensity === 'light' ? 75 : intensity === 'heavy' ? 0 : 40;
+  const slow = intensity === 'light' ? 30 : intensity === 'heavy' ? 20 : 25;
+  const a = Math.max(360, base + add);
+  return pace(a, 1) + '–' + pace(a + slow, 1);
+}
+function makePlan(note, vary) {
+  const parsed = parseCoachNote(note);
+  const chips = coachSelection();
+  const intensity = parsed.intensity || chips.intensity;
+  const kind = parsed.kind || 'steady';
+  const miles = parsed.miles != null ? parsed.miles : chips.miles;
+  const minutes = parsed.minutes != null ? parsed.minutes : (parsed.miles != null ? null : chips.minutes);
+  if (!intensity || (miles == null && minutes == null)) {
+    return { ask: 'Say the intensity (light, normal, or heavy) and a length in miles or minutes. Example: easy 2 miles, or intervals 20 min.' };
+  }
+  const ctx = coachPace();
+  const effort = effortPace(intensity, ctx);
+  const label = intensity === 'light' ? 'Light' : intensity === 'heavy' ? 'Heavy' : 'Normal';
+  const byTime = miles == null;
+  const totalMin = byTime ? minutes : null;
+  const totalMi = byTime ? null : miles;
+  const warmMin = byTime ? Math.max(3, Math.round(totalMin * 0.15)) : null;
+  const coolMin = byTime ? Math.max(3, Math.round(totalMin * 0.1)) : null;
+  const warmMi = byTime ? null : Math.min(0.75, Math.max(0.15, Math.round(totalMi * 0.15 * 100) / 100));
+  const coolMi = byTime ? null : Math.min(0.5, Math.max(0.1, Math.round(totalMi * 0.1 * 100) / 100));
+  const mainMin = byTime ? Math.max(5, totalMin - warmMin - coolMin) : null;
+  const mainMi = byTime ? null : Math.max(0.2, Math.round((totalMi - warmMi - coolMi) * 100) / 100);
+  const n = 3 + ((vary || 0) % 3);
+  let main;
+  if (kind === 'intervals') {
+    main = byTime
+      ? n + ' × ' + Math.max(1, Math.round(mainMin / (n * 1.5))) + ' min at ' + effort + ', with easy jogging between.'
+      : n + ' × ' + (mainMi / n).toFixed(2) + ' mi at ' + effort + ', with easy jogging between.';
+  } else if (kind === 'hills') {
+    main = byTime
+      ? n + ' hill efforts of about ' + Math.max(1, Math.round(mainMin / (n * 2))) + ' min at ' + effort + ', walk or jog down to recover.'
+      : 'Hill efforts across ' + mainMi.toFixed(2) + ' mi at ' + effort + '. Recover on the way down.';
+  } else {
+    main = (byTime ? mainMin + ' min' : mainMi.toFixed(2) + ' mi') + ' continuous at ' + effort + '.';
+  }
+  const tip = ctx
+    ? (intensity === 'heavy' ? 'Your best recent pace is ' + pace(ctx.best, 1) + '. Stay just around it, not past it, on the hard parts.' : 'Recent pace ' + pace(ctx.recent, 1) + '. Keep the warm-up slower than that.')
+    : 'No saved run pace yet. Use effort: you should still speak in short sentences on the easy parts.';
+  return {
+    id: Date.now(),
+    intensity, kind, miles: totalMi, minutes: totalMin, note: String(note || '').trim(),
+    title: label + (kind === 'steady' ? '' : ' ' + kind) + (byTime ? ' · ' + totalMin + ' min' : ' · ' + totalMi + ' mi'),
+    warmup: byTime ? warmMin + ' min easy' : warmMi.toFixed(2) + ' mi easy',
+    main, cooldown: byTime ? coolMin + ' min easy' : coolMi.toFixed(2) + ' mi easy',
+    total: byTime ? totalMin + ' min' : totalMi + ' mi',
+    tip
+  };
+}
+function planHTML(plan) {
+  return `<div class="plan"><strong>${esc(plan.title)}</strong><h3>Warm-up</h3><p>${esc(plan.warmup)}</p><h3>Main set</h3><p>${esc(plan.main)}</p><h3>Cool-down</h3><p>${esc(plan.cooldown)}</p><p>Total ${esc(plan.total)}</p><p class="hint">${esc(plan.tip)}</p><div class="planActs"><button type="button" data-plan-start="${plan.id}">Start this run</button><button type="button" class="ghost" data-plan-save="${plan.id}">Save plan</button><button type="button" class="ghost" data-plan-redo="${plan.id}">Regenerate</button></div></div>`;
+}
+function loadChat() {
+  try {
+    const a = JSON.parse(localStorage.getItem('runday.coach') || '[]');
+    return Array.isArray(a) ? a.slice(-40) : [];
+  } catch (e) { return []; }
+}
+function saveChat(list) { localStorage.setItem('runday.coach', JSON.stringify(list.slice(-40))); }
+function paintChat() {
+  if (!$('coachLog')) return;
+  const list = loadChat();
+  $('coachLog').innerHTML = list.map(m => `<div class="bubble${m.role === 'me' ? ' me' : ''}">${m.plan ? planHTML(m.plan) : esc(m.text || '')}</div>`).join('') || '<p class="empty">Ask for a distance or a time.</p>';
+  $('coachLog').scrollTop = $('coachLog').scrollHeight;
+}
+function paintPlanGuide() {
+  const el = $('planGuide');
+  if (!el) return;
+  let plan = null;
+  try { plan = JSON.parse(localStorage.getItem('runday.activePlan') || 'null'); } catch (e) { plan = null; }
+  if (!plan || !plan.title) { el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+  el.innerHTML = `<strong>${esc(plan.title)}</strong><p>${esc(plan.warmup)} · ${esc(plan.main)} · ${esc(plan.cooldown)}</p><p class="hint">Total ${esc(plan.total)}. ${esc(plan.tip)}</p><button type="button" class="ghost" id="planClear">Dismiss plan</button>`;
+  const b = $('planClear');
+  if (b) b.onclick = () => { localStorage.removeItem('runday.activePlan'); paintPlanGuide(); };
+}
+function sendCoach(text, vary) {
+  const note = String(text || '').trim();
+  const chat = loadChat();
+  if (note) chat.push({ role: 'me', text: note });
+  const plan = makePlan(note, vary || 0);
+  if (plan.ask) chat.push({ role: 'coach', text: plan.ask });
+  else chat.push({ role: 'coach', plan });
+  saveChat(chat);
+  paintChat();
+}
 if ($('aboutVer')) $('aboutVer').textContent = 'Run-Day ' + V6;
+paintChat();
+paintPlanGuide();
+const paintHomeCoreV9 = paintHome;
+paintHome = function () { paintHomeCoreV9(); paintPlanGuide(); };
+if ($('coachIntensity')) $('coachIntensity').onclick = e => {
+  const b = e.target.closest('[data-int]');
+  if (!b) return;
+  $('coachIntensity').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+};
+if ($('coachLength')) $('coachLength').onclick = e => {
+  const b = e.target.closest('[data-len]');
+  if (!b) return;
+  $('coachLength').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  if ($('coachCustom')) $('coachCustom').value = '';
+};
+if ($('coachForm')) $('coachForm').onsubmit = e => {
+  e.preventDefault();
+  const chips = document.querySelector('#coachIntensity button.on') || document.querySelector('#coachLength button.on') || ($('coachCustom') && $('coachCustom').value);
+  const note = $('coachMsg').value.trim();
+  if (!note && !chips) { sendCoach(''); return; }
+  const sel = coachSelection();
+  const inten = document.querySelector('#coachIntensity button.on');
+  const chipNote = (inten ? inten.dataset.int + ' ' : '') + (sel.miles ? sel.miles + ' miles' : sel.minutes ? sel.minutes + ' min' : '');
+  sendCoach(note || chipNote);
+  $('coachMsg').value = '';
+};
+if ($('coachClear')) $('coachClear').onclick = () => { localStorage.removeItem('runday.coach'); paintChat(); };
+if ($('coachLog')) $('coachLog').onclick = e => {
+  const chat = loadChat();
+  const planOf = id => { const hit = chat.find(m => m.plan && String(m.plan.id) === String(id)); return hit && hit.plan; };
+  const start = e.target.closest('[data-plan-start]');
+  const save = e.target.closest('[data-plan-save]');
+  const redo = e.target.closest('[data-plan-redo]');
+  if (start) {
+    const plan = planOf(start.dataset.planStart);
+    if (!plan) return;
+    localStorage.setItem('runday.activePlan', JSON.stringify(plan));
+    location.hash = '#home';
+    paintPlanGuide();
+  }
+  if (save) {
+    const plan = planOf(save.dataset.planSave);
+    if (!plan) return;
+    let saved = [];
+    try { saved = JSON.parse(localStorage.getItem('runday.savedPlans') || '[]'); } catch (err) { saved = []; }
+    if (!saved.some(p => p.id === plan.id)) saved.push(plan);
+    localStorage.setItem('runday.savedPlans', JSON.stringify(saved.slice(-20)));
+    save.textContent = 'Saved';
+  }
+  if (redo) {
+    const hit = chat.find(m => m.plan && String(m.plan.id) === String(redo.dataset.planRedo));
+    const note = (hit && hit.plan && hit.plan.note) || '';
+    sendCoach(note, (hit && hit.plan ? 1 : 0) + Math.floor(Math.random() * 2) + 1);
+  }
+};
+window.__v9 = { parseCoachNote, makePlan, loadChat };
 paintPlaylist();
 if ($('musicSearch')) $('musicSearch').onsubmit = e => { e.preventDefault(); openSpotifySearch($('musicQ').value); };
 if ($('musicAdd')) $('musicAdd').onsubmit = e => {
