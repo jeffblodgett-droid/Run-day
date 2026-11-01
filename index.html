@@ -183,6 +183,12 @@ main a{color:var(--mu);text-decoration:none}
 .seg button.on{background:var(--acc);color:var(--ink);border-color:var(--acc)}
 .frame-loop,.frame-glow,.frame-stars,.frame-zap,.frame-hearts,.frame-dots,.frame-double,.frame-ticket,.frame-crown{background:transparent;color:var(--tx)}
 .frame-rainbow{background:transparent;border:1px solid var(--acc)}
+.musicRow{display:flex;gap:8px;margin:8px 0}
+.musicRow input{flex:1}
+.musicRow button{width:auto;padding:10px 14px}
+#playlist button{width:auto;padding:6px 10px;font-size:14px}
+#startMusic{width:100%;margin-top:8px}
+button,input,textarea{scroll-margin-bottom:96px}
 .tag{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--mu);border:1px solid var(--line);border-radius:999px;padding:1px 6px}
 li{border-bottom:1px solid var(--line)}
 </style></head><body><main>
@@ -192,9 +198,12 @@ li{border-bottom:1px solid var(--line)}
 <div class="stats"><div class="stat"><small>Time</small><b id="gt">0:00</b></div><div class="stat"><small>Distance</small><b id="gd">0.00 mi</b></div>
 <div class="stat"><small>Current pace</small><b id="gc">—</b></div><div class="stat"><small>Avg pace</small><b id="ga">—</b></div></div>
 <div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div>
+<button type="button" id="startMusic" class="ghost">Start music</button>
 <div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas><div id="liveph"><label class="ph">Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
 <div class="card"><h2>Today</h2><p id="streakLine"></p><p id="challengeLine"></p><p id="ghostNote" class="hint"></p></div>
 <div class="card" id="prCard"><h2>Streak &amp; personal bests</h2><div id="streak"></div><div id="prs"></div></div>
+<div class="card" id="weekCard"><h2>This week</h2><div id="weekRecap"></div></div>
+<div class="card" id="musicCard"><h2>Music</h2><p class="hint">Opens in the Spotify app.</p><form id="musicSearch" class="musicRow"><input id="musicQ" placeholder="Song or artist" aria-label="Search Spotify" maxlength="80"><button type="submit">Search</button></form><ul id="playlist"></ul><form id="musicAdd" class="musicRow"><input id="songName" maxlength="80" placeholder="Add a song name" aria-label="Song name"><button type="submit" class="ghost">Save</button></form><form id="musicLink" class="musicRow"><input id="spotLink" placeholder="open.spotify.com link" aria-label="Spotify link"><button type="submit" class="ghost">Open</button></form></div>
 <div class="card"><h2>Family Quest</h2><p id="questLine"></p><div id="questBar"></div><p class="hint">Pair in Settings. The code is mileage totals only.</p></div>
 <div class="card"><h2>Island</h2><div id="world"></div></div><div class="card"><h2>Add manually</h2><form id="f">
 <label class="full">Activity<select id="mm"></select></label><div id="logPicks" class="picks full"></div><label class="full">Date<input type="date" id="d" required></label>
@@ -220,7 +229,7 @@ li{border-bottom:1px solid var(--line)}
 <div class="card"><h2>Voice</h2><p class="hint">Spoken updates never say where you are.</p><select id="voiceMode" aria-label="Voice"><option value="off">Off</option><option value="short">Short</option><option value="chatty">Chatty</option></select></div>
 <div class="card"><h2>Privacy</h2><p class="shield" id="shield">Your location never leaves this phone</p><label class="check"><input id="blurHome" type="checkbox"> Blur the start of routes on this phone</label><button type="button" id="openPrivacy">Privacy page</button></div>
 <div class="card"><h2>Family pairing</h2><p class="hint">Copy a code to another phone in your family. It has this month's mile totals only. No map, no places, no strangers.</p><button type="button" id="copyQuest">Copy code</button><textarea id="questOut" readonly aria-label="Your family code"></textarea><textarea id="questIn" placeholder="Paste a family code" aria-label="Paste a family code"></textarea><button type="button" id="applyQuest">Add miles</button><p id="questMsg" class="hint"></p></div>
-<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V7</p><p class="hint">Version V7. Stored on this phone. No account.</p></div><div class="card"><h2>Appearance</h2><div class="seg" id="appearance"><button type="button" data-app="dark">Dark</button><button type="button" data-app="light">Light</button></div></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
+<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V8</p><p class="hint">Version V8. Stored on this phone. No account.</p></div><div class="card"><h2>Appearance</h2><div class="seg" id="appearance"><button type="button" data-app="dark">Dark</button><button type="button" data-app="light">Light</button></div></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
 </section>
 <section id="page-privacy" class="page" hidden><div class="card"><h2>Privacy</h2>
 <p class="shield">Your location never leaves this phone.</p>
@@ -763,7 +772,7 @@ function makeCard(opts) {
   x.fillStyle = '#94a3b8';
   x.font = '24px system-ui, sans-serif';
   x.fillText(username() || 'Run-Day', 360, 152);
-  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V7', 360, 236);
+  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V8', 360, 236);
   if (opts.medal) drawMedal(x, opts.medal, 360, 420, 96);
   else {
     x.font = '96px "Noto Color Emoji", sans-serif';
@@ -1279,7 +1288,7 @@ $('f').addEventListener('reset', () => setTimeout(paintPicks, 0));
 window.__v5 = { creditFor, credits: loadCredits, buy: buyItem, equip: equipItem, unequip: unequipItem, shop: loadShop, SHOP, setTheme: saveTheme, theme: loadTheme, modeSVG };
 
 
-const V6 = 'V7';
+const V6 = 'V8';
 function seasonActive(name, when) {
   const d = when || new Date();
   const m = d.getMonth(), day = d.getDate();
@@ -1631,6 +1640,69 @@ function recapHTML() {
   }).join('<br>');
   return `<p><b>This week</b><br>${line('week', w1, w0)}</p><p><b>This month</b><br>${line('month', m1, m0)}</p><p class="hint">${esc(funFact())}</p>`;
 }
+function paintWeekRecap() {
+  if (!$('weekRecap')) return;
+  const start = monday(ld(new Date()));
+  const endD = new Date(start + 'T00:00');
+  endD.setDate(endD.getDate() + 6);
+  const end = ld(endD);
+  const week = runs.filter(r => r.date >= start && r.date <= end);
+  if (!week.length) { $('weekRecap').innerHTML = '<p class="empty">No miles yet this week.</p>'; return; }
+  const total = week.reduce((s, r) => s + (+r.mi || 0), 0);
+  const byDay = {};
+  week.forEach(r => { byDay[r.date] = (byDay[r.date] || 0) + (+r.mi || 0); });
+  const bestDay = Object.entries(byDay).sort((a, b) => b[1] - a[1])[0];
+  const fast = k => k === 'bike' || k === 'ski' || k === 'onewheel';
+  const lines = Object.keys(MODES).map(k => {
+    const all = runs.filter(r => r.act === k && r.mi > 0 && r.sec > 0);
+    const wk = week.filter(r => r.act === k && r.mi > 0 && r.sec > 0);
+    if (!wk.length) return '';
+    const farW = wk.reduce((a, b) => b.mi > a.mi ? b : a);
+    const farA = all.reduce((a, b) => b.mi > a.mi ? b : a);
+    const qW = wk.filter(r => r.mi >= 0.25), qA = all.filter(r => r.mi >= 0.25);
+    let paceBit = '';
+    if (qW.length && qA.length) {
+      const bpW = qW.reduce((a, b) => (b.sec / b.mi) < (a.sec / a.mi) ? b : a);
+      const bpA = qA.reduce((a, b) => (b.sec / b.mi) < (a.sec / a.mi) ? b : a);
+      paceBit = fast(k)
+        ? ` · ${(bpW.mi / (bpW.sec / 3600)).toFixed(1)} mph vs PB ${(bpA.mi / (bpA.sec / 3600)).toFixed(1)}`
+        : ` · ${pace(bpW.sec, bpW.mi)} vs PB ${pace(bpA.sec, bpA.mi)}`;
+    }
+    return `<div class="wk"><span>${MODES[k][0]}</span><span>${farW.mi.toFixed(2)} mi vs PB ${farA.mi.toFixed(2)}${paceBit}</span></div>`;
+  }).filter(Boolean).join('');
+  $('weekRecap').innerHTML = `<div class="wk"><span>Miles</span><span><b>${total.toFixed(2)} mi</b></span></div><div class="wk"><span>Best day</span><span>${bestDay[0]} · <b>${bestDay[1].toFixed(2)} mi</b></span></div>${lines}`;
+}
+function loadPlaylist() {
+  try {
+    const a = JSON.parse(localStorage.getItem('runday.playlist') || '[]');
+    return Array.isArray(a) ? a.filter(s => typeof s === 'string' && s.trim()).map(s => s.trim()).slice(0, 30) : [];
+  } catch (e) { return []; }
+}
+function savePlaylist(list) { localStorage.setItem('runday.playlist', JSON.stringify(list.slice(0, 30))); }
+function spotifyHref(raw) {
+  try {
+    const u = new URL(String(raw || '').trim());
+    if (u.protocol !== 'https:' || u.hostname !== 'open.spotify.com') return '';
+    return u.href;
+  } catch (e) { return ''; }
+}
+function openSpotifySearch(q) {
+  const query = String(q || '').trim();
+  if (!query) return;
+  window.open('https://open.spotify.com/search/' + encodeURIComponent(query), '_blank', 'noopener');
+}
+function startMusic() {
+  const link = spotifyHref($('spotLink') ? $('spotLink').value : '') || spotifyHref(localStorage.getItem('runday.spotifyLink') || '');
+  if (link) { window.open(link, '_blank', 'noopener'); return; }
+  const list = loadPlaylist();
+  openSpotifySearch(list[0] || 'workout');
+}
+function paintPlaylist() {
+  if (!$('playlist')) return;
+  const list = loadPlaylist();
+  $('playlist').innerHTML = list.length ? list.map((name, i) => `<li><span>${esc(name)}</span><span><button type="button" data-play="${i}">Play</button> <button type="button" class="ghost" data-drop="${i}">Remove</button></span></li>`).join('') : '<li class="empty">No saved songs.</li>';
+  if ($('spotLink') && !$('spotLink').value) $('spotLink').value = localStorage.getItem('runday.spotifyLink') || '';
+}
 function paintPRs() {
   if (!$('streak') || !$('prs')) return;
   const live = streakCount();
@@ -1659,6 +1731,7 @@ function paintPRs() {
 function paintHome() {
   if ($('streakLine')) $('streakLine').textContent = 'Streak: ' + streakCount() + ' day' + (streakCount() === 1 ? '' : 's') + ' · freezes left ' + freezeCount();
   paintPRs();
+  paintWeekRecap();
   const ch = todayChallenge();
   if ($('challengeLine')) $('challengeLine').textContent = (ch.done ? 'Done: ' : 'Today: ') + ch.text;
   const fam = familyMiles();
@@ -1843,6 +1916,35 @@ if ($('applyQuest')) $('applyQuest').onclick = () => {
   catch (e) { $('questMsg').textContent = 'That code could not be read.'; }
 };
 if ($('aboutVer')) $('aboutVer').textContent = 'Run-Day ' + V6;
+paintPlaylist();
+if ($('musicSearch')) $('musicSearch').onsubmit = e => { e.preventDefault(); openSpotifySearch($('musicQ').value); };
+if ($('musicAdd')) $('musicAdd').onsubmit = e => {
+  e.preventDefault();
+  const name = $('songName').value.trim().slice(0, 80);
+  if (!name) return;
+  const list = loadPlaylist();
+  if (!list.includes(name)) list.push(name);
+  savePlaylist(list);
+  $('songName').value = '';
+  paintPlaylist();
+};
+if ($('playlist')) $('playlist').onclick = e => {
+  const play = e.target.closest('[data-play]');
+  const drop = e.target.closest('[data-drop]');
+  const list = loadPlaylist();
+  if (play) openSpotifySearch(list[+play.dataset.play]);
+  if (drop) { list.splice(+drop.dataset.drop, 1); savePlaylist(list); paintPlaylist(); }
+};
+if ($('musicLink')) $('musicLink').onsubmit = e => {
+  e.preventDefault();
+  const href = spotifyHref($('spotLink').value);
+  if (!href) { $('spotLink').setCustomValidity('Use an https://open.spotify.com link'); $('spotLink').reportValidity(); return; }
+  $('spotLink').setCustomValidity('');
+  localStorage.setItem('runday.spotifyLink', href);
+  window.open(href, '_blank', 'noopener');
+};
+if ($('startMusic')) $('startMusic').onclick = () => startMusic();
+window.__v8 = { paintWeekRecap, openSpotifySearch, spotifyHref, loadPlaylist, startMusic };
 document.querySelectorAll('#tabbar a').forEach(a => { a.addEventListener('click', () => setTimeout(onRoute, 0)); });
 onRoute();
 paintHome();
