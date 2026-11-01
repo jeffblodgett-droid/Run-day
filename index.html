@@ -1,19 +1,12 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Run-Day</title>
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#f07010">
-<meta name="apple-mobile-web-app-title" content="Run-Day">
-<script>try{var t=JSON.parse(localStorage.getItem('runday.theme')||'null');if(t&&typeof t.h1==='number'){document.documentElement.style.setProperty('--bg','hsl('+t.h1+' 58% 14%)');document.documentElement.style.setProperty('--card','hsl('+t.h1+' 42% 20%)');}}catch(e){}</script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
-:root{--bg:#241445;--card:#321c58;--acc:#f07010;--purple:#9b50e0;--tx:#f8f1ff;--mu:#d9ccea;--ink:#2a1208}
+:root{--bg:#0f172a;--card:#1e293b;--acc:#22c55e;--tx:#e2e8f0;--mu:#94a3b8}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx)}
 main{max-width:520px;margin:auto;padding:16px}h1{margin:8px 0 16px;font-size:28px}h1 span{color:var(--acc)}
 .card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px}h2{font-size:16px;margin:0 0 10px;color:var(--mu)}
 form{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{min-width:0;font-size:12px;color:var(--mu);display:flex;flex-direction:column;gap:4px}
 input{width:100%;min-width:0;padding:10px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:var(--tx);font-size:16px}
-.full{grid-column:1/-1}button{background:var(--acc);color:var(--ink);border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px}
+.full{grid-column:1/-1}button{background:var(--acc);color:#052e16;border:0;border-radius:8px;padding:12px;font-weight:700;font-size:16px}
 #pace{font-size:14px;color:var(--acc)}ul{list-style:none;padding:0;margin:0}li{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #334155}
 li small{color:var(--mu)}.del{background:none;color:#f87171;padding:4px 8px;font-size:18px}
 .wk{display:flex;justify-content:space-between;padding:6px 0}.empty{color:var(--mu)}
@@ -36,14 +29,14 @@ button.ghost{background:#334155;color:var(--tx);padding:8px 12px;font-size:14px;
 #achHint{margin:-4px 0 8px}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 button.tab{background:#334155;color:var(--tx);padding:7px 10px;font-size:13px;border-radius:999px;width:auto}
-button.tab.on{background:var(--acc);color:var(--ink)}
+button.tab.on{background:var(--acc);color:#052e16}
 #achFilter{margin-bottom:10px}
 #achGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-height:460px;overflow:auto;padding:2px}
 .badge{background:#0b1220;border-radius:12px;padding:4px 4px 6px;text-align:center;min-width:0}
 button.badgeMain{background:transparent;color:var(--tx);padding:2px;font-size:10px;font-weight:700;line-height:1.15;width:100%;border-radius:10px}
 button.badgeMain small{display:block;color:var(--mu);font-size:10px;font-weight:600;margin-top:2px}
 button.badgeMain.on{outline:2px solid var(--acc)}
-button.miniShare{background:var(--acc);color:var(--ink);padding:3px 6px;font-size:10px;border-radius:999px;margin-top:4px}
+button.miniShare{background:var(--acc);color:#052e16;padding:3px 6px;font-size:10px;border-radius:999px;margin-top:4px}
 .badge svg{width:52px;height:52px;display:block;margin:0 auto}
 .badge.locked{opacity:.78}
 #achDetail{margin-top:12px;background:#0b1220;border-radius:12px;padding:12px;text-align:center}
@@ -61,125 +54,42 @@ button.miniShare{background:var(--acc);color:var(--ink);padding:3px 6px;font-siz
 #shareNote{font-size:12px;color:var(--mu)}
 #celeMedal svg{width:96px;height:96px}
 @media(max-width:380px){#achGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-
-h1.brand{text-align:center;margin:4px 0 12px}
-.logo{width:min(240px,78%);height:auto;display:block;margin:0 auto;background:#fff;border-radius:28px}
-.profileCard{position:relative;overflow:hidden}
-.scene{border-radius:12px;margin:0 0 10px}
-.scene svg{width:100%;height:88px;display:block;border-radius:12px}
-.scene.empty{display:none}
-.profileRow{display:flex;align-items:center;gap:10px}
-.avatar{width:72px;height:72px;border-radius:50%;background:#3a2158;flex:none;overflow:hidden;box-shadow:0 0 0 3px #fff6}
-.avatar svg,.shopArt svg{width:72px;height:72px;display:block}
-.profileText{flex:1;min-width:0}
-.nameplate{display:inline-block;max-width:100%;padding:4px 10px;border-radius:14px}
-#hello{color:#f8f1ff}
-.credits{margin:4px 0 0;font-weight:800;color:var(--acc);font-size:14px}
-.picks{display:flex;gap:6px;margin:0 0 10px}
-button.pick{background:#241433;color:var(--tx);padding:4px;border-radius:12px;border:2px solid transparent;width:auto}
-button.pick.on{border-color:var(--acc);background:#4a2870}
-button.pick svg,.micon svg,.micon-map svg{width:34px;height:34px;display:block}
-.micon{display:inline-flex;vertical-align:middle;margin-right:4px}
-.micon svg{width:22px;height:22px}
-.emo{background:transparent !important;border:0 !important}
-.micon-map svg{width:40px;height:40px;filter:drop-shadow(0 1px 1px #000)}
-.frame-loop{box-shadow:0 0 0 3px #f07010;background:#2a1408}
-.frame-glow{box-shadow:0 0 0 3px #b06bff,0 0 14px #b06bff;background:#2a1840}
-.frame-stars{border:3px dashed #f6e27a;background:#2a1840}
-.frame-rainbow{border:3px solid transparent;background:linear-gradient(#2a1408,#2a1408) padding-box,linear-gradient(90deg,#f07010,#f6e27a,#9b50e0) border-box}
-.frame-zap{border:3px solid #f07010;background:#2a1408;box-shadow:4px 4px 0 #9b50e0}
-.frame-hearts{box-shadow:0 0 0 3px #e2558a;background:#3a1428}
-.frame-dots{border:3px dotted #f07010;background:#2a1408;box-shadow:0 0 0 6px #9b50e088}
-.frame-double{box-shadow:0 0 0 3px #f07010,0 0 0 6px #9b50e0;background:#241433}
-.frame-ticket{border:3px solid #f6e27a;border-radius:4px 16px;background:#2a1840}
-.frame-crown{box-shadow:0 0 0 3px #f6b13a;background:#2a1840;border-top:6px solid #f07010}
-#shopGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:520px;overflow:auto}
-.shopItem{background:#140c22;border-radius:12px;padding:8px;text-align:center}
-.shopItem h3{margin:6px 0 2px;font-size:14px;color:var(--tx)}
-.shopItem p{margin:0 0 6px;color:var(--mu);font-size:12px}
-.shopArt{min-height:64px;display:grid;place-items:center}
-.shopArt .nameplate span{font-weight:800}
-.price{color:var(--acc) !important;font-weight:800}
-.shopItem button{width:100%;padding:8px;font-size:14px}
-.swatches{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-button.swatch{width:28px;height:28px;border-radius:50%;padding:0;border:2px solid #fff6}
-#gradBox{display:grid;gap:8px;margin-top:8px}
-#hue1,#hue2{padding:0;height:28px;background:transparent;border:0}
-.hint{font-size:12px;color:var(--mu);margin:0 0 8px}
-button:disabled{opacity:.45}
-@media(max-width:380px){#shopGrid{grid-template-columns:1fr}}
-
-main{padding-bottom:88px}
-.logo{width:min(150px,46%)}
-#tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;background:#140c22;border-top:1px solid #ffffff22;padding-bottom:6px}
-#tabbar a{flex:1;text-align:center;text-decoration:none;color:#d9ccea;font-size:12px;font-weight:800;padding:10px 2px}
-#tabbar a.on{color:#f07010}
-.bar{height:10px;background:#140c22;border-radius:99px;overflow:hidden}
-.bar span{display:block;height:100%;background:linear-gradient(90deg,#9b50e0,#f07010)}
-.island{width:100%;height:auto;background:#16324a;border-radius:12px}
-.story{background:#140c22;border-radius:12px;padding:8px;margin:8px 0}
-.story.locked{opacity:.7}
-.story h3{margin:0 0 4px;font-size:15px;color:var(--tx);display:flex;align-items:center;gap:6px}
-.shield{font-weight:800;color:#f6e27a}
-.ghost{font-size:26px;text-align:center}
-textarea{width:100%;min-height:72px}
 </style></head><body><main>
-<h1 class="brand"><img src="logo.png" alt="Run-Day" class="logo" width="280" height="280"></h1>
-<section id="page-home" class="page"><div class="card"><h2>Live GPS run</h2><p id="gmsg">Tap Start to track a run with GPS.</p>
-<div class="mrow"><select id="mode" aria-label="Activity"></select></div><div id="modePicks" class="picks"></div><p id="det"></p><div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas>
+<h1>🏃 Run-<span>Day</span></h1>
+<div class="who"><p id="hello">Hey, athlete!</p><button type="button" id="nameBtn" class="ghost">Set name</button></div>
+<form id="nameForm" hidden><label class="full">Your name<input id="nameIn" maxlength="20" autocomplete="nickname" placeholder="Your name" aria-label="Username"></label><button type="submit">Save name</button><button type="button" id="nameCancel" class="ghost">Cancel</button><p id="nameErr" class="full" hidden></p></form>
+<div class="card"><h2>Live GPS run</h2><p id="gmsg">Tap Start to track a run with GPS.</p>
+<div class="mrow"><select id="mode" aria-label="Activity"></select></div><p id="det"></p><div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas>
 <div class="stats"><div class="stat"><small>Time</small><b id="gt">0:00</b></div><div class="stat"><small>Distance</small><b id="gd">0.00 mi</b></div>
 <div class="stat"><small>Current pace</small><b id="gc">—</b></div><div class="stat"><small>Avg pace</small><b id="ga">—</b></div></div>
 <div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div><div id="liveph"><label class="ph">📷 Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
-<div class="card"><h2>Today</h2><p id="streakLine"></p><p id="challengeLine"></p><p id="ghostNote" class="hint"></p></div>
-<div class="card"><h2>Family Quest</h2><p id="questLine"></p><div id="questBar"></div><p class="hint">Pair phones in Settings. The code is mile totals only.</p></div>
-<div class="card"><h2>Your island</h2><div id="world"></div></div><div class="card"><h2>Log a run manually</h2><form id="f">
-<label class="full">Activity<select id="mm"></select></label><div id="logPicks" class="picks full"></div><label class="full">Date<input type="date" id="d" required></label>
+<div class="card"><h2>Log a run manually</h2><form id="f">
+<label class="full">Activity<select id="mm"></select></label><label class="full">Date<input type="date" id="d" required></label>
 <label>Distance (mi)<input type="number" id="m" step="0.01" min="0.01" required></label>
 <label>Time (mm:ss)<input id="t" placeholder="32:15" required></label>
 <div class="full" id="pace">Pace: —</div><button class="full">Save run</button></form></div>
-<div class="card"><h2>Totals by activity</h2><div id="modes"></div></div></section>
-<section id="page-shop" class="page" hidden><div class="card" id="shopCard"><h2>Shop</h2><p class="hint">Spend pretend credits. Nothing here costs real money.</p><div id="shopTabs" class="tabs"></div><div id="shopGrid"></div></div>
-</section>
-<section id="page-profile" class="page" hidden><div class="card profileCard" id="profileCard"><div id="scene" class="scene empty"></div><div class="profileRow"><div id="avatarBox" class="avatar" aria-hidden="true"></div><div class="profileText"><div id="frameBox" class="nameplate"><p id="hello">Hey, athlete!</p></div><p id="creditLine" class="credits">0 credits</p></div><a href="#settings" class="ghost" style="text-decoration:none;display:inline-block">Settings</a></div></div>
-
-<div class="card" id="storyCard"><h2>Story runs</h2><div id="stories"></div><p id="storyText" class="hint"></p></div>
-<div class="card"><h2>Island</h2><div id="worldProfile"></div></div>
-<div class="card" id="recapCard"><h2>Recap</h2><div id="recap"></div></div>
-<div class="card" id="sportStats"><h2>Ski and Onewheel</h2><div id="sportBody"></div></div>
 <div class="card" id="achCard"><h2>Achievements</h2><p class="empty" id="achHint">Badges unlock from activities saved on this phone. They stay here even if you delete a run.</p><p id="achProg" class="achprog">0/100</p><div id="achTabs" class="tabs" role="tablist"></div><select id="achFilter" aria-label="Filter achievements"></select><div id="achGrid"></div><div id="achDetail" hidden><div id="achDetailMedal"></div><h3 id="achDetailName"></h3><p id="achDetailRule"></p><p id="achDetailState"></p><button type="button" id="achShare" class="ghost" hidden>Share badge</button></div></div>
-<div class="card"><h2>Weekly totals</h2><div id="weeks"></div></div>
+<div class="card" id="prCard"><h2>Streak &amp; personal bests</h2><div id="streak"></div><div id="prs"></div></div><div class="card"><h2>Totals by activity</h2><div id="modes"></div></div><div class="card"><h2>Weekly totals</h2><div id="weeks"></div></div>
 <div class="card"><h2>Runs</h2><ul id="list"></ul></div>
-</section>
-<section id="page-settings" class="page" hidden><div class="card"><h2>Your name</h2><button type="button" id="nameBtn" class="ghost">Set name</button></div>
-<form id="nameForm" hidden><label class="full">Your name<input id="nameIn" maxlength="20" autocomplete="nickname" placeholder="Your name" aria-label="Username"></label><button type="submit">Save name</button><button type="button" id="nameCancel" class="ghost">Cancel</button><p id="nameErr" class="full" hidden></p></form>
-
-<div class="card"><h2>Voice</h2><p class="hint">Spoken updates never say where you are.</p><select id="voiceMode" aria-label="Voice"><option value="off">Off</option><option value="short">Short</option><option value="chatty">Chatty</option></select></div>
-<div class="card"><h2>Privacy</h2><p class="shield" id="shield">Your location never leaves this phone</p><label class="check"><input id="blurHome" type="checkbox"> Blur the start of routes on this phone</label><button type="button" id="openPrivacy">Privacy page</button></div>
-<div class="card"><h2>Family pairing</h2><p class="hint">Copy a code to another phone in your family. It has this month's mile totals only. No map, no places, no strangers.</p><button type="button" id="copyQuest">Copy code</button><textarea id="questOut" readonly aria-label="Your family code"></textarea><textarea id="questIn" placeholder="Paste a family code" aria-label="Paste a family code"></textarea><button type="button" id="applyQuest">Add miles</button><p id="questMsg" class="hint"></p></div>
-<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V6</p><p class="hint">Version V6. Saved on this phone. No account and no real money.</p></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
-</section>
-<section id="page-privacy" class="page" hidden><div class="card"><h2>Privacy</h2>
-<p class="shield">Your location never leaves this phone.</p>
-<p>Run-Day does not have accounts, friends lists, or strangers. GPS is used only to measure your activity on this phone.</p>
-<p>Share cards show distance, time, pace, your name, and badges. They do not show a map or a starting place.</p>
-<p>Family codes copy mile totals for the month. They do not copy routes or places.</p>
-<p>Photos stay in this browser. Clearing site data removes them.</p>
-<p><a href="#settings">Back to settings</a></p></div></section>
-<nav id="tabbar"><a href="#home" data-page="home">Home</a><a href="#shop" data-page="shop">Shop</a><a href="#profile" data-page="profile">Profile</a><a href="#settings" data-page="settings">Settings</a></nav></main><div id="cele" hidden role="dialog" aria-modal="true" aria-label="Badge unlocked"><div class="panel"><p id="celeKicker">Badge unlocked!</p><div id="celeMedal"></div><h3 id="celeTitle"></h3><p id="celeText"></p><div class="shareRow"><button type="button" id="celeShare" hidden>Share</button><button type="button" id="celeNext">Awesome!</button></div></div></div><div id="shareBox" hidden role="dialog" aria-modal="true" aria-label="Share card"><div class="panel"><img id="shareImg" alt="Share card"><p id="shareCaption"></p><div class="shareRow"><button type="button" id="shareGo">Share</button><button type="button" id="shareSave" class="ghost">Save image</button><button type="button" id="shareClose" class="ghost">Close</button></div><p id="shareNote"></p></div></div><div id="lb"><img id="lbImg" alt="Run photo"><div><button id="lbDel">Delete photo</button><button id="lbX">Close</button></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+</main><div id="cele" hidden role="dialog" aria-modal="true" aria-label="Badge unlocked"><div class="panel"><p id="celeKicker">Badge unlocked!</p><div id="celeMedal"></div><h3 id="celeTitle"></h3><p id="celeText"></p><div class="shareRow"><button type="button" id="celeShare" hidden>Share</button><button type="button" id="celeNext">Awesome!</button></div></div></div><div id="shareBox" hidden role="dialog" aria-modal="true" aria-label="Share card"><div class="panel"><img id="shareImg" alt="Share card"><p id="shareCaption"></p><div class="shareRow"><button type="button" id="shareGo">Share</button><button type="button" id="shareSave" class="ghost">Save image</button><button type="button" id="shareClose" class="ghost">Close</button></div><p id="shareNote"></p></div></div><div id="lb"><img id="lbImg" alt="Run photo"><div><button id="lbDel">Delete photo</button><button id="lbX">Close</button></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 const K='runday.runs';let runs=JSON.parse(localStorage.getItem(K)||'[]');runs.forEach((r,i)=>{if(!r.id)r.id=Date.now()+i});
 const MODES={run:['Running','🏃'],walk:['Walking','🚶'],bike:['Biking','🚴'],ski:['Skiing','⛷️'],onewheel:['One-wheeling','🛞']};runs.forEach(r=>{if(!MODES[r.act])r.act='run'});
-const opts=Object.entries(MODES).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
+const opts=Object.entries(MODES).map(([k,v])=>`<option value="${k}">${v[1]} ${v[0]}</option>`).join('');
 const $=id=>document.getElementById(id);const ld=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('d').value=ld(new Date());$('mode').innerHTML=$('mm').innerHTML=opts;$('mode').value=localStorage.getItem('runday.mode')||'run';$('mode').onchange=()=>{localStorage.setItem('runday.mode',$('mode').value);if(G){G.act=$('mode').value;G.userSet=true;setEmo()}};
 const secs=s=>{const p=s.trim().split(':').map(Number);if(p.some(isNaN)||!p.length||p.length>3)return 0;return p.reduce((a,b)=>a*60+b,0)};
 const fmt=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${x}`:`${m}:${x}`};
 const pace=(sec,mi)=>mi>0&&sec>0?fmt(sec/mi)+' /mi':'—';
 const upd=()=>$('pace').textContent='Pace: '+pace(secs($('t').value),+$('m').value);$('t').oninput=$('m').oninput=upd;
 const monday=ds=>{const d=new Date(ds+'T00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return ld(d)};
+function dayStreaks(){const days=[...new Set(runs.map(r=>r.date))].sort();let best=0,cur=0,prev=null;const step=d=>{const t=new Date(d+'T12:00:00');t.setDate(t.getDate()+1);return ld(t)};days.forEach(d=>{cur=(prev&&step(prev)===d)?cur+1:1;if(cur>best)best=cur;prev=d});const today=ld(new Date()),y=new Date();y.setDate(y.getDate()-1);const live=prev&&(prev===today||prev===ld(y))?cur:0;return{live,best,today:prev===today}}
+function renderPRs(){const st=dayStreaks();$('streak').innerHTML=runs.length?`<div class="wk"><span>🔥 Day streak</span><span><b>${st.live} day${st.live==1?'':'s'}</b> · best ${st.best}</span></div>${st.live&&!st.today?'<div class="empty" style="padding:4px 0">Get moving today to keep your streak going!</div>':''}`:'';
+const fast=k=>k==='bike'||k==='ski'||k==='onewheel';const out=[];Object.keys(MODES).forEach(k=>{const rs=runs.filter(r=>r.act===k&&r.mi>0&&r.sec>0);if(!rs.length)return;const far=rs.reduce((a,b)=>b.mi>a.mi?b:a),lng=rs.reduce((a,b)=>b.sec>a.sec?b:a),q=rs.filter(r=>r.mi>=0.25);let sp='';if(q.length){const bp=q.reduce((a,b)=>b.sec/b.mi<a.sec/a.mi?b:a);sp=fast(k)?`fastest avg <b>${(bp.mi/(bp.sec/3600)).toFixed(1)} mph</b>`:`best pace <b>${pace(bp.sec,bp.mi)}</b>`}
+out.push(`<div class="wk"><span>${MODES[k][1]} ${MODES[k][0]}</span><span>farthest <b>${far.mi.toFixed(2)} mi</b> · longest <b>${fmt(lng.sec)}</b>${sp?' · '+sp:''}</span></div>`)});$('prs').innerHTML=out.join('')||'<div class="empty">Finish an activity to set your first personal best!</div>'}
 function render(){localStorage.setItem(K,JSON.stringify(runs));runs.sort((a,b)=>b.date.localeCompare(a.date));
-$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div><span class="micon">${modeSVG(r.act)}</span> <b>${r.mi} mi</b>${r.gps?' 📍':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)} · <select class="actsel" data-act="${r.id}" aria-label="Change activity">${opts.replace(`value="${r.act}"`,`value="${r.act}" selected`)}</select>${r.det&&r.det!==r.act?' (detected '+MODES[r.det][0]+')':''}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">📷 Add photos<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">🗺 Map</span>`:''}<span class="ph" data-share="${r.id}">↗ Share</span></div></div><button class="del" data-i="${i}">✕</button></li>`).join(''):'<li class="empty">No runs yet — log your first!</li>';
+$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div>${MODES[r.act][1]} <b>${r.mi} mi</b>${r.gps?' 📍':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)} · <select class="actsel" data-act="${r.id}" aria-label="Change activity">${opts.replace(`value="${r.act}"`,`value="${r.act}" selected`)}</select>${r.det&&r.det!==r.act?' (detected '+MODES[r.det][1]+')':''}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">📷 Add photos<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">🗺 Map</span>`:''}<span class="ph" data-share="${r.id}">↗ Share</span></div></div><button class="del" data-i="${i}">✕</button></li>`).join(''):'<li class="empty">No runs yet — log your first!</li>';
 const md={};runs.forEach(r=>{const o=md[r.act]=md[r.act]||{mi:0,sec:0,n:0};o.mi+=r.mi;o.sec+=r.sec;o.n++});
-$('modes').innerHTML=Object.keys(MODES).filter(k=>md[k]).map(k=>`<div class="wk"><span><span class="micon">${modeSVG(k)}</span> ${MODES[k][0]}</span><span><b>${md[k].mi.toFixed(2)} mi</b> · ${md[k].n} time${md[k].n==1?'':'s'} · ${fmt(md[k].sec)} <span class="ph" data-sharemode="${k}">↗ Share</span></span></div>`).join('')||'<div class="empty">No data yet</div>';
-const w={};runs.forEach(r=>{const k=monday(r.date);w[k]=w[k]||{mi:0,sec:0,n:0};w[k].mi+=r.mi;w[k].sec+=r.sec;w[k].n++});
+$('modes').innerHTML=Object.keys(MODES).filter(k=>md[k]).map(k=>`<div class="wk"><span>${MODES[k][1]} ${MODES[k][0]}</span><span><b>${md[k].mi.toFixed(2)} mi</b> · ${md[k].n} time${md[k].n==1?'':'s'} · ${fmt(md[k].sec)} <span class="ph" data-sharemode="${k}">↗ Share</span></span></div>`).join('')||'<div class="empty">No data yet</div>';
+renderPRs();const w={};runs.forEach(r=>{const k=monday(r.date);w[k]=w[k]||{mi:0,sec:0,n:0};w[k].mi+=r.mi;w[k].sec+=r.sec;w[k].n++});
 $('weeks').innerHTML=Object.keys(w).sort().reverse().map(k=>`<div class="wk"><span>Week of ${k}</span><span><b>${w[k].mi.toFixed(2)} mi</b> · ${w[k].n} activit${w[k].n==1?'y':'ies'} · ${pace(w[k].sec,w[k].mi)} <span class="ph" data-shareweek="${k}">↗ Share</span></span></div>`).join('')||'<div class="empty">No data yet</div>';setTimeout(loadThumbs)}
 $('f').onsubmit=e=>{e.preventDefault();const sec=secs($('t').value),mi=+$('m').value;if(!sec||!mi)return alert('Enter a valid time and distance');runs.push({id:Date.now(),date:$('d').value,mi,sec,act:$('mm').value,at:Date.now()});$('f').reset();$('d').value=ld(new Date());upd();render()};
 $('list').onclick=e=>{const ds=e.target.dataset;if(ds.i!=null&&confirm('Delete this run and its photos?')){const r=runs.splice(+ds.i,1)[0];delRunPhotos(r.id);render()}else if(ds.map)showRun(+ds.map);else if(ds.share)shareActivity(ds.share);else if(ds.pid)openLb(+ds.pid)};
@@ -192,16 +102,16 @@ const R=3958.8,hav=(a,b)=>{const r=x=>x*Math.PI/180,dl=r(b[0]-a[0]),dn=r(b[1]-a[
 let emo=null;let G=null,map=null,line=null,wake=null,tick=null;
 const msg=(t,e)=>{$('gmsg').textContent=t;$('gmsg').className=e?'err':''};
 function initMap(){if(map||!window.L){if(!window.L){$('map').style.display='none';$('mapfb').style.display='block'}return}
-try{map=L.map('map',{zoomControl:false}).setView([40,-105],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);line=L.polyline([],{color:'#f07010',weight:5}).addTo(map);map.on('zoomstart',()=>{})}catch(e){map=null;$('map').style.display='none';$('mapfb').style.display='block'}}
+try{map=L.map('map',{zoomControl:false}).setView([40,-105],15);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);line=L.polyline([],{color:'#22c55e',weight:5}).addTo(map);map.on('zoomstart',()=>{})}catch(e){map=null;$('map').style.display='none';$('mapfb').style.display='block'}}
 function drawFb(){const c=$('mapfb'),x=c.getContext('2d'),p=G.pts;x.fillStyle='#0b1220';x.fillRect(0,0,c.width,c.height);if(p.length<2)return;
 const la=p.map(q=>q[0]),lo=p.map(q=>q[1]),a=Math.min(...la),b=Math.max(...la),m=Math.min(...lo),n=Math.max(...lo),sc=Math.min((c.width-20)/((n-m)||1e-9),(c.height-20)/((b-a)||1e-9));
-x.strokeStyle='#f07010';x.lineWidth=4;x.beginPath();p.forEach((q,i)=>{const X=10+(q[1]-m)*sc,Y=c.height-10-(q[0]-a)*sc;i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke();if(G.act){const q=p[p.length-1];drawModeMark(x,G.act,10+(q[1]-m)*sc,c.height-10-(q[0]-a)*sc)}x.font='10px sans-serif';x.fillStyle='#94a3b8';x.fillText('Map unavailable — route sketch',10,14)}
+x.strokeStyle='#22c55e';x.lineWidth=4;x.beginPath();p.forEach((q,i)=>{const X=10+(q[1]-m)*sc,Y=c.height-10-(q[0]-a)*sc;i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke();if(G.act){const q=p[p.length-1];x.font='24px sans-serif';x.fillText(MODES[G.act][1],10+(q[1]-m)*sc-12,c.height-10-(q[0]-a)*sc+8)}x.font='10px sans-serif';x.fillStyle='#94a3b8';x.fillText('Map unavailable — route sketch',10,14)}
 function detect(p){const sp=[];let down=0,up=0,hasAlt=0;for(let i=1;i<p.length;i++){const dt=(p[i][2]-p[i-1][2])/1000;if(dt<=0)continue;sp.push(hav(p[i-1],p[i])/dt*3600);if(p[i][3]!=null&&p[i-1][3]!=null){hasAlt=1;const da=p[i][3]-p[i-1][3];da<0?down-=da:up+=da}}
 if(sp.length<3)return null;const s=[...sp].sort((a,b)=>a-b),q=f=>s[Math.min(s.length-1,Math.floor(f*s.length))],med=q(.5),p90=q(.9),mean=sp.reduce((a,b)=>a+b,0)/sp.length,cv=Math.sqrt(sp.reduce((a,b)=>a+(b-mean)**2,0)/sp.length)/(mean||1),slow=sp.filter(v=>v<3).length/sp.length;
 if(hasAlt&&down>60&&down>3*up&&p90>12)return 'ski';if(p90>14&&cv>0.6&&slow>0.15)return 'ski';
 if(med<4.5)return 'walk';if(med<8.5)return 'run';if(cv<0.25&&p90<21)return 'onewheel';if(med<10.5)return 'run';return 'bike'}
-function setEmo(){if(!G||!G.pts.length)return;const l=G.pts[G.pts.length-1];if(map){const ic=L.divIcon({className:'emo',html:'<span class="micon-map">'+modeSVG(G.act)+'</span>',iconSize:[40,40],iconAnchor:[20,20]});if(!emo)emo=L.marker([l[0],l[1]],{icon:ic,zIndexOffset:1000}).addTo(map);else{emo.setLatLng([l[0],l[1]]);emo.setIcon(ic)}}else drawFb()}
-function showDet(){const d=detect(G.pts);G.det=d;const e=$('det');if(!d){e.style.display='none';return}e.style.display='block';e.innerHTML=d===G.act?`Looks like ${modeSVG(d)} ${MODES[d][0]} ✓`:`Looks like ${modeSVG(d)} ${MODES[d][0]}. <button id="useDet">Switch</button>`;const b=$('useDet');if(b)b.onclick=()=>{$('mode').value=d;$('mode').onchange()};if(!G.userSet&&G.pts.length>=8&&d!==G.act&&!G.autoDone){G.autoDone=true}}
+function setEmo(){if(!G||!G.pts.length)return;const l=G.pts[G.pts.length-1];if(map){const ic=L.divIcon({className:'emo',html:MODES[G.act][1],iconSize:[32,32],iconAnchor:[16,16]});if(!emo)emo=L.marker([l[0],l[1]],{icon:ic,zIndexOffset:1000}).addTo(map);else{emo.setLatLng([l[0],l[1]]);emo.setIcon(ic)}}else drawFb()}
+function showDet(){const d=detect(G.pts);G.det=d;const e=$('det');if(!d){e.style.display='none';return}e.style.display='block';e.innerHTML=d===G.act?`Looks like ${MODES[d][1]} ${MODES[d][0]} ✓`:`Looks like ${MODES[d][1]} ${MODES[d][0]}. <button id="useDet">Switch</button>`;const b=$('useDet');if(b)b.onclick=()=>{$('mode').value=d;$('mode').onchange()};if(!G.userSet&&G.pts.length>=8&&d!==G.act&&!G.autoDone){G.autoDone=true}}
 const elapsed=()=>G.acc+(G.since?Date.now()-G.since:0);
 function show(){const s=elapsed()/1000;$('gt').textContent=fmt(s);$('gd').textContent=G.dist.toFixed(2)+' mi';$('ga').textContent=pace(s,G.dist);
 const r=G.recent;if(r.length>1){const d=r.slice(1).reduce((t,q,i)=>t+hav(r[i],q),0),dt=(r[r.length-1][2]-r[0][2])/1000;$('gc').textContent=d>0.005?pace(dt,d):'—'}}
@@ -581,11 +491,11 @@ function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<'
 function achById(id) { return Ach.ACH.find(a => a.id === id); }
 function paintBadges() {
   const have = loadBadges() || {};
-  const modes = [['run', 'Run'], ['walk', 'Walk'], ['bike', 'Bike'], ['ski', 'Ski'], ['onewheel', 'Wheel'], ['combo', 'Combos']];
+  const modes = [['run', '🏃 Run'], ['walk', '🚶 Walk'], ['bike', '🚴 Bike'], ['ski', '⛷️ Ski'], ['onewheel', '🛞 Wheel'], ['combo', '✨ Combos']];
   $('achTabs').innerHTML = modes.map(([k, label]) => {
     const all = Ach.ACH.filter(a => a.mode === k);
     const n = all.filter(a => have[a.id]).length;
-    return `<button type="button" class="tab${k === achTab ? ' on' : ''}" data-tab="${k}" role="tab" aria-selected="${k === achTab}"><span class="micon">${k === 'combo' ? comboMark() : modeSVG(k)}</span> ${label} ${n}/${all.length}</button>`;
+    return `<button type="button" class="tab${k === achTab ? ' on' : ''}" data-tab="${k}" role="tab" aria-selected="${k === achTab}">${label} ${n}/${all.length}</button>`;
   }).join('');
   const cur = Ach.ACH.filter(a => a.mode === achTab);
   const cats = ['All', ...new Set(cur.map(a => a.category))];
@@ -687,33 +597,32 @@ function drawMedal(ctx, a, cx, cy, radius) {
 function makeCard(opts) {
   const c = document.createElement('canvas');
   c.width = 720;
-  c.height = 1280;
+  c.height = 960;
   const x = c.getContext('2d');
   x.fillStyle = '#0f172a';
-  x.fillRect(0, 0, 720, 1280);
-  roundRect(x, 36, 36, 648, 1208, 32, '#1e293b');
+  x.fillRect(0, 0, 720, 960);
+  roundRect(x, 36, 36, 648, 888, 32, '#1e293b');
   x.textAlign = 'center';
-  x.fillStyle = '#f07010';
+  x.fillStyle = '#22c55e';
   x.font = '700 40px system-ui, sans-serif';
   x.fillText('Run-Day', 360, 110);
   x.fillStyle = '#94a3b8';
   x.font = '24px system-ui, sans-serif';
   x.fillText(username() ? 'Hey, ' + username() + '!' : 'Hey, athlete!', 360, 152);
-  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V6', 360, 236);
-  if (opts.medal) drawMedal(x, opts.medal, 360, 420, 96);
+  if (opts.medal) drawMedal(x, opts.medal, 360, 292, 96);
   else {
     x.font = '96px "Noto Color Emoji", sans-serif';
     x.textBaseline = 'middle';
-    x.fillText(opts.emoji || '🏃', 360, 420);
+    x.fillText(opts.emoji || '🏃', 360, 292);
     x.textBaseline = 'alphabetic';
   }
   x.textBaseline = 'alphabetic';
   x.fillStyle = '#e2e8f0';
   fitFont(x, opts.title, 560, 40, '700');
-  x.fillText(opts.title, 360, 580);
+  x.fillText(opts.title, 360, 448);
   x.font = '600 28px system-ui, sans-serif';
   x.fillStyle = '#e2e8f0';
-  let y = 640;
+  let y = 504;
   (opts.lines || []).slice(0, 5).forEach(line => { x.fillText(line, 360, y); y += 40; });
   y += 28;
   x.fillStyle = '#94a3b8';
@@ -721,7 +630,7 @@ function makeCard(opts) {
   wrapFill(x, opts.caption, 360, y, 560, 30);
   x.fillStyle = '#64748b';
   x.font = '16px system-ui, sans-serif';
-  x.fillText('Stats only · no map or location', 360, 1220);
+  x.fillText('Stats only · no map or location', 360, 880);
   return c;
 }
 function canvasBlob(canvas) {
@@ -863,7 +772,7 @@ $('celeNext').onclick = () => {
 };
 $('celeShare').onclick = () => { const id = $('celeShare').dataset.sharea; if (id) shareAch(id); };
 function celeFor(a) {
-  return { kicker: 'Badge unlocked!', title: a.name, text: a.rule + ' +' + creditFor(a) + ' credits.', medalHTML: Ach.medalSVG(a, true), shareId: a.id, nextLabel: 'Awesome!' };
+  return { kicker: 'Badge unlocked!', title: a.name, text: a.rule, medalHTML: Ach.medalSVG(a, true), shareId: a.id, nextLabel: 'Awesome!' };
 }
 let achBusy = false, achAgain = false;
 async function checkAchievementsAsync() {
@@ -880,14 +789,13 @@ async function checkAchievementsAsync() {
       if (Ach.met(a, runs, photos)) { have[a.id] = Date.now(); if (!fresh) newly.push(a); }
     });
     saveBadges(have);
-    const earned = grantCredits(have);
     paintBadges();
     if (fresh) {
       const n = Object.keys(have).length;
-      if (n) pushCele([{ kicker: 'Badges ready!', title: n + ' badge' + (n === 1 ? '' : 's') + ' unlocked', text: 'These came from activities already saved on this phone. New ones pop up when you earn them.' + (earned ? ' You got ' + earned.toLocaleString() + ' credits for the shop.' : ''), medalHTML: Ach.medalSVG(Ach.ACH.find(a => have[a.id]) || Ach.ACH[0], true), nextLabel: 'Show me' }]);
+      if (n) pushCele([{ kicker: 'Badges ready!', title: n + ' badge' + (n === 1 ? '' : 's') + ' unlocked', text: 'These came from activities already saved on this phone. New ones pop up when you earn them.', medalHTML: Ach.medalSVG(Ach.ACH.find(a => have[a.id]) || Ach.ACH[0], true), nextLabel: 'Show me' }]);
     } else if (newly.length === 1) pushCele([celeFor(newly[0])]);
     else if (newly.length > 1 && newly.length <= 3) pushCele(newly.map(celeFor));
-    else if (newly.length > 3) pushCele([{ kicker: 'Badge party!', title: newly.length + ' new badges', text: newly.slice(0, 6).map(a => a.emoji + ' ' + a.name).join(' · ') + (newly.length > 6 ? ' · +' + (newly.length - 6) + ' more' : '') + (earned ? ' You earned ' + earned.toLocaleString() + ' credits.' : ''), medalHTML: Ach.medalSVG(newly[0], true), shareId: newly[0].id, nextLabel: 'Awesome!' }]);
+    else if (newly.length > 3) pushCele([{ kicker: 'Badge party!', title: newly.length + ' new badges', text: newly.slice(0, 6).map(a => a.emoji + ' ' + a.name).join(' · ') + (newly.length > 6 ? ' · +' + (newly.length - 6) + ' more' : ''), medalHTML: Ach.medalSVG(newly[0], true), shareId: newly[0].id, nextLabel: 'Awesome!' }]);
   } catch (e) {}
   achBusy = false;
   if (achAgain) { achAgain = false; checkAchievementsAsync(); }
@@ -914,819 +822,5 @@ window.__ach = {
   shareAch,
   lastShare: () => lastShare ? { caption: lastShare.caption, lines: lastShare.lines.slice(), title: lastShare.title, hasRoute: lastShare.hasRoute } : null
 };
-
-
-function modeSVG(mode) {
-  const common = 'viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"';
-  const art = {
-    run: `<svg ${common}><ellipse cx="33" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><path d="M14 44c6-2 10-8 14-8 3 6 8 8 14 6" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M22 36c6-10 8-16 18-16 2 6-2 10-6 12" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M30 34c2 8 1 14 6 20" fill="none" stroke="#9b50e0" stroke-width="5" stroke-linecap="round"/><path d="M24 40c-4 6-10 8-14 6" fill="none" stroke="#9b50e0" stroke-width="5" stroke-linecap="round"/><circle cx="46" cy="16" r="7" fill="#ffc7a3"/><path d="M43 15h3M47 15h2" stroke="#3a2418" stroke-width="1.2" stroke-linecap="round"/><path d="M44 19c1.2 1 2.4 1 3.4 0" fill="none" stroke="#c45a4a" stroke-width="1.2" stroke-linecap="round"/></svg>`,
-    walk: `<svg ${common}><ellipse cx="32" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><path d="M28 30c-2 8-8 12-12 18" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><path d="M30 32c4 8 2 16 8 22" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M30 28c8 2 12 8 10 14" fill="#9b50e0"/><circle cx="34" cy="16" r="7" fill="#ffc7a3"/><path d="M24 24c6 2 10 2 16-1" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M31 15h3M37 15h2" stroke="#3a2418" stroke-width="1.2" stroke-linecap="round"/><path d="M32 19c1.4 1 2.6 1 3.6 0" fill="none" stroke="#c45a4a" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="50" r="3" fill="#f07010"/><circle cx="40" cy="54" r="3" fill="#6d4ad4"/></svg>`,
-    bike: `<svg ${common}><ellipse cx="32" cy="58" rx="18" ry="3" fill="#000" opacity=".2"/><circle cx="18" cy="46" r="9" fill="none" stroke="#3a2418" stroke-width="3"/><circle cx="48" cy="46" r="9" fill="none" stroke="#3a2418" stroke-width="3"/><circle cx="18" cy="46" r="2" fill="#f07010"/><circle cx="48" cy="46" r="2" fill="#f07010"/><path d="M18 46 L30 28 L44 46 L30 40 Z" fill="none" stroke="#9b50e0" stroke-width="3" stroke-linejoin="round"/><path d="M30 28 L34 18 H42" fill="none" stroke="#3a2418" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="14" r="5.5" fill="#ffc7a3"/><path d="M28 30c6 1 8 4 8 8" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M34 13h2" stroke="#3a2418" stroke-width="1"/></svg>`,
-    ski: `<svg ${common}><ellipse cx="34" cy="58" rx="16" ry="3" fill="#000" opacity=".18"/><path d="M8 54c16 4 28-2 48-8" fill="none" stroke="#f07010" stroke-width="3" stroke-linecap="round"/><path d="M12 50c14 3 24-1 40-6" fill="none" stroke="#9b50e0" stroke-width="3" stroke-linecap="round"/><path d="M30 40c2-10 6-16 8-22" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><path d="M28 28 L18 18" fill="none" stroke="#c4b4d8" stroke-width="2" stroke-linecap="round"/><path d="M36 26 L50 16" fill="none" stroke="#c4b4d8" stroke-width="2" stroke-linecap="round"/><circle cx="40" cy="14" r="6" fill="#ffc7a3"/><path d="M24 44c8-6 14-4 22 2" fill="#f3e8ff" opacity=".9"/><circle cx="14" cy="18" r="1.4" fill="#fff"/><circle cx="52" cy="24" r="1.2" fill="#fff"/><circle cx="20" cy="28" r="1" fill="#fff"/></svg>`,
-    onewheel: `<svg ${common}><ellipse cx="32" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><circle cx="34" cy="48" r="10" fill="#2a1208"/><circle cx="34" cy="48" r="6" fill="#f07010"/><circle cx="34" cy="48" r="2" fill="#fff3"/><path d="M22 44h24c2 0 3-2 2-4l-6-4H26l-4 4c-1 2 0 4 0 4z" fill="#9b50e0"/><path d="M32 36c1-8 3-12 4-18" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><circle cx="38" cy="14" r="6" fill="#ffc7a3"/><path d="M26 24c6 2 10 1 14-2" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M36 13h2" stroke="#3a2418" stroke-width="1"/></svg>`
-  };
-  return art[mode] || art.run;
-}
-function comboMark() {
-  return '<svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><path d="M32 6l6 16h16l-13 10 5 16-14-10-14 10 5-16L10 22h16z" fill="#f07010"/><path d="M32 16l3 8h8l-6 5 2 8-7-5-7 5 2-8-6-5h8z" fill="#9b50e0"/></svg>';
-}
-function creditFor(a) {
-  const base = { bronze: 10, silver: 25, gold: 50, diamond: 100, legend: 200 }[a.tier] || 10;
-  return a.mode === 'combo' ? Math.round(base * 1.5) : base;
-}
-function loadCredits() {
-  const n = parseInt(localStorage.getItem('runday.credits') || '0', 10);
-  return isFinite(n) && n > 0 ? n : 0;
-}
-function paintCredits() {
-  const n = loadCredits();
-  const label = n.toLocaleString() + ' credit' + (n === 1 ? '' : 's');
-  const el = $('creditLine');
-  if (el) el.textContent = label;
-}
-function grantCredits(have) {
-  let paid = {};
-  try { paid = JSON.parse(localStorage.getItem('runday.paid') || '{}') || {}; } catch (e) { paid = {}; }
-  if (!paid || typeof paid !== 'object' || Array.isArray(paid)) paid = {};
-  let add = 0;
-  Object.keys(have || {}).forEach(id => {
-    if (paid[id]) return;
-    const a = achById(id);
-    if (!a) return;
-    const n = creditFor(a);
-    paid[id] = n;
-    add += n;
-  });
-  const bal = loadCredits() + add;
-  if (add || localStorage.getItem('runday.paid') == null) {
-    localStorage.setItem('runday.credits', String(bal));
-    localStorage.setItem('runday.paid', JSON.stringify(paid));
-  }
-  paintCredits();
-  if (typeof paintShop === 'function' && document.getElementById('shopGrid')) paintShop();
-  return add;
-}
-var modeImgs = {};
-function prepModeImgs() {
-  Object.keys(MODES).forEach(k => {
-    const img = new Image();
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(modeSVG(k));
-    modeImgs[k] = img;
-  });
-}
-function drawModeMark(ctx, act, x, y) {
-  const img = modeImgs && modeImgs[act];
-  if (img && img.complete && img.naturalWidth) { ctx.drawImage(img, x - 14, y - 14, 28, 28); return; }
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.beginPath();
-  ctx.fillStyle = '#f07010';
-  ctx.arc(0, 0, 12, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = '#9b50e0';
-  ctx.stroke();
-  ctx.fillStyle = '#fff';
-  ctx.font = '700 11px system-ui,sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText({ run: 'R', walk: 'W', bike: 'B', ski: 'S', onewheel: '1' }[act] || '•', 0, 1);
-  ctx.restore();
-}
-function placeholderAvatar() {
-  return '<svg viewBox="0 0 80 80" width="72" height="72" aria-hidden="true"><circle cx="40" cy="40" r="40" fill="#3a2158"/><circle cx="40" cy="34" r="14" fill="#ffc7a3"/><path d="M18 66c4-12 12-18 22-18s18 6 22 18" fill="#9b50e0"/><path d="M34 33h3M44 33h3" stroke="#3a2418" stroke-width="1.6" stroke-linecap="round"/><path d="M35 40c2 2 8 2 10 0" fill="none" stroke="#c45a4a" stroke-width="1.6" stroke-linecap="round"/></svg>';
-}
-const SHOP = [
-  { id: 'fox', cat: 'Profile picture', slot: 'avatar', name: 'Sunny Fox', price: 40, desc: 'A bright orange fox with a purple ear tuft.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#ffd7b0"/><path d="M16 28 L28 18 L30 36 Z" fill="#f07010"/><path d="M64 28 L52 18 L50 36 Z" fill="#f07010"/><path d="M22 26 L28 20 L29 32 Z" fill="#9b50e0"/><circle cx="40" cy="46" r="18" fill="#f07010"/><ellipse cx="40" cy="52" rx="8" ry="6" fill="#fff3e6"/><circle cx="33" cy="44" r="3" fill="#2a1208"/><circle cx="47" cy="44" r="3" fill="#2a1208"/><circle cx="34" cy="43" r="1" fill="#fff"/><path d="M36 54c2 2 6 2 8 0" fill="none" stroke="#9b50e0" stroke-width="1.6" stroke-linecap="round"/></svg>' },
-  { id: 'panda', cat: 'Profile picture', slot: 'avatar', name: 'Panda Pal', price: 60, desc: 'A round panda with leafy-green eyes.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#f4f1ea"/><circle cx="22" cy="28" r="8" fill="#2a1208"/><circle cx="58" cy="28" r="8" fill="#2a1208"/><circle cx="40" cy="44" r="20" fill="#fff"/><ellipse cx="30" cy="42" rx="7" ry="8" fill="#2a1208"/><ellipse cx="50" cy="42" rx="7" ry="8" fill="#2a1208"/><circle cx="31" cy="42" r="2.4" fill="#fff"/><circle cx="51" cy="42" r="2.4" fill="#fff"/><ellipse cx="40" cy="52" rx="4" ry="3" fill="#2a1208"/><path d="M34 58c3 3 9 3 12 0" fill="none" stroke="#f07010" stroke-width="1.8" stroke-linecap="round"/></svg>' },
-  { id: 'robo', cat: 'Profile picture', slot: 'avatar', name: 'Robo Buddy', price: 80, desc: 'A friendly robot with an orange antenna.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#2a1848"/><rect x="22" y="24" width="36" height="32" rx="8" fill="#d7e4f5"/><rect x="28" y="32" width="10" height="8" rx="2" fill="#9b50e0"/><rect x="42" y="32" width="10" height="8" rx="2" fill="#9b50e0"/><path d="M32 48h16" stroke="#f07010" stroke-width="2" stroke-linecap="round"/><path d="M40 24 V12" stroke="#f07010" stroke-width="3" stroke-linecap="round"/><circle cx="40" cy="10" r="4" fill="#f07010"/><rect x="18" y="34" width="6" height="10" rx="2" fill="#9b50e0"/><rect x="56" y="34" width="6" height="10" rx="2" fill="#9b50e0"/></svg>' },
-  { id: 'astro', cat: 'Profile picture', slot: 'avatar', name: 'Space Kid', price: 100, desc: 'A smiling astronaut in a round helmet.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#241445"/><circle cx="40" cy="40" r="24" fill="#c9d4e8"/><circle cx="40" cy="40" r="16" fill="#ffd7b0"/><path d="M32 38h3M45 38h3" stroke="#2a1208" stroke-width="1.6" stroke-linecap="round"/><path d="M34 46c3 3 9 3 12 0" fill="none" stroke="#c45a4a" stroke-width="1.6" stroke-linecap="round"/><path d="M18 58c6-8 14-10 22-10s16 2 22 10" fill="#f07010"/><circle cx="58" cy="26" r="5" fill="#9b50e0"/></svg>' },
-  { id: 'dragon', cat: 'Profile picture', slot: 'avatar', name: 'Little Dragon', price: 140, desc: 'A purple dragon with a tiny orange flame.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#efe4ff"/><path d="M24 26c2-10 10-8 10 0" fill="#9b50e0"/><path d="M46 26c0-8 8-10 10 0" fill="#f07010"/><circle cx="40" cy="46" r="18" fill="#9b50e0"/><ellipse cx="40" cy="52" rx="8" ry="6" fill="#d7b8ff"/><circle cx="33" cy="44" r="3" fill="#2a1208"/><circle cx="47" cy="44" r="3" fill="#2a1208"/><path d="M36 56c2 4 6 4 8 0" fill="#f07010"/><path d="M54 58c6 2 10-2 8-6-4 1-6 2-8 6z" fill="#f07010"/></svg>' },
-  { id: 'cat', cat: 'Profile picture', slot: 'avatar', name: 'Night Cat', price: 180, desc: 'A purple cat with moonlit eyes.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#1c1233"/><path d="M18 36 L28 14 L34 36 Z" fill="#6d4ad4"/><path d="M62 36 L52 14 L46 36 Z" fill="#6d4ad4"/><circle cx="40" cy="46" r="18" fill="#9b50e0"/><circle cx="32" cy="44" r="3.2" fill="#f6e27a"/><circle cx="48" cy="44" r="3.2" fill="#f6e27a"/><path d="M40 48 v6" stroke="#2a1208" stroke-width="1.4"/><path d="M28 50h8M44 50h8" stroke="#2a1208" stroke-width="1.2"/><path d="M34 58c3 3 9 3 12 0" fill="none" stroke="#f07010" stroke-width="1.6" stroke-linecap="round"/></svg>' },
-  { id: 'dino', cat: 'Profile picture', slot: 'avatar', name: 'Dino Sprout', price: 220, desc: 'A green dino with orange spikes.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#e7f6d8"/><path d="M28 22l4 8 4-8 4 8 4-8 4 8 4-8v10H28z" fill="#f07010"/><ellipse cx="40" cy="48" rx="20" ry="16" fill="#67b15a"/><circle cx="32" cy="46" r="3" fill="#2a1208"/><circle cx="48" cy="46" r="3" fill="#2a1208"/><ellipse cx="40" cy="54" rx="7" ry="4" fill="#d7f0c4"/><path d="M34 56c3 2 9 2 12 0" fill="none" stroke="#2a1208" stroke-width="1.4" stroke-linecap="round"/></svg>' },
-  { id: 'owl', cat: 'Profile picture', slot: 'avatar', name: 'Owl Scout', price: 280, desc: 'A wide-eyed owl in a purple hood.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#2a1848"/><ellipse cx="40" cy="46" rx="22" ry="20" fill="#c9b7e8"/><path d="M18 40c8-16 36-16 44 0" fill="#9b50e0"/><circle cx="30" cy="46" r="8" fill="#fff"/><circle cx="50" cy="46" r="8" fill="#fff"/><circle cx="30" cy="46" r="3.5" fill="#f07010"/><circle cx="50" cy="46" r="3.5" fill="#f07010"/><path d="M36 56 L40 62 L44 56" fill="#f07010"/></svg>' },
-  { id: 'unicorn', cat: 'Profile picture', slot: 'avatar', name: 'Unicorn Spark', price: 360, desc: 'A white unicorn with an orange horn.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#fde7f3"/><path d="M36 28 L40 8 L44 28 Z" fill="#f07010"/><ellipse cx="22" cy="48" rx="8" ry="6" fill="#9b50e0"/><ellipse cx="58" cy="48" rx="8" ry="6" fill="#f07010"/><circle cx="40" cy="46" r="18" fill="#fff"/><circle cx="33" cy="44" r="3" fill="#6d4ad4"/><circle cx="47" cy="44" r="3" fill="#6d4ad4"/><path d="M34 54c3 3 9 3 12 0" fill="none" stroke="#f07010" stroke-width="1.6" stroke-linecap="round"/><path d="M22 34c6 2 8 2 12-2" fill="none" stroke="#9b50e0" stroke-width="3" stroke-linecap="round"/></svg>' },
-  { id: 'tiger', cat: 'Profile picture', slot: 'avatar', name: 'Tiger Zoom', price: 480, desc: 'An orange tiger ready to race.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#fff1e0"/><circle cx="40" cy="46" r="20" fill="#f07010"/><path d="M26 36l4 6M34 32l2 8M46 32l-2 8M54 36l-4 6" stroke="#2a1208" stroke-width="1.6" stroke-linecap="round"/><circle cx="32" cy="44" r="3" fill="#2a1208"/><circle cx="48" cy="44" r="3" fill="#2a1208"/><ellipse cx="40" cy="52" rx="6" ry="4" fill="#fff"/><path d="M38 52h4" stroke="#2a1208" stroke-width="1.2"/><path d="M18 50c6 2 8 6 6 10M62 50c-6 2-8 6-6 10" fill="#f07010" stroke="#2a1208" stroke-width="1"/><path d="M34 58c3 3 9 3 12 0" fill="none" stroke="#9b50e0" stroke-width="1.6" stroke-linecap="round"/></svg>' },
-  { id: 'loop', cat: 'Name frame', slot: 'frame', frame: 'frame-loop', name: 'Orange Loop', price: 30, desc: 'A solid orange line around your name.', art: '' },
-  { id: 'glow', cat: 'Name frame', slot: 'frame', frame: 'frame-glow', name: 'Purple Glow', price: 50, desc: 'A soft purple glow around your name.', art: '' },
-  { id: 'stars', cat: 'Name frame', slot: 'frame', frame: 'frame-stars', name: 'Star Border', price: 70, desc: 'Little stars sitting on the corners.', art: '' },
-  { id: 'rainbow', cat: 'Name frame', slot: 'frame', frame: 'frame-rainbow', name: 'Rainbow Ring', price: 90, desc: 'A rainbow outline that goes orange to purple.', art: '' },
-  { id: 'zap', cat: 'Name frame', slot: 'frame', frame: 'frame-zap', name: 'Lightning Lasso', price: 120, desc: 'A zig-zag orange border.', art: '' },
-  { id: 'hearts', cat: 'Name frame', slot: 'frame', frame: 'frame-hearts', name: 'Heart Outline', price: 160, desc: 'A pink-purple heart border.', art: '' },
-  { id: 'dots', cat: 'Name frame', slot: 'frame', frame: 'frame-dots', name: 'Dot Parade', price: 200, desc: 'A dotted orange and purple border.', art: '' },
-  { id: 'double', cat: 'Name frame', slot: 'frame', frame: 'frame-double', name: 'Double Stripe', price: 260, desc: 'Two stripes, one orange and one purple.', art: '' },
-  { id: 'ticket', cat: 'Name frame', slot: 'frame', frame: 'frame-ticket', name: 'Ticket Frame', price: 320, desc: 'A ticket-stub shape around your name.', art: '' },
-  { id: 'crown', cat: 'Name frame', slot: 'frame', frame: 'frame-crown', name: 'Crown Rim', price: 420, desc: 'A gold crown sitting on the frame.', art: '' },
-  { id: 'halloween', cat: 'Seasonal decoration', slot: 'deco', name: 'Pumpkin Patch', price: 50, desc: 'Halloween pumpkins and a bat.', art: '<svg viewBox="0 0 320 88"><rect width="320" height="88" rx="12" fill="#2a1848"/><circle cx="46" cy="22" r="8" fill="#f6e27a"/><ellipse cx="110" cy="58" rx="26" ry="22" fill="#f07010"/><path d="M110 36 v10" stroke="#2f7d32" stroke-width="3"/><path d="M100 52h6l-3 7zM116 52h6l-3 7z" fill="#2a1208"/><path d="M104 66c4 4 12 4 16 0" fill="none" stroke="#2a1208" stroke-width="2"/><ellipse cx="190" cy="60" rx="22" ry="18" fill="#e25b12"/><path d="M182 54h5l-2 6zM196 54h5l-2 6z" fill="#2a1208"/><path d="M250 28c10 2 16 0 20-6-8 8-12 8-20 6z" fill="#1a1030"/><circle cx="286" cy="62" r="12" fill="#67b15a"/></svg>' },
-  { id: 'christmas', cat: 'Seasonal decoration', slot: 'deco', name: 'Tree Lights', price: 70, desc: 'A Christmas tree with orange and purple lights.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#163024"/><path d="M160 8 L196 58 H124 Z" fill="#1f7a45"/><rect x="152" y="58" width="16" height="8" fill="#6b3e1e"/><circle cx="150" cy="28" r="3" fill="#f07010"/><circle cx="168" cy="40" r="3" fill="#9b50e0"/><circle cx="156" cy="50" r="3" fill="#f6e27a"/><circle cx="40" cy="20" r="2" fill="#fff"/><circle cx="280" cy="16" r="2" fill="#fff"/></svg>' },
-  { id: 'winter', cat: 'Seasonal decoration', slot: 'deco', name: 'Snow Day', price: 90, desc: 'Winter snowflakes on a cold blue band.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#d7ecff"/><g fill="#7eb6e8" stroke="#fff" stroke-width="1"><path d="M40 36 v-14 M40 36 v14 M40 36 h-14 M40 36 h14 M40 36 l-10-10 M40 36 l10 10 M40 36 l10-10 M40 36 l-10 10"/></g><g fill="none" stroke="#9b50e0" stroke-width="2"><path d="M120 24 v20 M110 34 h20 M114 28 l12 12 M126 28 l-12 12"/></g><circle cx="200" cy="22" r="3" fill="#fff"/><circle cx="240" cy="48" r="4" fill="#fff"/><circle cx="280" cy="28" r="2.5" fill="#fff"/><path d="M160 58c20-8 40-8 70 0" fill="none" stroke="#f07010" stroke-width="3"/></svg>' },
-  { id: 'spring', cat: 'Seasonal decoration', slot: 'deco', name: 'Flower Burst', price: 120, desc: 'Spring flowers in orange and purple.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#e9f8df"/><g><circle cx="50" cy="36" r="6" fill="#f07010"/><circle cx="40" cy="28" r="5" fill="#ffb088"/><circle cx="60" cy="28" r="5" fill="#ffb088"/><circle cx="40" cy="46" r="5" fill="#9b50e0"/><circle cx="60" cy="46" r="5" fill="#9b50e0"/></g><g><circle cx="140" cy="40" r="6" fill="#f6e27a"/><circle cx="130" cy="32" r="5" fill="#f07010"/><circle cx="150" cy="32" r="5" fill="#f07010"/><circle cx="130" cy="48" r="5" fill="#67b15a"/><circle cx="150" cy="48" r="5" fill="#67b15a"/></g><path d="M200 60c8-18 16-18 16 0" stroke="#2f7d32" stroke-width="3" fill="none"/><circle cx="250" cy="30" r="8" fill="#9b50e0"/><circle cx="250" cy="30" r="3" fill="#fff"/></svg>' },
-  { id: 'summer', cat: 'Seasonal decoration', slot: 'deco', name: 'Sunshine Splash', price: 160, desc: 'A summer sun and a little wave.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#fff4d6"/><circle cx="64" cy="36" r="16" fill="#f07010"/><g stroke="#f6b13a" stroke-width="3" stroke-linecap="round"><path d="M64 8v8M64 56v8M36 36h-8M100 36h8M44 16l6 6M84 50l6 6M44 56l6-6M84 22l6-6"/></g><path d="M140 48c16-16 28-16 44 0s28 16 44 0 28-16 44 0 v16 H140z" fill="#3aa0d8"/></svg>' },
-  { id: 'valentine', cat: 'Seasonal decoration', slot: 'deco', name: 'Heart Confetti', price: 200, desc: 'Valentine hearts in pink, orange, and purple.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#ffe4ef"/><path d="M50 40c0-8 12-10 12 0 0-10 12-8 12 0 0 10-12 18-12 18S50 50 50 40z" fill="#e2558a"/><path d="M140 36c0-6 8-8 8 0 0-8 8-6 8 0 0 8-8 14-8 14s-8-6-8-14z" fill="#f07010"/><path d="M230 42c0-7 10-9 10 0 0-9 10-7 10 0 0 9-10 16-10 16s-10-7-10-16z" fill="#9b50e0"/></svg>' },
-  { id: 'thanks', cat: 'Seasonal decoration', slot: 'deco', name: 'Leaf Pile', price: 250, desc: 'Thanksgiving leaves in fall colors.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#f8e2c0"/><path d="M40 50c10-20 20-20 20 0-8-6-16-6-20 0z" fill="#e25b12"/><path d="M90 54c12-18 22-14 16 4-10-2-16-2-16-4z" fill="#f07010"/><path d="M150 48c8-22 24-16 14 6-8-4-14-4-14-6z" fill="#9b50e0"/><path d="M210 52c10-16 22-12 14 6-8 0-14-2-14-6z" fill="#c45a18"/><path d="M260 46c6-18 20-14 12 8-6-2-12-4-12-8z" fill="#f6b13a"/></svg>' },
-  { id: 'july4', cat: 'Seasonal decoration', slot: 'deco', name: 'Firework Night', price: 320, desc: 'July 4th fireworks in the night sky.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#1b1440"/><g stroke="#f07010" stroke-width="2"><path d="M60 30 l8-14 M60 30 l14 0 M60 30 l8 12 M60 30 l-8 12 M60 30 l-14 0 M60 30 l-8-12"/></g><g stroke="#9b50e0" stroke-width="2"><path d="M160 26 l6-10 M160 26 l12 2 M160 26 l6 10 M160 26 l-8 8 M160 26 l-12-2 M160 26 l-4-10"/></g><g stroke="#f6e27a" stroke-width="2"><path d="M250 34 l10-8 M250 34 h12 M250 34 l8 10 M250 34 l-10 6 M250 34 h-12 M250 34 l-6-10"/></g><circle cx="30" cy="14" r="1.2" fill="#fff"/><circle cx="200" cy="12" r="1.2" fill="#fff"/><circle cx="300" cy="18" r="1.2" fill="#fff"/></svg>' },
-  { id: 'newyear', cat: 'Seasonal decoration', slot: 'deco', name: 'Midnight Spark', price: 400, desc: 'New Year sparkles and a countdown star.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#241445"/><path d="M48 36l4 10 10 2-8 6 3 10-9-6-9 6 3-10-8-6 10-2z" fill="#f6e27a"/><path d="M140 20l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#f07010"/><path d="M230 40l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#9b50e0"/><text x="270" y="44" fill="#fff" font-size="18" font-family="system-ui">12</text></svg>' },
-  { id: 'birthday', cat: 'Seasonal decoration', slot: 'deco', name: 'Balloon Bunch', price: 500, desc: 'Birthday balloons in orange and purple.', art: '<svg viewBox="0 0 320 72"><rect width="320" height="72" rx="12" fill="#fff6ea"/><ellipse cx="70" cy="28" rx="16" ry="20" fill="#f07010"/><ellipse cx="110" cy="24" rx="16" ry="20" fill="#9b50e0"/><ellipse cx="150" cy="30" rx="16" ry="20" fill="#f6b13a"/><path d="M70 48c0 8-8 10-4 16M110 44c2 10 10 10 6 18M150 50c-2 8 6 12 2 16" fill="none" stroke="#6d4ad4" stroke-width="1.4"/><rect x="210" y="40" width="70" height="16" rx="3" fill="#fff"/><path d="M210 40 h70 v6 H210z" fill="#f07010"/><path d="M210 46 h70 v5 H210z" fill="#9b50e0"/></svg>' }
-];
-let shopTab = 'Profile picture';
-function loadShop() {
-  try {
-    const o = JSON.parse(localStorage.getItem('runday.shop') || '{}');
-    if (!o || typeof o !== 'object') throw new Error('bad');
-    o.owned = o.owned && typeof o.owned === 'object' ? o.owned : {};
-    return o;
-  } catch (e) { return { owned: {} }; }
-}
-function saveShop(o) { localStorage.setItem('runday.shop', JSON.stringify(o)); }
-function shopItem(id) { return SHOP.find(s => s.id === id); }
-function paintProfile() {
-  const shop = loadShop();
-  const av = shop.avatar ? shopItem(shop.avatar) : null;
-  $('avatarBox').innerHTML = av ? av.art : placeholderAvatar();
-  const frame = shop.frame ? shopItem(shop.frame) : null;
-  $('frameBox').className = 'nameplate' + (frame ? ' ' + frame.frame : '');
-  const deco = shop.deco ? shopItem(shop.deco) : null;
-  $('scene').innerHTML = deco ? deco.art : '';
-  $('scene').classList.toggle('empty', !deco);
-}
-function paintPicks() {
-  const live = $('mode').value;
-  const manual = $('mm').value;
-  const html = which => Object.keys(MODES).map(k => `<button type="button" class="pick${which === k ? ' on' : ''}" data-pick="${k}" data-which="${which === live && which === manual ? 'both' : ''}" aria-label="${MODES[k][0]}" aria-pressed="${which === k}">${modeSVG(k)}</button>`).join('');
-  if ($('modePicks')) $('modePicks').innerHTML = html(live);
-  if ($('logPicks')) $('logPicks').innerHTML = html(manual);
-}
-function paintShop() {
-  const shop = loadShop();
-  const bal = loadCredits();
-  const tabs = ['Profile picture', 'Name frame', 'Seasonal decoration', 'Power-up'];
-  $('shopTabs').innerHTML = tabs.map(t => `<button type="button" class="tab${shopTab === t ? ' on' : ''}" data-shop="${t}">${t === 'Profile picture' ? 'Pictures' : t === 'Name frame' ? 'Frames' : t === 'Seasonal decoration' ? 'Seasons' : 'Extras'}</button>`).join('');
-  const items = SHOP.filter(s => s.cat === shopTab);
-  $('shopGrid').innerHTML = items.map(s => {
-    const preview = s.slot === 'frame' ? `<div class="nameplate ${s.frame}"><span>Leo</span></div>` : (s.art || '');
-    return `<article class="shopItem"><div class="shopArt">${preview}</div><h3>${esc(s.name)}</h3><p>${esc(s.desc)}</p><p class="price">${shopPrice(s)}</p>${shopButton(s, shop, bal)}</article>`;
-  }).join('');
-  paintCredits();
-}
-function buyItem(id) {
-  const item = shopItem(id);
-  if (!item) return 'missing';
-  const shop = loadShop();
-  if (shop.owned[id]) return 'owned';
-  const bal = loadCredits();
-  if (bal < item.price) return 'short';
-  localStorage.setItem('runday.credits', String(bal - item.price));
-  shop.owned[id] = true;
-  shop[item.slot] = id;
-  saveShop(shop);
-  paintShop();
-  paintProfile();
-  return 'ok';
-}
-function equipItem(id) {
-  const item = shopItem(id);
-  const shop = loadShop();
-  if (!item || !shop.owned[id]) return;
-  shop[item.slot] = id;
-  saveShop(shop);
-  paintShop();
-  paintProfile();
-}
-function unequipItem(id) {
-  const item = shopItem(id);
-  const shop = loadShop();
-  if (!item) return;
-  if (shop[item.slot] === id) shop[item.slot] = '';
-  saveShop(shop);
-  paintShop();
-  paintProfile();
-}
-$('shopTabs').onclick = e => {
-  const t = e.target.closest('[data-shop]');
-  if (!t) return;
-  shopTab = t.dataset.shop;
-  paintShop();
-};
-$('shopGrid').onclick = e => {
-  const b = e.target.closest('button');
-  if (!b) return;
-  if (b.dataset.buy) buyItem(b.dataset.buy);
-  else if (b.dataset.on) equipItem(b.dataset.on);
-  else if (b.dataset.off) unequipItem(b.dataset.off);
-};
-$('modePicks').onclick = e => {
-  const b = e.target.closest('[data-pick]');
-  if (!b) return;
-  $('mode').value = b.dataset.pick;
-  $('mode').onchange();
-};
-$('logPicks').onclick = e => {
-  const b = e.target.closest('[data-pick]');
-  if (!b) return;
-  $('mm').value = b.dataset.pick;
-  paintPicks();
-};
-const DEFAULT_THEME = { h1: 272, h2: 24, gradient: true, dir: 'to bottom right' };
-function loadTheme() {
-  try {
-    const t = JSON.parse(localStorage.getItem('runday.theme') || 'null');
-    if (!t || typeof t.h1 !== 'number') return { ...DEFAULT_THEME };
-    return { h1: clampHue(t.h1), h2: clampHue(t.h2 == null ? 24 : t.h2), gradient: !!t.gradient, dir: t.dir || 'to bottom right' };
-  } catch (e) { return { ...DEFAULT_THEME }; }
-}
-function clampHue(n) { n = Math.round(+n || 0); if (n < 0) n = 0; if (n > 360) n = 360; return n; }
-function applyTheme(t) {
-  const h1 = clampHue(t.h1), h2 = clampHue(t.h2);
-  const bg = `hsl(${h1} 58% 14%)`;
-  const card = `hsl(${h1} 42% 20%)`;
-  document.documentElement.style.setProperty('--bg', bg);
-  document.documentElement.style.setProperty('--card', card);
-  document.body.style.background = t.gradient ? `linear-gradient(${t.dir}, hsl(${h1} 62% 24%), hsl(${h2} 70% 12%))` : bg;
-  document.documentElement.style.setProperty('--tx', '#f8f1ff');
-  document.documentElement.style.setProperty('--mu', '#d9ccea');
-}
-function saveTheme(t) { localStorage.setItem('runday.theme', JSON.stringify(t)); applyTheme(t); }
-function syncThemeControls() {
-  const t = loadTheme();
-  $('hue1').value = t.h1;
-  $('hue2').value = t.h2;
-  $('gradOn').checked = t.gradient;
-  $('gradDir').value = t.dir;
-  $('gradBox').hidden = !t.gradient;
-  applyTheme(t);
-}
-const SWATCHES = [0, 24, 45, 80, 140, 190, 220, 272, 310, 340];
-$('swatches').innerHTML = SWATCHES.map(h => `<button type="button" class="swatch" data-hue="${h}" style="background:hsl(${h} 70% 48%)" aria-label="Color ${h}"></button>`).join('');
-$('swatches').onclick = e => {
-  const b = e.target.closest('[data-hue]');
-  if (!b) return;
-  const t = loadTheme();
-  t.h1 = +b.dataset.hue;
-  $('hue1').value = t.h1;
-  saveTheme(t);
-};
-function themeFromControls() {
-  return { h1: clampHue($('hue1').value), h2: clampHue($('hue2').value), gradient: $('gradOn').checked, dir: $('gradDir').value };
-}
-$('hue1').oninput = () => saveTheme(themeFromControls());
-$('hue2').oninput = () => saveTheme(themeFromControls());
-$('gradOn').onchange = () => { $('gradBox').hidden = !$('gradOn').checked; saveTheme(themeFromControls()); };
-$('gradDir').onchange = () => saveTheme(themeFromControls());
-syncThemeControls();
-prepModeImgs();
-paintPicks();
-paintProfile();
-paintShop();
-const paintNameCore = paintName;
-paintName = function () { paintNameCore(); paintProfile(); };
-const modeChange = $('mode').onchange;
-$('mode').onchange = function () { if (modeChange) modeChange.call(this); paintPicks(); };
-$('f').addEventListener('reset', () => setTimeout(paintPicks, 0));
-window.__v5 = { creditFor, credits: loadCredits, buy: buyItem, equip: equipItem, unequip: unequipItem, shop: loadShop, SHOP, setTheme: saveTheme, theme: loadTheme, modeSVG };
-
-
-const V6 = 'V6';
-function seasonActive(name, when) {
-  const d = when || new Date();
-  const m = d.getMonth(), day = d.getDate();
-  if (name === 'halloween') return (m === 9 && day >= 15) || (m === 10 && day === 1);
-  if (name === 'winter') return m === 11 || m === 0;
-  if (name === 'valentine') return m === 1 && day <= 18;
-  if (name === 'july4') return m === 6 && day <= 7;
-  if (name === 'spring') return m === 3 || m === 4;
-  return false;
-}
-function shopPrice(s) {
-  if (s.quest) return questReady() ? 'Quest reward' : 'Locked until the family quest';
-  if (s.season && !seasonActive(s.season)) return 'Back in ' + s.back;
-  if (s.slot === 'consumable') return s.price + ' credits · you have ' + freezeCount();
-  return s.price + ' credits';
-}
-function shopButton(s, shop, bal) {
-  if (s.season && !seasonActive(s.season)) return '<button type="button" disabled>Not this season</button>';
-  if (s.quest && !questReady()) return '<button type="button" disabled>Finish the quest</button>';
-  if (s.slot === 'consumable') {
-    const disabled = bal < s.price ? 'disabled' : '';
-    return `<button type="button" data-buy="${s.id}" ${disabled}>${bal < s.price ? 'Need ' + s.price : 'Buy ' + s.price}</button>`;
-  }
-  const owned = !!shop.owned[s.id] || (s.quest && questReady() && !!shop.owned[s.id]);
-  const equipped = shop[s.slot] === s.id;
-  if (s.quest && questReady() && !shop.owned[s.id]) return `<button type="button" data-buy="${s.id}">Unlock</button>`;
-  if (!owned) {
-    const disabled = bal < s.price ? 'disabled' : '';
-    return `<button type="button" data-buy="${s.id}" ${disabled}>${bal < s.price ? 'Need ' + s.price : 'Buy ' + s.price}</button>`;
-  }
-  if (equipped) return `<button type="button" class="ghost" data-off="${s.id}">Take off</button>`;
-  return `<button type="button" data-on="${s.id}">Wear</button>`;
-}
-function freezeCount() {
-  const n = parseInt(localStorage.getItem('runday.freezes') || '0', 10);
-  return isFinite(n) && n > 0 ? n : 0;
-}
-function deviceId() {
-  let id = localStorage.getItem('runday.device');
-  if (!id) { id = 'phone-' + Math.random().toString(36).slice(2, 8); localStorage.setItem('runday.device', id); }
-  return id;
-}
-function monthKey(d) {
-  d = d || new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
-}
-const QUESTS = { canyon: { name: 'Walk toward the Grand Canyon', miles: 40, blurb: 'A pretend family trip. Add up 40 miles together this month.' } };
-function blankMiles() { return { run: 0, walk: 0, bike: 0, ski: 0, onewheel: 0 }; }
-function ownMonthMiles() {
-  const m = monthKey();
-  const o = blankMiles();
-  runs.forEach(r => { if (String(r.date || '').startsWith(m) && o[r.act] != null) o[r.act] += +r.mi || 0; });
-  Object.keys(o).forEach(k => { o[k] = Math.round(o[k] * 100) / 100; });
-  return o;
-}
-function questState() {
-  let raw = {};
-  try { raw = JSON.parse(localStorage.getItem('runday.quest') || '{}') || {}; } catch (e) { raw = {}; }
-  const month = monthKey();
-  if (raw.month !== month) return { month, goal: raw.goal || 'canyon', devices: {} };
-  return { month, goal: raw.goal || 'canyon', devices: raw.devices && typeof raw.devices === 'object' ? raw.devices : {} };
-}
-function saveQuest(s) { localStorage.setItem('runday.quest', JSON.stringify({ month: s.month, goal: s.goal, devices: s.devices })); }
-function milesOnly(obj) {
-  const o = blankMiles();
-  if (!obj) return o;
-  Object.keys(o).forEach(k => { o[k] = Math.round((+obj[k] || 0) * 100) / 100; });
-  return o;
-}
-function familyMiles() {
-  const s = questState();
-  s.devices[deviceId()] = ownMonthMiles();
-  const sum = blankMiles();
-  Object.values(s.devices).forEach(part => { const m = milesOnly(part); Object.keys(sum).forEach(k => { sum[k] += m[k]; }); });
-  const total = Object.values(sum).reduce((a, b) => a + b, 0);
-  return { sum, total: Math.round(total * 100) / 100, goal: QUESTS[s.goal] || QUESTS.canyon, state: s };
-}
-function questReady() { return familyMiles().total + 1e-6 >= (QUESTS.canyon.miles); }
-function exportQuestCode() {
-  const fam = familyMiles();
-  const payload = { v: 1, month: fam.state.month, goal: fam.state.goal, devices: {} };
-  Object.entries(fam.state.devices).forEach(([id, miles]) => { payload.devices[id] = milesOnly(miles); });
-  saveQuest(fam.state);
-  const json = JSON.stringify(payload);
-  if (/latitude|longitude|"route"|lat":|lng":/.test(json)) throw new Error('code tried to include a place');
-  return btoa(unescape(encodeURIComponent(json))).replace(/=+$/, '');
-}
-function decodeCode(code) {
-  let s = String(code || '').trim().replace(/-/g, '+').replace(/_/g, '/');
-  while (s.length % 4) s += '=';
-  return decodeURIComponent(escape(atob(s)));
-}
-function importQuestCode(code) {
-  const text = decodeCode(code);
-  if (/latitude|longitude|"route"|lat":|lng":/.test(text)) return 'This code has a place in it, so it was not used.';
-  const data = JSON.parse(text);
-  if (!data || data.v !== 1 || !data.devices || typeof data.devices !== 'object' || Array.isArray(data.devices)) return 'That code is not a Run-Day family code.';
-  const s = questState();
-  if (data.month && data.month !== s.month) return 'That code is for a different month.';
-  if (data.goal && QUESTS[data.goal]) s.goal = data.goal;
-  Object.entries(data.devices).forEach(([id, miles]) => {
-    if (!id || typeof id !== 'string' || id.length > 40) return;
-    s.devices[id] = milesOnly(miles);
-  });
-  s.devices[deviceId()] = ownMonthMiles();
-  saveQuest(s);
-  paintHome();
-  paintShop();
-  return 'Miles added. Still no places in the code.';
-}
-function dayKey(d) { return ld(d); }
-function shiftDay(ds, n) {
-  const d = new Date(ds + 'T00:00');
-  d.setDate(d.getDate() + n);
-  return ld(d);
-}
-function applyFreezes() {
-  const dates = new Set(runs.map(r => r.date).filter(Boolean));
-  let bag = freezeCount();
-  let used = {};
-  try { used = JSON.parse(localStorage.getItem('runday.freezeUsed') || '{}') || {}; } catch (e) { used = {}; }
-  const today = dayKey(new Date());
-  let cursor = dates.has(today) ? today : shiftDay(today, -1);
-  let guard = 0;
-  while (guard++ < 400) {
-    if (dates.has(cursor)) { cursor = shiftDay(cursor, -1); continue; }
-    const gap = cursor;
-    if (used[gap]) { cursor = shiftDay(cursor, -1); continue; }
-    const prev = shiftDay(gap, -1);
-    if (!dates.has(prev) || bag <= 0) break;
-    used[gap] = true;
-    bag -= 1;
-    localStorage.setItem('runday.freezes', String(bag));
-    localStorage.setItem('runday.freezeUsed', JSON.stringify(used));
-    cursor = shiftDay(cursor, -1);
-  }
-}
-function streakCount() {
-  applyFreezes();
-  const dates = new Set(runs.map(r => r.date).filter(Boolean));
-  let used = {};
-  try { used = JSON.parse(localStorage.getItem('runday.freezeUsed') || '{}') || {}; } catch (e) { used = {}; }
-  const today = dayKey(new Date());
-  let cursor = dates.has(today) ? today : shiftDay(today, -1);
-  if (!dates.has(cursor) && !used[cursor]) return 0;
-  let n = 0, guard = 0;
-  while (guard++ < 400) {
-    if (dates.has(cursor) || used[cursor]) { n++; cursor = shiftDay(cursor, -1); continue; }
-    break;
-  }
-  return n;
-}
-const CHALLENGES = [
-  { id: 'mile', text: 'Move 1 mile today. Any activity counts.', test: list => list.reduce((s, r) => s + (+r.mi || 0), 0) >= 1 },
-  { id: 'walk', text: 'Take a walk today, even a short one.', test: list => list.some(r => r.act === 'walk' && (+r.mi || 0) >= 0.1) },
-  { id: 'ten', text: 'Keep moving for 10 minutes today.', test: list => list.reduce((s, r) => s + (+r.sec || 0), 0) >= 600 },
-  { id: 'easy', text: 'Log any activity today.', test: list => list.length > 0 }
-];
-function todayList() {
-  const t = dayKey(new Date());
-  return runs.filter(r => r.date === t);
-}
-function todayChallenge() {
-  const c = CHALLENGES[new Date().getDate() % CHALLENGES.length];
-  return { ...c, done: c.test(todayList()) };
-}
-function routeBits(route) {
-  let drop = 0, gain = 0, top = 0, lifts = 0, downs = 0, nose = false;
-  let upStreak = 0, downStreak = 0, prevMph = 0;
-  if (!route || route.length < 2) return { drop, gain, top, lifts, downs, nose };
-  for (let i = 1; i < route.length; i++) {
-    const a = route[i - 1], b = route[i];
-    const dt = Math.max(((+b[2] || 0) - (+a[2] || 0)) / 1000, 0.001);
-    const miles = hav(a, b);
-    const mph = miles / dt * 3600;
-    if (isFinite(mph) && mph > top && mph < 80) top = mph;
-    if (prevMph > 12 && mph < 3 && dt < 5) nose = true;
-    prevMph = mph;
-    if (a[3] != null && b[3] != null && isFinite(+a[3]) && isFinite(+b[3])) {
-      const feet = (+b[3] - +a[3]) * 3.28084;
-      if (feet < -1) { drop -= feet; downStreak++; upStreak = 0; if (downStreak === 4 && mph > 6) downs++; }
-      else if (feet > 1) { gain += feet; upStreak++; downStreak = 0; if (upStreak === 4 && mph < 14) lifts++; }
-      else { upStreak = 0; downStreak = 0; }
-    }
-  }
-  return { drop, gain, top, lifts, downs, nose };
-}
-function skiSummary() {
-  const list = runs.filter(r => r.act === 'ski');
-  let drop = 0, top = 0, lifts = 0, downs = 0;
-  list.forEach(r => { const b = routeBits(r.route); drop += b.drop; top = Math.max(top, b.top); lifts += b.lifts; downs += b.downs; });
-  if (!top) list.forEach(r => { if (r.sec > 0) top = Math.max(top, (+r.mi || 0) / (r.sec / 3600)); });
-  return { drop, top, lifts, downs, sessions: list.length };
-}
-function onewheelSummary() {
-  const list = runs.filter(r => r.act === 'onewheel');
-  let top = 0, climb = 0, longest = 0, clean = 0, broken = false;
-  list.slice().sort((a, b) => String(a.date).localeCompare(String(b.date))).forEach(r => {
-    const b = routeBits(r.route);
-    top = Math.max(top, b.top);
-    climb += b.gain;
-    longest = Math.max(longest, +r.sec || 0);
-    if (r.sec > 0) top = Math.max(top, (+r.mi || 0) / (r.sec / 3600));
-    if (b.nose) broken = true;
-    else if (!broken) clean++;
-  });
-  return { top, climb, longest, clean };
-}
-function bestRoute(act) {
-  const list = runs.filter(r => r.act === act && r.route && r.route.length > 4 && r.sec > 0 && r.mi > 0);
-  if (!list.length) return null;
-  return list.slice().sort((a, b) => (a.sec / a.mi) - (b.sec / b.mi))[0];
-}
-let ghostMarker = null;
-function moveGhost() {
-  if (!G || !G.ghost || !map || !window.L) return;
-  const route = G.ghost.route;
-  const best = Math.max(1, +G.ghost.sec || 1);
-  const t = Math.min(1, (elapsed() / 1000) / best);
-  const idx = Math.min(route.length - 1, Math.floor(t * (route.length - 1)));
-  const p = route[idx];
-  const icon = L.divIcon({ className: 'ghost', html: '👻', iconSize: [28, 28], iconAnchor: [14, 14] });
-  if (!ghostMarker) ghostMarker = L.marker([p[0], p[1]], { icon, zIndexOffset: 900 }).addTo(map);
-  else { ghostMarker.setLatLng([p[0], p[1]]); ghostMarker.setIcon(icon); }
-}
-function clearGhost() { if (ghostMarker) { ghostMarker.remove(); ghostMarker = null; } }
-let spokenAt = 0;
-function voiceMode() { return localStorage.getItem('runday.voice') || 'off'; }
-function speak(text) {
-  if (voiceMode() === 'off' || !window.speechSynthesis || location.hash === '#simtest') return;
-  try {
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
-  } catch (e) {}
-}
-function maybeSpeak() {
-  if (!G || voiceMode() === 'off') return;
-  const mi = G.dist;
-  if (voiceMode() === 'short' && Math.floor(mi) >= 1 && Math.floor(mi) > Math.floor(spokenAt)) {
-    spokenAt = mi;
-    speak(Math.floor(mi) + ' miles. Nice work.');
-  } else if (voiceMode() === 'chatty' && mi - spokenAt >= 0.25) {
-    spokenAt = mi;
-    speak('You have gone ' + mi.toFixed(1) + ' miles. You can do this.');
-  }
-}
-function blurOn() { return localStorage.getItem('runday.blur') === '1'; }
-function dropStart(route, miles) {
-  if (!route || !route.length) return route;
-  let acc = 0;
-  const out = [];
-  for (let i = 1; i < route.length; i++) {
-    acc += hav(route[i - 1], route[i]);
-    if (acc >= miles) out.push(route[i]);
-  }
-  return out.length ? out : route.slice(-1);
-}
-function worldSVG() {
-  const m = { run: 0, walk: 0, bike: 0, ski: 0, onewheel: 0 };
-  runs.forEach(r => { if (m[r.act] != null) m[r.act] += +r.mi || 0; });
-  const total = Object.values(m).reduce((a, b) => a + b, 0);
-  const grow = Math.min(40, total);
-  let shapes = `<ellipse cx="160" cy="120" rx="${70 + grow}" ry="${28 + grow * 0.3}" fill="#67b15a"/>`;
-  shapes += '<ellipse cx="160" cy="128" rx="90" ry="18" fill="#3a7ca5" opacity=".35"/>';
-  if (m.walk >= 0.5) shapes += '<circle cx="90" cy="100" r="10" fill="#2f7d32"/><rect x="88" y="100" width="4" height="16" fill="#6b3e1e"/>';
-  if (m.run >= 1) shapes += '<path d="M70 120 C100 100 130 130 150 112" fill="none" stroke="#f07010" stroke-width="3"/>';
-  if (m.bike >= 1) shapes += '<path d="M40 140 H280" stroke="#444" stroke-width="6"/><path d="M40 140 H280" stroke="#f6e27a" stroke-width="1" stroke-dasharray="6 6"/>';
-  if (m.ski >= 0.2) shapes += `<path d="M${120 - grow} 70 L160 40 L${200 + grow} 70 Z" fill="#e8f4ff"/><circle cx="200" cy="56" r="3" fill="#fff"/>`;
-  if (m.onewheel >= 0.5) shapes += '<rect x="210" y="108" width="36" height="6" rx="2" fill="#9b50e0"/><circle cx="240" cy="118" r="7" fill="#f07010"/>';
-  shapes += '<circle cx="250" cy="36" r="12" fill="#f6e27a"/>';
-  return `<svg viewBox="0 0 320 180" class="island" aria-label="Your island">${shapes}</svg>`;
-}
-const STORIES = {
-  run: [
-    { id: 'run-s1', mi: 0.5, title: 'The Orange Path', text: 'A glowing orange path appears under your shoes. Each step paints a little more of it. The path hums like a happy song and waits for you to come back tomorrow.' },
-    { id: 'run-s2', mi: 2, title: 'Hill of High-Fives', text: 'At two miles the hill wakes up and offers a high-five. You slap the breeze, laugh, and the hill sneezes out a flock of paper birds.' },
-    { id: 'run-s3', mi: 5, title: 'Finish-Line Fireflies', text: 'Fireflies spell your name over the path. They do not care how fast you were. They only care that you kept going.' }
-  ],
-  walk: [
-    { id: 'walk-s1', mi: 0.3, title: 'Pebble Post Office', text: 'A round pebble asks you to carry a letter to the next crack in the sidewalk. The letter says, "Nice shoes." You deliver it with a bow.' },
-    { id: 'walk-s2', mi: 1, title: 'The Slow Parade', text: 'Squirrels line up and clap very slowly. You are the grand marshal. Nobody is in a hurry, and that is the whole point.' },
-    { id: 'walk-s3', mi: 3, title: 'Cloud Companion', text: 'A small cloud decides to walk with you. It rains only on the flowers and keeps your head dry.' }
-  ],
-  bike: [
-    { id: 'bike-s1', mi: 1, title: 'Bell Concert', text: 'Your bell rings and every mailbox sings back one note. Together you make a tiny song that lasts one block.' },
-    { id: 'bike-s2', mi: 5, title: 'Tailwind Taxi', text: 'A friendly tailwind offers you a ride. You still pedal, but the wind tells jokes the whole way.' },
-    { id: 'bike-s3', mi: 15, title: 'Spoke Stars', text: 'The spokes catch the sun and throw star shapes on the road. You roll through a constellation you made yourself.' }
-  ],
-  ski: [
-    { id: 'ski-s1', mi: 0.5, title: 'First Snowflake', text: 'The first snowflake of the day introduces itself. Its name is Pip. Pip rides on your sleeve down the gentle slope.' },
-    { id: 'ski-s2', mi: 2, title: 'Cocoa Corner', text: 'A corner of the hill smells like cocoa. You carve a smile into the snow and the smile steams.' },
-    { id: 'ski-s3', mi: 6, title: 'Quiet Mountain', text: 'The mountain gets quiet so you can hear your skis draw a long white line. The line looks proud of you.' }
-  ],
-  onewheel: [
-    { id: 'ow-s1', mi: 0.5, title: 'Wobble Hello', text: 'The wheel says hello with a tiny wobble. You bend your knees, smile, and the wobble turns into a glide.' },
-    { id: 'ow-s2', mi: 2, title: 'One-Wheel Parade', text: 'A parade of leaves follows your single wheel. They take turns being the drum major.' },
-    { id: 'ow-s3', mi: 8, title: 'Balance Castle', text: 'You roll past a castle made of balance. The drawbridge is a smooth little hill, and you climb it without a fuss.' }
-  ]
-};
-function storyUnlocked(story, mode) {
-  const list = runs.filter(r => r.act === mode);
-  const total = list.reduce((s, r) => s + (+r.mi || 0), 0);
-  return total + 1e-6 >= story.mi || list.some(r => (+r.mi || 0) + 1e-6 >= story.mi);
-}
-function readStory(text) {
-  const box = $('storyText');
-  if (box) box.textContent = text;
-  speak(text);
-}
-function paintStories() {
-  if (!$('stories')) return;
-  const blocks = Object.keys(STORIES).map(mode => {
-    const items = STORIES[mode].map(s => {
-      const on = storyUnlocked(s, mode);
-      return `<article class="story${on ? '' : ' locked'}"><h3>${modeSVG(mode)} ${esc(s.title)}</h3><p>${on ? esc(s.text) : 'Ride ' + s.mi + ' miles to open this chapter.'}</p>${on ? `<button type="button" data-read="${s.id}">Read aloud</button>` : ''}</article>`;
-    }).join('');
-    return `<div class="storyMode"><h3>${MODES[mode][0]}</h3>${items}</div>`;
-  }).join('');
-  $('stories').innerHTML = blocks;
-}
-function funFact() {
-  if (!runs.length) return 'Log one activity and a fun fact will show up here.';
-  const longest = runs.slice().sort((a, b) => (+b.mi || 0) - (+a.mi || 0))[0];
-  const days = new Set(runs.map(r => r.date)).size;
-  return 'Your longest saved activity is ' + (+longest.mi).toFixed(2) + ' miles of ' + (MODES[longest.act] ? MODES[longest.act][0].toLowerCase() : 'moving') + '. You have moved on ' + days + ' different day' + (days === 1 ? '' : 's') + '.';
-}
-function recapHTML() {
-  const now = new Date();
-  const thisWeek = monday(ld(now));
-  const lastWeek = shiftDay(thisWeek, -7);
-  const thisMonth = monthKey(now);
-  const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const lastMonth = monthKey(prev);
-  function bucket(pred) {
-    const o = blankMiles();
-    runs.forEach(r => { if (pred(r) && o[r.act] != null) o[r.act] += +r.mi || 0; });
-    return o;
-  }
-  const w1 = bucket(r => monday(r.date) === thisWeek);
-  const w0 = bucket(r => monday(r.date) === lastWeek);
-  const m1 = bucket(r => String(r.date || '').startsWith(thisMonth));
-  const m0 = bucket(r => String(r.date || '').startsWith(lastMonth));
-  const line = (label, a, b) => Object.keys(MODES).map(k => {
-    const diff = a[k] - b[k];
-    const arrow = diff > 0.05 ? '↑' : diff < -0.05 ? '↓' : '·';
-    return `${MODES[k][0]} ${a[k].toFixed(1)} mi ${arrow}`;
-  }).join('<br>');
-  return `<p><b>This week</b><br>${line('week', w1, w0)}</p><p><b>This month</b><br>${line('month', m1, m0)}</p><p class="hint">${esc(funFact())}</p>`;
-}
-function paintHome() {
-  if ($('streakLine')) $('streakLine').textContent = 'Streak: ' + streakCount() + ' day' + (streakCount() === 1 ? '' : 's') + ' · freezes left ' + freezeCount();
-  const ch = todayChallenge();
-  if ($('challengeLine')) $('challengeLine').textContent = (ch.done ? 'Done: ' : 'Today: ') + ch.text;
-  const fam = familyMiles();
-  if ($('questLine')) $('questLine').textContent = fam.goal.name + ': ' + fam.total.toFixed(1) + ' / ' + fam.goal.miles + ' mi this month';
-  if ($('questBar')) {
-    const pct = Math.max(0, Math.min(100, fam.total / fam.goal.miles * 100));
-    $('questBar').innerHTML = `<div class="bar"><span style="width:${pct}%"></span></div>`;
-  }
-  if ($('world')) $('world').innerHTML = worldSVG();
-  if ($('worldProfile')) $('worldProfile').innerHTML = worldSVG();
-  const ski = skiSummary();
-  const ow = onewheelSummary();
-  if ($('sportBody')) $('sportBody').innerHTML = `<p><b>Ski</b><br>${ski.downs} downhill runs spotted · ${Math.round(ski.drop)} vertical feet · top ${ski.top ? ski.top.toFixed(1) : '0'} mph · ${ski.lifts} lift rides</p><p><b>Onewheel</b><br>Top ${ow.top ? ow.top.toFixed(1) : '0'} mph · longest ride ${fmt(ow.longest)} · climbed ${Math.round(ow.climb)} ft · clean streak ${ow.clean}</p>`;
-  if ($('ghostNote')) {
-    const g = bestRoute($('mode') ? $('mode').value : 'run');
-    $('ghostNote').textContent = g ? 'Ghost ready: your best ' + MODES[g.act][0].toLowerCase() + ' pace on a saved route.' : 'Finish one saved GPS route to race your ghost.';
-  }
-  paintStories();
-  if ($('recap')) $('recap').innerHTML = recapHTML();
-  const shield = $('shield');
-  if (shield) shield.textContent = 'Your location never leaves this phone';
-}
-function showPage(name) {
-  ['home', 'shop', 'profile', 'settings', 'privacy'].forEach(p => {
-    const el = document.getElementById('page-' + p);
-    if (el) el.hidden = p !== name;
-  });
-  document.querySelectorAll('#tabbar a').forEach(a => a.classList.toggle('on', a.dataset.page === name || (name === 'privacy' && a.dataset.page === 'settings')));
-  if (name === 'home' && map) setTimeout(() => map.invalidateSize(), 60);
-  if (name === 'profile') paintHome();
-}
-function pageFromHash() {
-  const h = location.hash;
-  if (h === '#shop') return 'shop';
-  if (h === '#profile') return 'profile';
-  if (h === '#settings') return 'settings';
-  if (h === '#privacy') return 'privacy';
-  return 'home';
-}
-function onRoute() { showPage(pageFromHash()); }
-window.addEventListener('hashchange', onRoute);
-function inSeasonDate(name, ds) {
-  if (!ds) return false;
-  const p = ds.split('-').map(Number);
-  if (p.length < 3) return false;
-  return seasonActive(name, new Date(p[0], p[1] - 1, p[2]));
-}
-const EXTRA = [
-  { id: 'ski-vert-100', mode: 'ski', tier: 'bronze', name: 'Hundred Feet of Snow', emoji: '❄️', rule: 'Save ski routes that drop 100 feet in total.', check: { type: 'v6', key: 'vert', n: 100 } },
-  { id: 'ski-vert-1000', mode: 'ski', tier: 'silver', name: 'Thousand-Foot Mountain', emoji: '🏔️', rule: 'Save ski routes that drop 1,000 feet in total.', check: { type: 'v6', key: 'vert', n: 1000 } },
-  { id: 'ski-vert-10000', mode: 'ski', tier: 'gold', name: 'Ten Thousand Feet', emoji: '⛷️', rule: 'Save ski routes that drop 10,000 feet in total.', check: { type: 'v6', key: 'vert', n: 10000 } },
-  { id: 'ski-vert-100000', mode: 'ski', tier: 'diamond', name: 'Hundred-Thousand Drop', emoji: '🗻', rule: 'Save ski routes that drop 100,000 feet in total.', check: { type: 'v6', key: 'vert', n: 100000 } },
-  { id: 'ski-vert-1000000', mode: 'ski', tier: 'legend', name: 'Million Vertical', emoji: '👑', rule: 'Save ski routes that drop 1,000,000 feet in total.', check: { type: 'v6', key: 'vert', n: 1000000 } },
-  { id: 'ski-lift-1', mode: 'ski', tier: 'bronze', name: 'Chairlift Wave', emoji: '🚡', rule: 'Have a saved ski route that shows a slow uphill lift.', check: { type: 'v6', key: 'lifts', n: 1 } },
-  { id: 'ski-downs-5', mode: 'ski', tier: 'silver', name: 'Five White Lines', emoji: '🎿', rule: 'Spot 5 downhill ski runs across saved routes.', check: { type: 'v6', key: 'downs', n: 5 } },
-  { id: 'ow-top-10', mode: 'onewheel', tier: 'bronze', name: 'Ten-Mile Glide', emoji: '🛞', rule: 'Reach 10 mph on a one-wheel ride.', check: { type: 'v6', key: 'owtop', n: 10 } },
-  { id: 'ow-top-15', mode: 'onewheel', tier: 'gold', name: 'Fast Float', emoji: '💨', rule: 'Reach 15 mph on a one-wheel ride.', check: { type: 'v6', key: 'owtop', n: 15 } },
-  { id: 'ow-long-20', mode: 'onewheel', tier: 'silver', name: 'Twenty-Minute Glide', emoji: '⏱️', rule: 'Finish a one-wheel ride that lasts at least 20 minutes.', check: { type: 'v6', key: 'owlong', n: 1200 } },
-  { id: 'ow-climb-100', mode: 'onewheel', tier: 'bronze', name: 'Little Hill', emoji: '⛰️', rule: 'Climb 100 feet on saved one-wheel routes.', check: { type: 'v6', key: 'owclimb', n: 100 } },
-  { id: 'ow-climb-1000', mode: 'onewheel', tier: 'diamond', name: 'Hill Collector', emoji: '🥾', rule: 'Climb 1,000 feet on saved one-wheel routes.', check: { type: 'v6', key: 'owclimb', n: 1000 } },
-  { id: 'ow-clean-3', mode: 'onewheel', tier: 'silver', name: 'Smooth Three', emoji: '😌', rule: 'Keep a no-nosedive streak of 3 one-wheel rides.', check: { type: 'v6', key: 'owclean', n: 3 } },
-  { id: 'any-streak-7', mode: 'combo', tier: 'gold', name: 'Week of Showing Up', emoji: '📅', rule: 'Move on 7 days in a row. A streak freeze can cover one missed day.', check: { type: 'v6', key: 'streak', n: 7 } },
-  { id: 'season-pumpkin', mode: 'combo', tier: 'bronze', name: 'Pumpkin Mile', emoji: '🎃', rule: 'Log at least 1 mile on a day from October 15 through November 1.', check: { type: 'v6', key: 'season', season: 'halloween', mi: 1 } },
-  { id: 'season-snow', mode: 'ski', tier: 'silver', name: 'December Snowbell', emoji: '🔔', rule: 'Save a ski during December or January.', check: { type: 'v6', key: 'seasonmode', season: 'winter', mode: 'ski' } },
-  { id: 'season-heart', mode: 'combo', tier: 'bronze', name: 'Valentine Mile', emoji: '💗', rule: 'Log at least 1 mile on a day from February 1 through February 18.', check: { type: 'v6', key: 'season', season: 'valentine', mi: 1 } },
-  { id: 'season-spark', mode: 'combo', tier: 'bronze', name: 'Firework Footsteps', emoji: '🎇', rule: 'Log any activity from July 1 through July 7.', check: { type: 'v6', key: 'season', season: 'july4', mi: 0.1 } }
-];
-function v6met(a) {
-  const c = a.check || {};
-  const ski = skiSummary();
-  const ow = onewheelSummary();
-  if (c.key === 'vert') return ski.drop + 1e-6 >= c.n;
-  if (c.key === 'lifts') return ski.lifts >= c.n;
-  if (c.key === 'downs') return ski.downs >= c.n;
-  if (c.key === 'owtop') return ow.top + 1e-6 >= c.n;
-  if (c.key === 'owlong') return ow.longest + 1e-6 >= c.n;
-  if (c.key === 'owclimb') return ow.climb + 1e-6 >= c.n;
-  if (c.key === 'owclean') return ow.clean >= c.n;
-  if (c.key === 'streak') return streakCount() >= c.n;
-  if (c.key === 'season') return runs.some(r => inSeasonDate(c.season, r.date) && (+r.mi || 0) + 1e-6 >= c.mi);
-  if (c.key === 'seasonmode') return runs.some(r => r.act === c.mode && inSeasonDate(c.season, r.date));
-  return false;
-}
-EXTRA.forEach(a => {
-  a.modeLabel = a.mode === 'combo' ? 'Combo' : (MODES[a.mode] ? MODES[a.mode][0] : a.mode);
-  a.category = a.check.key === 'season' || a.check.key === 'seasonmode' ? 'Season' : a.check.key.indexOf('ow') === 0 ? 'Onewheel' : 'Ski';
-  a.tierLabel = a.tier[0].toUpperCase() + a.tier.slice(1);
-  a.share = '{username} just unlocked ' + a.name + ' on Run-Day! ' + a.emoji;
-  if (!Ach.ACH.some(x => x.id === a.id)) Ach.ACH.push(a);
-});
-const metCore = Ach.met.bind(Ach);
-Ach.met = function (a, rs, photos) {
-  if (a.check && a.check.type === 'v6') return v6met(a);
-  return metCore(a, rs, photos);
-};
-if (window.__ach) window.__ach.met = Ach.met;
-SHOP.push(
-  { id: 'freeze', cat: 'Power-up', slot: 'consumable', name: 'Streak Freeze', price: 60, desc: 'Covers one missed day so your streak can keep going.', art: '<svg viewBox="0 0 80 80"><rect width="80" height="80" rx="16" fill="#d7ecff"/><path d="M40 14 v52 M22 28 l36 24 M22 52 l36-24" stroke="#3aa0d8" stroke-width="4" stroke-linecap="round"/></svg>' },
-  { id: 'canyon', cat: 'Seasonal decoration', slot: 'deco', quest: 'canyon', price: 0, name: 'Canyon Sunset', desc: 'Unlocked when your family reaches the monthly mile goal. No coins needed.', art: '<svg viewBox="0 0 320 88"><rect width="320" height="88" rx="12" fill="#f6b13a"/><path d="M0 60 L40 40 L80 66 L130 34 L180 70 L240 42 L320 64 V88 H0 Z" fill="#c45a18"/><circle cx="250" cy="24" r="10" fill="#f07010"/></svg>' },
-  { id: 'lantern', cat: 'Profile picture', slot: 'avatar', season: 'halloween', back: 'October', price: 80, name: 'Jack-o-Lantern Mask', desc: 'A Halloween face. In the shop from October 15 through November 1.', art: '<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#2a1848"/><circle cx="40" cy="44" r="22" fill="#f07010"/><path d="M30 40 h8 l-4 8z M44 40 h8 l-4 8z" fill="#2a1208"/><path d="M32 56c4 4 12 4 16 0" fill="none" stroke="#2a1208" stroke-width="2"/><rect x="36" y="16" width="8" height="10" fill="#2f7d32"/></svg>' },
-  { id: 'snowframe', cat: 'Name frame', slot: 'frame', frame: 'frame-glow', season: 'winter', back: 'December', price: 70, name: 'Snowflake Frame', desc: 'A winter frame. In the shop in December and January.', art: '' }
-);
-const buyCore = buyItem;
-buyItem = function (id) {
-  const item = shopItem(id);
-  if (!item) return 'missing';
-  if (item.season && !seasonActive(item.season)) return 'season';
-  if (item.quest && !questReady()) return 'locked';
-  if (item.slot === 'consumable') {
-    const bal = loadCredits();
-    if (bal < item.price) return 'short';
-    localStorage.setItem('runday.credits', String(bal - item.price));
-    localStorage.setItem('runday.freezes', String(freezeCount() + 1));
-    paintShop();
-    paintCredits();
-    paintHome();
-    return 'ok';
-  }
-  if (item.quest && questReady()) {
-    const shop = loadShop();
-    shop.owned[id] = true;
-    shop[item.slot] = id;
-    saveShop(shop);
-    paintShop();
-    paintProfile();
-    return 'ok';
-  }
-  return buyCore(id);
-};
-const showCore = show;
-show = function () { showCore(); moveGhost(); maybeSpeak(); if ($('streakLine')) paintHome(); };
-const stopCore = stop;
-stop = function (save) { clearGhost(); spokenAt = 0; stopCore(save); paintHome(); };
-const onPosCore = onPos;
-onPos = function (p) {
-  onPosCore(p);
-  if (blurOn() && G && line && G.dist < 0.15) {
-    const ll = line.getLatLngs();
-    if (ll.length) line.setLatLngs([]);
-  }
-};
-const startCore = $('startB').onclick;
-$('startB').onclick = function () {
-  startCore.call(this);
-  spokenAt = 0;
-  if (G) G.ghost = bestRoute(G.act);
-};
-const showRunCore = showRun;
-showRun = async function (id) {
-  if (pageFromHash() !== 'home') { location.hash = '#home'; showPage('home'); }
-  const r = runs.find(x => String(x.id) === String(id));
-  let saved = null;
-  if (r && blurOn() && r.route) { saved = r.route; r.route = dropStart(r.route, 0.15); }
-  const out = await showRunCore(id);
-  if (r && saved) r.route = saved;
-  return out;
-};
-if ($('stories')) $('stories').onclick = e => {
-  const b = e.target.closest('[data-read]');
-  if (!b) return;
-  const story = Object.values(STORIES).flat().find(s => s.id === b.dataset.read);
-  if (story) readStory(story.text);
-};
-if ($('voiceMode')) {
-  $('voiceMode').value = voiceMode();
-  $('voiceMode').onchange = () => localStorage.setItem('runday.voice', $('voiceMode').value);
-}
-if ($('blurHome')) {
-  $('blurHome').checked = blurOn();
-  $('blurHome').onchange = () => localStorage.setItem('runday.blur', $('blurHome').checked ? '1' : '0');
-}
-if ($('openPrivacy')) $('openPrivacy').onclick = () => { location.hash = '#privacy'; };
-if ($('copyQuest')) $('copyQuest').onclick = async () => {
-  const code = exportQuestCode();
-  $('questOut').value = code;
-  let copied = false;
-  try { await navigator.clipboard.writeText(code); copied = true; } catch (e) {}
-  $('questMsg').textContent = copied ? 'Code copied. It has mile totals only.' : 'Code is in the box. Copy it to your family. It has mile totals only.';
-};
-if ($('applyQuest')) $('applyQuest').onclick = () => {
-  try { $('questMsg').textContent = importQuestCode($('questIn').value); }
-  catch (e) { $('questMsg').textContent = 'That code could not be read.'; }
-};
-if ($('aboutVer')) $('aboutVer').textContent = 'Run-Day ' + V6;
-document.querySelectorAll('#tabbar a').forEach(a => { a.addEventListener('click', () => setTimeout(onRoute, 0)); });
-onRoute();
-paintHome();
-paintShop();
-window.__v6 = { V6, exportQuestCode, importQuestCode, familyMiles, seasonActive, streakCount, todayChallenge, skiSummary, onewheelSummary, bestRoute, worldSVG, storyUnlocked, STORIES, voiceMode, pageFromHash, questReady, routeBits };
 
 </script></body></html>
