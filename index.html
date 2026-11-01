@@ -5,10 +5,11 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#f07010">
 <meta name="apple-mobile-web-app-title" content="Run-Day">
-<script>try{var t=JSON.parse(localStorage.getItem('runday.theme')||'null');if(t&&typeof t.h1==='number'){document.documentElement.style.setProperty('--bg','hsl('+t.h1+' 58% 14%)');document.documentElement.style.setProperty('--card','hsl('+t.h1+' 42% 20%)');}}catch(e){}</script>
+<script>try{var app=localStorage.getItem('runday.appearance')==='light'?'light':'dark';document.documentElement.dataset.theme=app;var t=JSON.parse(localStorage.getItem('runday.theme')||'null');var legacy=t&&t.h1===272&&t.h2===24&&t.gradient&&!t.custom;if(t&&t.custom&&!legacy){var L=app==='light'?96:8;document.documentElement.style.setProperty('--bg','hsl('+t.h1+' 18% '+L+'%)');document.documentElement.style.setProperty('--card','hsl('+t.h1+' 14% '+(L+4)+'%)');}}catch(e){}</script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
-:root{--bg:#241445;--card:#321c58;--acc:#f07010;--purple:#9b50e0;--tx:#f8f1ff;--mu:#d9ccea;--ink:#2a1208}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+:root{--bg:#0e0e10;--card:#17171a;--sink:#121214;--line:#2a2a2e;--acc:#f07010;--tx:#f4f4f5;--mu:#a1a1aa;--ink:#1a120c;--shadow:0 1px 2px rgba(0,0,0,.28),0 10px 28px rgba(0,0,0,.22)}
+html[data-theme="light"]{--bg:#f5f5f6;--card:#fff;--sink:#efeff1;--line:#e4e4e7;--tx:#18181b;--mu:#71717a;--shadow:0 1px 2px rgba(0,0,0,.04),0 10px 28px rgba(0,0,0,.06)}
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--tx);letter-spacing:-0.011em;line-height:1.45}
 main{max-width:520px;margin:auto;padding:16px}h1{margin:8px 0 16px;font-size:28px}h1 span{color:var(--acc)}
 .card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px}h2{font-size:16px;margin:0 0 10px;color:var(--mu)}
 form{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{min-width:0;font-size:12px;color:var(--mu);display:flex;flex-direction:column;gap:4px}
@@ -123,31 +124,93 @@ main{padding-bottom:88px}
 .shield{font-weight:800;color:#f6e27a}
 .ghost{font-size:26px;text-align:center}
 textarea{width:100%;min-height:72px}
+h1,h2,h3,p{letter-spacing:-0.02em}
+h2{font-size:15px;font-weight:650;color:var(--tx);margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+main{max-width:480px;padding:20px 16px 96px}
+input,select,textarea{background:var(--sink);color:var(--tx);border:1px solid var(--line);border-radius:10px}
+button{border-radius:12px;transition:transform .15s ease,background .15s ease,border-color .15s ease,opacity .15s ease}
+button:active{transform:translateY(1px)}
+button.ghost,.ph{background:transparent;color:var(--tx);border:1px solid var(--line)}
+.ph{border-radius:999px;padding:6px 10px}
+#pauseB,#finB{background:transparent;color:var(--tx);border:1px solid var(--line)}
+#startB{min-height:52px;font-size:17px;border-radius:14px}
+.btns{display:grid;grid-template-columns:1.5fr .8fr .8fr;gap:8px}
+.stats{gap:10px}.stat{background:var(--sink);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat b{font-size:26px;font-weight:700;letter-spacing:-0.03em}
+.stat small{font-size:12px;font-weight:600;letter-spacing:0;text-transform:uppercase}
+#map,#mapfb{border:1px solid var(--line);border-radius:14px;height:240px}
+h1.brand{margin:4px 0 20px}
+.logo{width:76px;height:76px;object-fit:cover;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow);background:#fff}
+#tabbar{background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:6px 8px 10px}
+#tabbar a{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--mu);font-size:11px;font-weight:600;letter-spacing:0;padding:6px 2px}
+#tabbar a svg{width:22px;height:22px;stroke:currentColor;fill:none}
+#tabbar a.on{color:var(--acc)}
+button.tab{background:transparent;color:var(--mu);border-radius:0;border-bottom:2px solid transparent;padding:8px 2px;font-weight:600}
+button.tab.on{background:transparent;color:var(--tx);border-bottom-color:var(--acc)}
+.tabs{gap:14px;border-bottom:1px solid var(--line);margin:0 0 14px}
+button.pick{background:var(--sink);color:var(--tx);border:1px solid var(--line);border-radius:14px;padding:8px}
+button.pick.on{border-color:var(--acc);background:var(--card);box-shadow:inset 0 0 0 1px var(--acc)}
+button.pick svg,.micon svg,.micon-map svg{width:26px;height:26px}
+.micon-map,.emo{color:#f07010}
+.profileCard{padding:0 0 16px;overflow:visible}
+.scene{margin:0;border-radius:16px 16px 0 0;overflow:hidden;min-height:108px;background:var(--sink);border-bottom:1px solid var(--line)}
+.scene.empty{display:block;height:108px}
+.scene svg{height:108px;border-radius:0}
+.profileRow{margin-top:-40px;padding:0 16px;align-items:flex-end}
+.avatar{width:84px;height:84px;border-radius:50%;background:var(--sink);border:3px solid var(--card);box-shadow:var(--shadow)}
+.avatar svg{width:84px;height:84px}
+#hello{color:var(--tx);font-size:22px;font-weight:700;white-space:nowrap}
+.credits{color:var(--mu);font-weight:600;font-size:13px}
+main a{color:var(--mu);text-decoration:none}
+.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 16px 0}
+.statrow div{background:var(--sink);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.statrow b{display:block;font-size:16px}
+.statrow span{color:var(--mu);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+#shopGrid{gap:12px;max-height:none}
+.shopItem{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:none}
+.shopArt{background:var(--sink);border-radius:14px;min-height:88px}
+.shopArt svg{width:64px;height:64px}
+.badge{background:var(--sink);border:1px solid var(--line)}
+#achDetail,.story{background:var(--sink);border:1px solid var(--line)}
+.bar{background:var(--sink);border:1px solid var(--line)}
+.bar span{background:var(--acc)}
+.island{background:var(--sink);border:1px solid var(--line)}
+.shield{color:var(--tx);font-weight:650}
+#cele .panel,#shareBox .panel{background:var(--card);color:var(--tx);border:1px solid var(--line);box-shadow:var(--shadow)}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;background:var(--sink);color:var(--tx);border:1px solid var(--line)}
+.seg button.on{background:var(--acc);color:var(--ink);border-color:var(--acc)}
+.frame-loop,.frame-glow,.frame-stars,.frame-zap,.frame-hearts,.frame-dots,.frame-double,.frame-ticket,.frame-crown{background:transparent;color:var(--tx)}
+.frame-rainbow{background:transparent;border:1px solid var(--acc)}
+.tag{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--mu);border:1px solid var(--line);border-radius:999px;padding:1px 6px}
+li{border-bottom:1px solid var(--line)}
 </style></head><body><main>
 <h1 class="brand"><img src="logo.png" alt="Run-Day" class="logo" width="280" height="280"></h1>
-<section id="page-home" class="page"><div class="card"><h2>Live GPS run</h2><p id="gmsg">Tap Start to track a run with GPS.</p>
-<div class="mrow"><select id="mode" aria-label="Activity"></select></div><div id="modePicks" class="picks"></div><p id="det"></p><div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas>
+<section id="page-home" class="page"><div class="card dash"><h2>Record</h2><p id="gmsg">Record distance and time with GPS.</p>
+<div class="mrow"><select id="mode" aria-label="Activity"></select></div><div id="modePicks" class="picks"></div><p id="det"></p>
 <div class="stats"><div class="stat"><small>Time</small><b id="gt">0:00</b></div><div class="stat"><small>Distance</small><b id="gd">0.00 mi</b></div>
 <div class="stat"><small>Current pace</small><b id="gc">—</b></div><div class="stat"><small>Avg pace</small><b id="ga">—</b></div></div>
-<div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div><div id="liveph"><label class="ph">📷 Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
+<div class="btns"><button id="startB">Start</button><button id="pauseB" disabled>Pause</button><button id="finB" disabled>Finish</button></div>
+<div id="map"></div><canvas id="mapfb" width="480" height="220"></canvas><div id="liveph"><label class="ph">Add photo<input type="file" accept="image/*" multiple id="livePhIn"></label><span id="livePhN"></span><div class="thumbs" id="liveThumbs"></div></div></div>
 <div class="card"><h2>Today</h2><p id="streakLine"></p><p id="challengeLine"></p><p id="ghostNote" class="hint"></p></div>
 <div class="card" id="prCard"><h2>Streak &amp; personal bests</h2><div id="streak"></div><div id="prs"></div></div>
-<div class="card"><h2>Family Quest</h2><p id="questLine"></p><div id="questBar"></div><p class="hint">Pair phones in Settings. The code is mile totals only.</p></div>
-<div class="card"><h2>Your island</h2><div id="world"></div></div><div class="card"><h2>Log a run manually</h2><form id="f">
+<div class="card"><h2>Family Quest</h2><p id="questLine"></p><div id="questBar"></div><p class="hint">Pair in Settings. The code is mileage totals only.</p></div>
+<div class="card"><h2>Island</h2><div id="world"></div></div><div class="card"><h2>Add manually</h2><form id="f">
 <label class="full">Activity<select id="mm"></select></label><div id="logPicks" class="picks full"></div><label class="full">Date<input type="date" id="d" required></label>
 <label>Distance (mi)<input type="number" id="m" step="0.01" min="0.01" required></label>
 <label>Time (mm:ss)<input id="t" placeholder="32:15" required></label>
-<div class="full" id="pace">Pace: —</div><button class="full">Save run</button></form></div>
+<div class="full" id="pace">Pace: —</div><button class="full">Save</button></form></div>
 <div class="card"><h2>Totals by activity</h2><div id="modes"></div></div></section>
-<section id="page-shop" class="page" hidden><div class="card" id="shopCard"><h2>Shop</h2><p class="hint">Spend pretend credits. Nothing here costs real money.</p><div id="shopTabs" class="tabs"></div><div id="shopGrid"></div></div>
+<section id="page-shop" class="page" hidden><div class="card" id="shopCard"><h2>Shop</h2><p class="hint">Credits stay in this app. Nothing here is a real purchase.</p><div id="shopTabs" class="tabs"></div><div id="shopGrid"></div></div>
 </section>
-<section id="page-profile" class="page" hidden><div class="card profileCard" id="profileCard"><div id="scene" class="scene empty"></div><div class="profileRow"><div id="avatarBox" class="avatar" aria-hidden="true"></div><div class="profileText"><div id="frameBox" class="nameplate"><p id="hello">Hey, athlete!</p></div><p id="creditLine" class="credits">0 credits</p></div><a href="#settings" class="ghost" style="text-decoration:none;display:inline-block">Settings</a></div></div>
+<section id="page-profile" class="page" hidden><div class="card profileCard" id="profileCard"><div id="scene" class="scene empty"></div><div class="profileRow"><div id="avatarBox" class="avatar" aria-hidden="true"></div><div class="profileText"><div id="frameBox" class="nameplate"><p id="hello">Your name</p></div><p id="creditLine" class="credits">0 credits</p></div><a href="#settings" class="ghost" style="text-decoration:none;display:inline-block">Settings</a></div><div class="statrow" id="profileStats"></div></div>
 
-<div class="card" id="storyCard"><h2>Story runs</h2><div id="stories"></div><p id="storyText" class="hint"></p></div>
+<div class="card" id="storyCard"><h2>Stories</h2><div id="stories"></div><p id="storyText" class="hint"></p></div>
 <div class="card"><h2>Island</h2><div id="worldProfile"></div></div>
 <div class="card" id="recapCard"><h2>Recap</h2><div id="recap"></div></div>
 <div class="card" id="sportStats"><h2>Ski and Onewheel</h2><div id="sportBody"></div></div>
-<div class="card" id="achCard"><h2>Achievements</h2><p class="empty" id="achHint">Badges unlock from activities saved on this phone. They stay here even if you delete a run.</p><p id="achProg" class="achprog">0/100</p><div id="achTabs" class="tabs" role="tablist"></div><select id="achFilter" aria-label="Filter achievements"></select><div id="achGrid"></div><div id="achDetail" hidden><div id="achDetailMedal"></div><h3 id="achDetailName"></h3><p id="achDetailRule"></p><p id="achDetailState"></p><button type="button" id="achShare" class="ghost" hidden>Share badge</button></div></div>
+<div class="card" id="achCard"><h2>Achievements</h2><p class="empty" id="achHint">Earned from activities saved on this phone. Deleting an activity does not remove a badge.</p><p id="achProg" class="achprog">0/100</p><div id="achTabs" class="tabs" role="tablist"></div><select id="achFilter" aria-label="Filter achievements"></select><div id="achGrid"></div><div id="achDetail" hidden><div id="achDetailMedal"></div><h3 id="achDetailName"></h3><p id="achDetailRule"></p><p id="achDetailState"></p><button type="button" id="achShare" class="ghost" hidden>Share badge</button></div></div>
 <div class="card"><h2>Weekly totals</h2><div id="weeks"></div></div>
 <div class="card"><h2>Runs</h2><ul id="list"></ul></div>
 </section>
@@ -157,7 +220,7 @@ textarea{width:100%;min-height:72px}
 <div class="card"><h2>Voice</h2><p class="hint">Spoken updates never say where you are.</p><select id="voiceMode" aria-label="Voice"><option value="off">Off</option><option value="short">Short</option><option value="chatty">Chatty</option></select></div>
 <div class="card"><h2>Privacy</h2><p class="shield" id="shield">Your location never leaves this phone</p><label class="check"><input id="blurHome" type="checkbox"> Blur the start of routes on this phone</label><button type="button" id="openPrivacy">Privacy page</button></div>
 <div class="card"><h2>Family pairing</h2><p class="hint">Copy a code to another phone in your family. It has this month's mile totals only. No map, no places, no strangers.</p><button type="button" id="copyQuest">Copy code</button><textarea id="questOut" readonly aria-label="Your family code"></textarea><textarea id="questIn" placeholder="Paste a family code" aria-label="Paste a family code"></textarea><button type="button" id="applyQuest">Add miles</button><p id="questMsg" class="hint"></p></div>
-<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V6</p><p class="hint">Version V6. Saved on this phone. No account and no real money.</p></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
+<div class="card"><h2>About</h2><p id="aboutVer">Run-Day V7</p><p class="hint">Version V7. Stored on this phone. No account.</p></div><div class="card"><h2>Appearance</h2><div class="seg" id="appearance"><button type="button" data-app="dark">Dark</button><button type="button" data-app="light">Light</button></div></div><div class="card" id="themeCard"><h2>Background</h2><p class="hint">Pick any hue. Colors stay deep so the words stay easy to read.</p><input id="hue1" type="range" min="0" max="360" value="272" aria-label="Background color"><div id="swatches" class="swatches"></div><label class="check"><input id="gradOn" type="checkbox"> Gradient</label><div id="gradBox"><input id="hue2" type="range" min="0" max="360" value="24" aria-label="Second gradient color"><select id="gradDir" aria-label="Gradient direction"><option value="to bottom">Down</option><option value="to right">Across</option><option value="to bottom right" selected>Diagonal</option><option value="to top">Up</option></select></div></div>
 </section>
 <section id="page-privacy" class="page" hidden><div class="card"><h2>Privacy</h2>
 <p class="shield">Your location never leaves this phone.</p>
@@ -166,7 +229,7 @@ textarea{width:100%;min-height:72px}
 <p>Family codes copy mile totals for the month. They do not copy routes or places.</p>
 <p>Photos stay in this browser. Clearing site data removes them.</p>
 <p><a href="#settings">Back to settings</a></p></div></section>
-<nav id="tabbar"><a href="#home" data-page="home">Home</a><a href="#shop" data-page="shop">Shop</a><a href="#profile" data-page="profile">Profile</a><a href="#settings" data-page="settings">Settings</a></nav></main><div id="cele" hidden role="dialog" aria-modal="true" aria-label="Badge unlocked"><div class="panel"><p id="celeKicker">Badge unlocked!</p><div id="celeMedal"></div><h3 id="celeTitle"></h3><p id="celeText"></p><div class="shareRow"><button type="button" id="celeShare" hidden>Share</button><button type="button" id="celeNext">Awesome!</button></div></div></div><div id="shareBox" hidden role="dialog" aria-modal="true" aria-label="Share card"><div class="panel"><img id="shareImg" alt="Share card"><p id="shareCaption"></p><div class="shareRow"><button type="button" id="shareGo">Share</button><button type="button" id="shareSave" class="ghost">Save image</button><button type="button" id="shareClose" class="ghost">Close</button></div><p id="shareNote"></p></div></div><div id="lb"><img id="lbImg" alt="Run photo"><div><button id="lbDel">Delete photo</button><button id="lbX">Close</button></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+<nav id="tabbar"><a href="#home" data-page="home"><svg viewBox="0 0 24 24" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="#shop" data-page="shop"><svg viewBox="0 0 24 24" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Shop</span></a><a href="#profile" data-page="profile"><svg viewBox="0 0 24 24" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M5 19c1.5-3 3.8-4.5 7-4.5S17.5 16 19 19"/></svg><span>Profile</span></a><a href="#settings" data-page="settings"><svg viewBox="0 0 24 24" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg><span>Settings</span></a></nav></main><div id="cele" hidden role="dialog" aria-modal="true" aria-label="Badge unlocked"><div class="panel"><p id="celeKicker">Badge unlocked!</p><div id="celeMedal"></div><h3 id="celeTitle"></h3><p id="celeText"></p><div class="shareRow"><button type="button" id="celeShare" hidden>Share</button><button type="button" id="celeNext">Awesome!</button></div></div></div><div id="shareBox" hidden role="dialog" aria-modal="true" aria-label="Share card"><div class="panel"><img id="shareImg" alt="Share card"><p id="shareCaption"></p><div class="shareRow"><button type="button" id="shareGo">Share</button><button type="button" id="shareSave" class="ghost">Save image</button><button type="button" id="shareClose" class="ghost">Close</button></div><p id="shareNote"></p></div></div><div id="lb"><img id="lbImg" alt="Run photo"><div><button id="lbDel">Delete photo</button><button id="lbX">Close</button></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 const K='runday.runs';let runs=JSON.parse(localStorage.getItem(K)||'[]');runs.forEach((r,i)=>{if(!r.id)r.id=Date.now()+i});
 const MODES={run:['Running','🏃'],walk:['Walking','🚶'],bike:['Biking','🚴'],ski:['Skiing','⛷️'],onewheel:['One-wheeling','🛞']};runs.forEach(r=>{if(!MODES[r.act])r.act='run'});
 const opts=Object.entries(MODES).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
@@ -177,7 +240,7 @@ const pace=(sec,mi)=>mi>0&&sec>0?fmt(sec/mi)+' /mi':'—';
 const upd=()=>$('pace').textContent='Pace: '+pace(secs($('t').value),+$('m').value);$('t').oninput=$('m').oninput=upd;
 const monday=ds=>{const d=new Date(ds+'T00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return ld(d)};
 function render(){localStorage.setItem(K,JSON.stringify(runs));runs.sort((a,b)=>b.date.localeCompare(a.date));
-$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div><span class="micon">${modeSVG(r.act)}</span> <b>${r.mi} mi</b>${r.gps?' 📍':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)} · <select class="actsel" data-act="${r.id}" aria-label="Change activity">${opts.replace(`value="${r.act}"`,`value="${r.act}" selected`)}</select>${r.det&&r.det!==r.act?' (detected '+MODES[r.det][0]+')':''}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">📷 Add photos<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">🗺 Map</span>`:''}<span class="ph" data-share="${r.id}">↗ Share</span></div></div><button class="del" data-i="${i}">✕</button></li>`).join(''):'<li class="empty">No runs yet — log your first!</li>';
+$('list').innerHTML=runs.length?runs.map((r,i)=>`<li><div><span class="micon">${modeSVG(r.act)}</span> <b>${r.mi} mi</b>${r.gps?' <span class="tag">GPS</span>':''} in ${fmt(r.sec)}<br><small>${r.date} · ${pace(r.sec,r.mi)} · <select class="actsel" data-act="${r.id}" aria-label="Change activity">${opts.replace(`value="${r.act}"`,`value="${r.act}" selected`)}</select>${r.det&&r.det!==r.act?' (detected '+MODES[r.det][0]+')':''}</small><div class="thumbs" data-run="${r.id}"></div><div style="margin-top:6px"><label class="ph">Photo<input type="file" accept="image/*" multiple data-add="${r.id}"></label>${r.route&&r.route.length?`<span class="ph" data-map="${r.id}">Map</span>`:''}<span class="ph" data-share="${r.id}">Share</span></div></div><button class="del" data-i="${i}">Remove</button></li>`).join(''):'<li class="empty">No activities yet.</li>';
 const md={};runs.forEach(r=>{const o=md[r.act]=md[r.act]||{mi:0,sec:0,n:0};o.mi+=r.mi;o.sec+=r.sec;o.n++});
 $('modes').innerHTML=Object.keys(MODES).filter(k=>md[k]).map(k=>`<div class="wk"><span><span class="micon">${modeSVG(k)}</span> ${MODES[k][0]}</span><span><b>${md[k].mi.toFixed(2)} mi</b> · ${md[k].n} time${md[k].n==1?'':'s'} · ${fmt(md[k].sec)} <span class="ph" data-sharemode="${k}">↗ Share</span></span></div>`).join('')||'<div class="empty">No data yet</div>';
 const w={};runs.forEach(r=>{const k=monday(r.date);w[k]=w[k]||{mi:0,sec:0,n:0};w[k].mi+=r.mi;w[k].sec+=r.sec;w[k].n++});
@@ -530,7 +593,7 @@ function username() {
 }
 function paintName() {
   const n = username();
-  $('hello').textContent = n ? 'Hey, ' + n + '!' : 'Hey, athlete!';
+  $('hello').textContent = n || 'Your name';
   $('nameBtn').textContent = n ? 'Edit name' : 'Set name';
 }
 function showNameErr(msg) {
@@ -699,8 +762,8 @@ function makeCard(opts) {
   x.fillText('Run-Day', 360, 110);
   x.fillStyle = '#94a3b8';
   x.font = '24px system-ui, sans-serif';
-  x.fillText(username() ? 'Hey, ' + username() + '!' : 'Hey, athlete!', 360, 152);
-  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V6', 360, 236);
+  x.fillText(username() || 'Run-Day', 360, 152);
+  x.beginPath(); x.arc(360, 230, 36, 0, Math.PI*2); x.fillStyle='#ffc7a3'; x.fill(); x.lineWidth=6; x.strokeStyle='#9b50e0'; x.stroke(); x.fillStyle='#f07010'; x.font='700 16px system-ui,sans-serif'; x.fillText('V7', 360, 236);
   if (opts.medal) drawMedal(x, opts.medal, 360, 420, 96);
   else {
     x.font = '96px "Noto Color Emoji", sans-serif';
@@ -918,18 +981,18 @@ window.__ach = {
 
 
 function modeSVG(mode) {
-  const common = 'viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"';
+  const s = 'viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
   const art = {
-    run: `<svg ${common}><ellipse cx="33" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><path d="M14 44c6-2 10-8 14-8 3 6 8 8 14 6" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M22 36c6-10 8-16 18-16 2 6-2 10-6 12" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M30 34c2 8 1 14 6 20" fill="none" stroke="#9b50e0" stroke-width="5" stroke-linecap="round"/><path d="M24 40c-4 6-10 8-14 6" fill="none" stroke="#9b50e0" stroke-width="5" stroke-linecap="round"/><circle cx="46" cy="16" r="7" fill="#ffc7a3"/><path d="M43 15h3M47 15h2" stroke="#3a2418" stroke-width="1.2" stroke-linecap="round"/><path d="M44 19c1.2 1 2.4 1 3.4 0" fill="none" stroke="#c45a4a" stroke-width="1.2" stroke-linecap="round"/></svg>`,
-    walk: `<svg ${common}><ellipse cx="32" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><path d="M28 30c-2 8-8 12-12 18" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><path d="M30 32c4 8 2 16 8 22" fill="none" stroke="#f07010" stroke-width="5" stroke-linecap="round"/><path d="M30 28c8 2 12 8 10 14" fill="#9b50e0"/><circle cx="34" cy="16" r="7" fill="#ffc7a3"/><path d="M24 24c6 2 10 2 16-1" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M31 15h3M37 15h2" stroke="#3a2418" stroke-width="1.2" stroke-linecap="round"/><path d="M32 19c1.4 1 2.6 1 3.6 0" fill="none" stroke="#c45a4a" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="50" r="3" fill="#f07010"/><circle cx="40" cy="54" r="3" fill="#6d4ad4"/></svg>`,
-    bike: `<svg ${common}><ellipse cx="32" cy="58" rx="18" ry="3" fill="#000" opacity=".2"/><circle cx="18" cy="46" r="9" fill="none" stroke="#3a2418" stroke-width="3"/><circle cx="48" cy="46" r="9" fill="none" stroke="#3a2418" stroke-width="3"/><circle cx="18" cy="46" r="2" fill="#f07010"/><circle cx="48" cy="46" r="2" fill="#f07010"/><path d="M18 46 L30 28 L44 46 L30 40 Z" fill="none" stroke="#9b50e0" stroke-width="3" stroke-linejoin="round"/><path d="M30 28 L34 18 H42" fill="none" stroke="#3a2418" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="14" r="5.5" fill="#ffc7a3"/><path d="M28 30c6 1 8 4 8 8" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M34 13h2" stroke="#3a2418" stroke-width="1"/></svg>`,
-    ski: `<svg ${common}><ellipse cx="34" cy="58" rx="16" ry="3" fill="#000" opacity=".18"/><path d="M8 54c16 4 28-2 48-8" fill="none" stroke="#f07010" stroke-width="3" stroke-linecap="round"/><path d="M12 50c14 3 24-1 40-6" fill="none" stroke="#9b50e0" stroke-width="3" stroke-linecap="round"/><path d="M30 40c2-10 6-16 8-22" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><path d="M28 28 L18 18" fill="none" stroke="#c4b4d8" stroke-width="2" stroke-linecap="round"/><path d="M36 26 L50 16" fill="none" stroke="#c4b4d8" stroke-width="2" stroke-linecap="round"/><circle cx="40" cy="14" r="6" fill="#ffc7a3"/><path d="M24 44c8-6 14-4 22 2" fill="#f3e8ff" opacity=".9"/><circle cx="14" cy="18" r="1.4" fill="#fff"/><circle cx="52" cy="24" r="1.2" fill="#fff"/><circle cx="20" cy="28" r="1" fill="#fff"/></svg>`,
-    onewheel: `<svg ${common}><ellipse cx="32" cy="58" rx="14" ry="3" fill="#000" opacity=".22"/><circle cx="34" cy="48" r="10" fill="#2a1208"/><circle cx="34" cy="48" r="6" fill="#f07010"/><circle cx="34" cy="48" r="2" fill="#fff3"/><path d="M22 44h24c2 0 3-2 2-4l-6-4H26l-4 4c-1 2 0 4 0 4z" fill="#9b50e0"/><path d="M32 36c1-8 3-12 4-18" fill="none" stroke="#6d4ad4" stroke-width="5" stroke-linecap="round"/><circle cx="38" cy="14" r="6" fill="#ffc7a3"/><path d="M26 24c6 2 10 1 14-2" fill="none" stroke="#f07010" stroke-width="4" stroke-linecap="round"/><path d="M36 13h2" stroke="#3a2418" stroke-width="1"/></svg>`
+    run: `<svg ${s}><circle cx="14" cy="5" r="1.7"/><path d="M8 20.5l2.4-6.4L7 11.8 10 8h2.8l2.2 3.4 2.4 1.2"/><path d="M10.4 14.2 13.2 20.5"/></svg>`,
+    walk: `<svg ${s}><circle cx="13" cy="5" r="1.7"/><path d="M12.2 8.2 10 13l3 2.2 1.2 5.6"/><path d="M10 13.2 7.8 16"/><path d="M13 15.2 16.2 17"/></svg>`,
+    bike: `<svg ${s}><circle cx="6.5" cy="17" r="2.7"/><circle cx="17.5" cy="17" r="2.7"/><path d="M6.5 17 11 9.2h3.6L17.5 17"/><path d="M11 9.2 13.2 13h3.4"/><circle cx="13" cy="6.2" r="1.3"/></svg>`,
+    ski: `<svg ${s}><circle cx="15" cy="5" r="1.5"/><path d="M13.6 7.4 11.4 12.6l3.2 2"/><path d="M8.5 10.2 15 12.2"/><path d="M4 19c5 1 9-.6 16-3.2"/><path d="M6 16.6c4.6.6 8-.5 13-2.2"/></svg>`,
+    onewheel: `<svg ${s}><circle cx="12" cy="17.2" r="2.6"/><path d="M8.8 14.2h6.4l-.8-2H9.6z"/><path d="M12 12.2V8"/><circle cx="12" cy="6" r="1.5"/></svg>`
   };
   return art[mode] || art.run;
 }
 function comboMark() {
-  return '<svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><path d="M32 6l6 16h16l-13 10 5 16-14-10-14 10 5-16L10 22h16z" fill="#f07010"/><path d="M32 16l3 8h8l-6 5 2 8-7-5-7 5 2-8-6-5h8z" fill="#9b50e0"/></svg>';
+  return '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.2 5.2L20 9l-4 3.6L17.2 18 12 15.4 6.8 18 8 12.6 4 9l5.8-.8z"/></svg>';
 }
 function creditFor(a) {
   const base = { bronze: 10, silver: 25, gold: 50, diamond: 100, legend: 200 }[a.tier] || 10;
@@ -1049,6 +1112,10 @@ function paintProfile() {
   const deco = shop.deco ? shopItem(shop.deco) : null;
   $('scene').innerHTML = deco ? deco.art : '';
   $('scene').classList.toggle('empty', !deco);
+  if ($('profileStats')) {
+    const miles = runs.reduce((s, r) => s + (+r.mi || 0), 0);
+    $('profileStats').innerHTML = `<div><b>${runs.length}</b><span>Activities</span></div><div><b>${miles.toFixed(1)}</b><span>Miles</span></div><div><b>${typeof streakCount === 'function' ? streakCount() : 0}</b><span>Streak</span></div>`;
+  }
 }
 function paintPicks() {
   const live = $('mode').value;
@@ -1127,24 +1194,36 @@ $('logPicks').onclick = e => {
   $('mm').value = b.dataset.pick;
   paintPicks();
 };
-const DEFAULT_THEME = { h1: 272, h2: 24, gradient: true, dir: 'to bottom right' };
+const DEFAULT_THEME = { h1: 24, h2: 200, gradient: false, dir: 'to bottom', custom: false };
 function loadTheme() {
   try {
     const t = JSON.parse(localStorage.getItem('runday.theme') || 'null');
     if (!t || typeof t.h1 !== 'number') return { ...DEFAULT_THEME };
-    return { h1: clampHue(t.h1), h2: clampHue(t.h2 == null ? 24 : t.h2), gradient: !!t.gradient, dir: t.dir || 'to bottom right' };
+    const legacy = t.h1 === 272 && t.h2 === 24 && t.gradient && !t.custom;
+    if (legacy) return { ...DEFAULT_THEME };
+    return { h1: clampHue(t.h1), h2: clampHue(t.h2 == null ? 200 : t.h2), gradient: !!t.gradient, dir: t.dir || 'to bottom', custom: !!t.custom };
   } catch (e) { return { ...DEFAULT_THEME }; }
 }
 function clampHue(n) { n = Math.round(+n || 0); if (n < 0) n = 0; if (n > 360) n = 360; return n; }
+function appearance() { return localStorage.getItem('runday.appearance') === 'light' ? 'light' : 'dark'; }
 function applyTheme(t) {
-  const h1 = clampHue(t.h1), h2 = clampHue(t.h2);
-  const bg = `hsl(${h1} 58% 14%)`;
-  const card = `hsl(${h1} 42% 20%)`;
-  document.documentElement.style.setProperty('--bg', bg);
-  document.documentElement.style.setProperty('--card', card);
-  document.body.style.background = t.gradient ? `linear-gradient(${t.dir}, hsl(${h1} 62% 24%), hsl(${h2} 70% 12%))` : bg;
-  document.documentElement.style.setProperty('--tx', '#f8f1ff');
-  document.documentElement.style.setProperty('--mu', '#d9ccea');
+  const mode = appearance();
+  document.documentElement.dataset.theme = mode;
+  if (t && t.custom) {
+    const h1 = clampHue(t.h1), h2 = clampHue(t.h2);
+    const light = mode === 'light';
+    const bgL = light ? 96 : 8, cardL = light ? 100 : 12;
+    const bg = `hsl(${h1} 16% ${bgL}%)`;
+    const card = `hsl(${h1} 12% ${cardL}%)`;
+    document.documentElement.style.setProperty('--bg', bg);
+    document.documentElement.style.setProperty('--card', card);
+    document.documentElement.style.setProperty('--tx', light ? '#18181b' : '#f4f4f5');
+    document.documentElement.style.setProperty('--mu', light ? '#52525b' : '#a1a1aa');
+    document.body.style.background = t.gradient ? `linear-gradient(${t.dir}, hsl(${h1} 18% ${bgL}%), hsl(${h2} 16% ${Math.max(6, bgL - 6)}%))` : '';
+  } else {
+    ['--bg', '--card', '--tx', '--mu'].forEach(p => document.documentElement.style.removeProperty(p));
+    document.body.style.background = '';
+  }
 }
 function saveTheme(t) { localStorage.setItem('runday.theme', JSON.stringify(t)); applyTheme(t); }
 function syncThemeControls() {
@@ -1163,16 +1242,30 @@ $('swatches').onclick = e => {
   if (!b) return;
   const t = loadTheme();
   t.h1 = +b.dataset.hue;
+  t.custom = true;
   $('hue1').value = t.h1;
   saveTheme(t);
 };
 function themeFromControls() {
-  return { h1: clampHue($('hue1').value), h2: clampHue($('hue2').value), gradient: $('gradOn').checked, dir: $('gradDir').value };
+  return { h1: clampHue($('hue1').value), h2: clampHue($('hue2').value), gradient: $('gradOn').checked, dir: $('gradDir').value, custom: true };
 }
 $('hue1').oninput = () => saveTheme(themeFromControls());
 $('hue2').oninput = () => saveTheme(themeFromControls());
 $('gradOn').onchange = () => { $('gradBox').hidden = !$('gradOn').checked; saveTheme(themeFromControls()); };
 $('gradDir').onchange = () => saveTheme(themeFromControls());
+function paintAppearance() {
+  document.querySelectorAll('#appearance button').forEach(b => b.classList.toggle('on', b.dataset.app === appearance()));
+}
+if ($('appearance')) {
+  $('appearance').onclick = e => {
+    const b = e.target.closest('[data-app]');
+    if (!b) return;
+    localStorage.setItem('runday.appearance', b.dataset.app);
+    applyTheme(loadTheme());
+    paintAppearance();
+  };
+  paintAppearance();
+}
 syncThemeControls();
 prepModeImgs();
 paintPicks();
@@ -1186,7 +1279,7 @@ $('f').addEventListener('reset', () => setTimeout(paintPicks, 0));
 window.__v5 = { creditFor, credits: loadCredits, buy: buyItem, equip: equipItem, unequip: unequipItem, shop: loadShop, SHOP, setTheme: saveTheme, theme: loadTheme, modeSVG };
 
 
-const V6 = 'V6';
+const V6 = 'V7';
 function seasonActive(name, when) {
   const d = when || new Date();
   const m = d.getMonth(), day = d.getDate();
@@ -1408,7 +1501,7 @@ function moveGhost() {
   const t = Math.min(1, (elapsed() / 1000) / best);
   const idx = Math.min(route.length - 1, Math.floor(t * (route.length - 1)));
   const p = route[idx];
-  const icon = L.divIcon({ className: 'ghost', html: '👻', iconSize: [28, 28], iconAnchor: [14, 14] });
+  const icon = L.divIcon({ className: 'ghost', html: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#f4f4f5" stroke-width="1.75"><path d="M6 11a6 6 0 0 1 12 0v8l-2-1.5L14 19l-2-1.5L10 19l-2-1.5L6 19z"/></svg>', iconSize: [28, 28], iconAnchor: [14, 14] });
   if (!ghostMarker) ghostMarker = L.marker([p[0], p[1]], { icon, zIndexOffset: 900 }).addTo(map);
   else { ghostMarker.setLatLng([p[0], p[1]]); ghostMarker.setIcon(icon); }
 }
